@@ -10,6 +10,7 @@ enum class TokenType(val isAtom: Boolean) {
 
 data class Token(val type: TokenType, val value: String)
 
+// TODO: Can't Handle Symbols at the end 'x)'
 fun tokenize(input: String): List<Token> {
     var s = input.trimStart()
     val tokens: MutableList<Token> = mutableListOf()

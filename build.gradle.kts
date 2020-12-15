@@ -25,6 +25,8 @@ application {
     mainClassName = "spready.MainKt"
 }
 
+val jUnitVersion = "5.7.0"
+
 kotlin {
     sourceSets {
         val test by getting {
@@ -32,8 +34,8 @@ kotlin {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
                 implementation(kotlin("test-junit5"))
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
-                implementation("org.junit.jupiter:junit-jupiter-params:5.7.0")
+                implementation("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
+                implementation("org.junit.jupiter:junit-jupiter-params:$jUnitVersion")
             }
         }
     }

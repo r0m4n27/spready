@@ -1,26 +1,25 @@
 package spready.lisp
 
-class Environment(private val symbols: MutableMap<Symbol, SExpr>) {
+import spready.lisp.functions.baseFunctions
+import spready.lisp.functions.mathFunctions
+
+open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
     constructor() : this(mutableMapOf())
 
     fun eval(expr: SExpr): SExpr {
         return expr.eval(this)
     }
 
-    fun copy(): Environment {
-        return Environment(symbols.toMutableMap())
-    }
-
-    operator fun get(symbol: Symbol): SExpr {
+    open operator fun get(symbol: Symbol): SExpr {
         return symbols[symbol]
             ?: throw EvalException("Can't find symbol $symbol")
     }
 
-    operator fun set(symbol: Symbol, expr: SExpr) {
+    open operator fun set(symbol: Symbol, expr: SExpr) {
         symbols[symbol] = expr
     }
 
-    operator fun minusAssign(symbol: Symbol) {
+    open operator fun minusAssign(symbol: Symbol) {
         if (symbols.containsKey(symbol)) {
             symbols.remove(symbol)
         } else {
@@ -44,15 +43,15 @@ class Environment(private val symbols: MutableMap<Symbol, SExpr>) {
         }
     }
 
-    // companion object {
-    //
-    //     fun defaultEnv(): Environment {
-    //         val env = Environment()
-    //
-    //         env += baseFunctions()
-    //         env += mathFunctions()
-    //
-    //         return env
-    //     }
-    // }
+    companion object {
+
+        fun defaultEnv(): Environment {
+            val env = Environment()
+
+            env += baseFunctions()
+            env += mathFunctions()
+
+            return env
+        }
+    }
 }

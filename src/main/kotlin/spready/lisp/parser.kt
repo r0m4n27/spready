@@ -1,5 +1,6 @@
 package spready.lisp
 
+// TODO: Parse List of exprs
 fun parse(tokens: List<Token>): SExpr {
     val firstItem = tokens.firstOrNull()
 

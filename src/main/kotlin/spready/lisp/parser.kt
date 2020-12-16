@@ -1,19 +1,28 @@
 package spready.lisp
 
-// TODO: Parse List of exprs
-fun parse(tokens: List<Token>): SExpr {
-    val firstItem = tokens.firstOrNull()
+fun parse(tokens: List<Token>): List<SExpr> {
 
-    return if (firstItem != null) {
-        if (firstItem.type.isAtom) {
-            parseAtom(firstItem)
-        } else {
-            if (firstItem.type == TokenType.CloseParen) {
-                throw IllegalArgumentException("Unexpected token $firstItem")
+    if (tokens.isNotEmpty()) {
+        val mutableTokens = tokens.toMutableList()
+        val expressions = mutableListOf<SExpr>()
+
+        while (mutableTokens.isNotEmpty()) {
+            val firstItem = mutableTokens.first()
+
+            val expr = if (firstItem.type.isAtom) {
+                parseAtom(mutableTokens.removeFirst())
+            } else {
+                if (firstItem.type == TokenType.CloseParen) {
+                    throw IllegalArgumentException("Unexpected token $firstItem")
+                }
+
+                parseCons(mutableTokens)
             }
 
-            parseCons(tokens.toMutableList())
+            expressions.add(expr)
         }
+
+        return expressions
     } else {
         throw IllegalArgumentException("No Tokens were Provided")
     }
@@ -34,7 +43,7 @@ fun parseCons(tokens: MutableList<Token>): SExpr {
 
         return when {
             first.type.isAtom -> {
-                return parseAtom(first)
+                parseAtom(first)
             }
             first.type == TokenType.OpenParen -> {
                 val exprs: MutableList<SExpr> = mutableListOf()

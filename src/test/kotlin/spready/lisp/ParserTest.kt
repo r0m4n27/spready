@@ -122,7 +122,19 @@ class ParserTest {
         fun `parse just Atom`() {
             val input = listOf(Token(TokenType.Number, "123"))
 
-            assertEquals(Num(123), parse(input))
+            assertEquals(listOf(Num(123)), parse(input))
+        }
+
+        @Test
+        fun `parse multiple`() {
+            val input = listOf(
+                Token(TokenType.Number, "123"),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Number, "123"),
+                Token(TokenType.CloseParen, ")")
+            )
+
+            assertEquals(listOf(Num(123), Cons(Num(123), Nil)), parse(input))
         }
 
         @Test

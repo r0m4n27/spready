@@ -30,9 +30,14 @@ fun parse(tokens: List<Token>): List<SExpr> {
 
 fun parseAtom(token: Token): SExpr {
     return when (token.type) {
-        TokenType.Symbol -> Symbol(token.value)
         TokenType.String -> Str(token.value)
-        TokenType.Number -> Num(token.value.toInt())
+        TokenType.Symbol -> {
+            try {
+                Num(token.value.toInt())
+            } catch (_: NumberFormatException) {
+                Symbol(token.value)
+            }
+        }
         else -> throw IllegalArgumentException("$token isn't an atom!")
     }
 }

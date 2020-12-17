@@ -48,7 +48,7 @@ class ParserTest {
         fun `parse Cons Unbalanced Parens`() {
             val input = listOf(
                 Token(TokenType.OpenParen, "("),
-                Token(TokenType.Number, "123"),
+                Token(TokenType.Symbol, "123"),
                 Token(TokenType.OpenParen, "("),
                 Token(TokenType.CloseParen, ")")
             )
@@ -73,9 +73,9 @@ class ParserTest {
         fun `parse Cons successfully`() {
             val input = listOf(
                 Token(TokenType.OpenParen, "("),
-                Token(TokenType.Number, "123"),
+                Token(TokenType.Symbol, "123"),
                 Token(TokenType.OpenParen, "("),
-                Token(TokenType.Number, "456"),
+                Token(TokenType.Symbol, "456"),
                 Token(TokenType.String, "789"),
                 Token(TokenType.CloseParen, ")"),
                 Token(TokenType.CloseParen, ")")
@@ -95,8 +95,9 @@ class ParserTest {
         private fun parseAtomProvider() =
             Stream.of(
                 Pair(Token(TokenType.String, "123"), Str("123")),
-                Pair(Token(TokenType.Number, "123"), Num(123)),
-                Pair(Token(TokenType.Symbol, "hallo"), Symbol("hallo"))
+                Pair(Token(TokenType.Symbol, "123"), Num(123)),
+                Pair(Token(TokenType.Symbol, "hallo"), Symbol("hallo")),
+                Pair(Token(TokenType.Symbol, "-123"), Num(-123))
             )
 
         @ParameterizedTest
@@ -120,7 +121,7 @@ class ParserTest {
     inner class Parse {
         @Test
         fun `parse just Atom`() {
-            val input = listOf(Token(TokenType.Number, "123"))
+            val input = listOf(Token(TokenType.Symbol, "123"))
 
             assertEquals(listOf(Num(123)), parse(input))
         }
@@ -128,9 +129,9 @@ class ParserTest {
         @Test
         fun `parse multiple`() {
             val input = listOf(
-                Token(TokenType.Number, "123"),
+                Token(TokenType.Symbol, "123"),
                 Token(TokenType.OpenParen, "("),
-                Token(TokenType.Number, "123"),
+                Token(TokenType.Symbol, "123"),
                 Token(TokenType.CloseParen, ")")
             )
 

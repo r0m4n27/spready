@@ -14,9 +14,9 @@ class TokenizerTest {
         val input = "(1 2 3)"
         val expected = listOf(
             Token(TokenType.OpenParen, "("),
-            Token(TokenType.Number, "1"),
-            Token(TokenType.Number, "2"),
-            Token(TokenType.Number, "3"),
+            Token(TokenType.Symbol, "1"),
+            Token(TokenType.Symbol, "2"),
+            Token(TokenType.Symbol, "3"),
             Token(TokenType.CloseParen, ")")
         )
 
@@ -24,9 +24,9 @@ class TokenizerTest {
     }
 
     @Test
-    fun `tokenize number`() {
-        val input = "1234"
-        val expected = listOf(Token(TokenType.Number, "1234"))
+    fun `tokenize Symbol`() {
+        val input = "-1234"
+        val expected = listOf(Token(TokenType.Symbol, "-1234"))
         assertEquals(expected, tokenize(input))
     }
 
@@ -44,8 +44,24 @@ class TokenizerTest {
 
         val expected = listOf(
             Token(TokenType.OpenParen, "("),
-            Token(TokenType.Number, "132"),
-            Token(TokenType.Number, "4"),
+            Token(TokenType.Symbol, "132"),
+            Token(TokenType.Symbol, "4"),
+            Token(TokenType.CloseParen, ")")
+        )
+
+        assertEquals(expected, tokenize(input))
+    }
+
+    @Test
+    fun `tokenize before special char`() {
+        val input = "1 2(3 4)"
+
+        val expected = listOf(
+            Token(TokenType.Symbol, "1"),
+            Token(TokenType.Symbol, "2"),
+            Token(TokenType.OpenParen, "("),
+            Token(TokenType.Symbol, "3"),
+            Token(TokenType.Symbol, "4"),
             Token(TokenType.CloseParen, ")")
         )
 

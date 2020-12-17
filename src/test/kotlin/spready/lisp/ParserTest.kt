@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ParserTest {
     @Nested
@@ -113,6 +114,28 @@ class ParserTest {
             }
             assertThrows<IllegalArgumentException> {
                 parseAtom(Token(TokenType.CloseParen, ")"))
+            }
+        }
+    }
+
+    @Nested
+    inner class ParseSpecial {
+        @Test
+        fun `parse special success`() {
+            assertEquals(
+                listOf(Bool(true)),
+                parse(listOf(Token(TokenType.Special, "#t")))
+            )
+            assertEquals(
+                listOf(Bool(false)),
+                parse(listOf(Token(TokenType.Special, "#f")))
+            )
+        }
+
+        @Test
+        fun `parse special fail`() {
+            assertFailsWith<IllegalArgumentException> {
+                parse(listOf(Token(TokenType.Special, "#123")))
             }
         }
     }

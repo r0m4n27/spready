@@ -24,6 +24,12 @@ data class Num(val value: Int) : SExpr() {
     override fun eval(env: Environment): SExpr = this
 }
 
+data class Bool(val value: Boolean) : SExpr() {
+    override fun eval(env: Environment) = this
+
+    override fun toString() = value.toString()
+}
+
 object Nil : SExpr() {
     override fun toString() = "nil"
     override fun eval(env: Environment): SExpr = this

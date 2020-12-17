@@ -31,6 +31,13 @@ class TokenizerTest {
     }
 
     @Test
+    fun `tokenize Special`() {
+        val input = "#123"
+        val expected = listOf(Token(TokenType.Special, "#123"))
+        assertEquals(expected, tokenize(input))
+    }
+
+    @Test
     fun `tokenize String`() {
         val input = "\"Hallo, 123!\""
 

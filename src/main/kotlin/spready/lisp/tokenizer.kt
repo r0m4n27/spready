@@ -4,6 +4,7 @@ enum class TokenType(val isAtom: Boolean) {
     OpenParen(false),
     CloseParen(false),
     String(true),
+    Special(true),
     Symbol(true)
 }
 
@@ -30,6 +31,11 @@ fun tokenize(input: String): List<Token> {
                 s = s.drop(1)
                 null
             }
+            '#' -> {
+                val special = s.takeWhile { !specialChars.contains(it) }
+                Token(TokenType.Special, special)
+            }
+
             else -> {
                 val symbol = s.takeWhile { !specialChars.contains(it) }
                 Token(TokenType.Symbol, symbol)

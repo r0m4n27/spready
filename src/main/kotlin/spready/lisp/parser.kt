@@ -31,6 +31,7 @@ fun parse(tokens: List<Token>): List<SExpr> {
 fun parseAtom(token: Token): SExpr {
     return when (token.type) {
         TokenType.String -> Str(token.value)
+        TokenType.Special -> parseSpecial(token)
         TokenType.Symbol -> {
             try {
                 Num(token.value.toInt())
@@ -39,6 +40,14 @@ fun parseAtom(token: Token): SExpr {
             }
         }
         else -> throw IllegalArgumentException("$token isn't an atom!")
+    }
+}
+
+fun parseSpecial(token: Token): SExpr {
+    return when (token.value) {
+        "#t" -> Bool(true)
+        "#f" -> Bool(false)
+        else -> throw IllegalArgumentException("Can't parse Special Token $token")
     }
 }
 

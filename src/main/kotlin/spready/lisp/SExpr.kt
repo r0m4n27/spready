@@ -2,7 +2,7 @@ package spready.lisp
 
 sealed class SExpr {
     abstract fun eval(env: Environment): SExpr
-    abstract fun toBool(): Bool
+    open fun toBool(): Bool = Bool(true)
 }
 
 data class Symbol(val value: String) : SExpr() {
@@ -10,14 +10,11 @@ data class Symbol(val value: String) : SExpr() {
         return env[this]
     }
 
-    override fun toBool(): Bool = Bool(true)
-
     override fun toString() = value
 }
 
 data class Str(val value: String) : SExpr() {
     override fun eval(env: Environment): SExpr = this
-    override fun toBool(): Bool = Bool(true)
 
     override fun toString() = "\"$value\""
 }
@@ -26,7 +23,6 @@ data class Num(val value: Int) : SExpr() {
     override fun toString() = value.toString()
 
     override fun eval(env: Environment): SExpr = this
-    override fun toBool(): Bool = Bool(true)
 }
 
 data class Bool(val value: Boolean) : SExpr() {
@@ -44,7 +40,6 @@ object Nil : SExpr() {
 
 data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> {
 
-    override fun toBool(): Bool = Bool(true)
     override fun eval(env: Environment): SExpr {
         val firstEvaluated = first.eval(env)
         return if (firstEvaluated is Func) {
@@ -106,7 +101,6 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
 
 abstract class Func(val name: String) : SExpr() {
 
-    override fun toBool(): Bool = Bool(true)
     override fun eval(env: Environment): SExpr = this
 
     override fun toString() = "Function #$name"

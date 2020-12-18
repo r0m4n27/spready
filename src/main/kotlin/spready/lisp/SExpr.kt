@@ -1,7 +1,7 @@
 package spready.lisp
 
 sealed class SExpr {
-    abstract fun eval(env: Environment): SExpr
+    open fun eval(env: Environment): SExpr = this
     open fun toBool(): Bool = Bool(true)
 }
 
@@ -14,27 +14,20 @@ data class Symbol(val value: String) : SExpr() {
 }
 
 data class Str(val value: String) : SExpr() {
-    override fun eval(env: Environment): SExpr = this
-
     override fun toString() = "\"$value\""
 }
 
 data class Num(val value: Int) : SExpr() {
     override fun toString() = value.toString()
-
-    override fun eval(env: Environment): SExpr = this
 }
 
 data class Bool(val value: Boolean) : SExpr() {
-    override fun eval(env: Environment) = this
-
     override fun toString() = value.toString()
     override fun toBool(): Bool = this
 }
 
 object Nil : SExpr() {
     override fun toString() = "nil"
-    override fun eval(env: Environment): SExpr = this
     override fun toBool(): Bool = Bool(false)
 }
 
@@ -100,8 +93,6 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
 }
 
 abstract class Func(val name: String) : SExpr() {
-
-    override fun eval(env: Environment): SExpr = this
 
     override fun toString() = "Function #$name"
 

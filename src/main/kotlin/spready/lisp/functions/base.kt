@@ -9,6 +9,7 @@ import spready.lisp.LocalEnvironment
 import spready.lisp.Nil
 import spready.lisp.SExpr
 import spready.lisp.Symbol
+import spready.lisp.cast
 import spready.lisp.evalAll
 
 fun registerSExpr(symbol: Symbol, expr: SExpr, env: Environment): SExpr {
@@ -30,7 +31,7 @@ fun Cons.toListCheckSize(size: Int): List<SExpr> {
 fun createLambda(name: String, variables: List<Symbol>, body: SExpr): Func {
     return object : Func(name) {
         override fun invoke(env: Environment, args: Cons): SExpr {
-            val argsEvaluated = evalAll(args, env)
+            val argsEvaluated = args.evalAll(env)
 
             val localSymbols =
                 mutableMapOf(*variables.zip(argsEvaluated).toTypedArray())
@@ -53,14 +54,12 @@ object Lambda : Func("lambda") {
             representation = "()"
             headSymbols = listOf()
         } else {
-            val head = argsList[0] as? Cons
-                ?: throw EvalException("First argument must be cons not $argsList[0]")
+            val head = argsList[0].cast(Cons::class)
 
             representation = head.toString()
 
             headSymbols = head.map {
-                it as? Symbol
-                    ?: throw EvalException("Arguments must be Symbols not $it")
+                it.cast(Symbol::class)
             }
         }
 
@@ -72,8 +71,7 @@ object ValEval : Func("val-eval") {
     override fun invoke(env: Environment, args: Cons): SExpr {
         val argsList = args.toListCheckSize(2)
 
-        val firstAsSym = argsList[0].eval(env) as? Symbol
-            ?: throw EvalException("First arg must eval to Symbol!")
+        val firstAsSym = argsList[0].eval(env).cast(Symbol::class)
 
         return registerSExpr(firstAsSym, argsList[1], env)
     }
@@ -83,8 +81,7 @@ object Val : Func("val") {
     override fun invoke(env: Environment, args: Cons): SExpr {
         val argsList = args.toListCheckSize(2)
 
-        val firstAsSym = argsList[0] as? Symbol
-            ?: throw EvalException("First arg must be a Symbol!")
+        val firstAsSym = argsList[0].cast(Symbol::class)
 
         return registerSExpr(firstAsSym, argsList[1], env)
     }
@@ -94,19 +91,15 @@ object FunExpr : Func("fun") {
     override fun invoke(env: Environment, args: Cons): SExpr {
         val argsList = args.toListCheckSize(3)
 
-        val sym = argsList[0] as? Symbol
-            ?: throw EvalException("First arg must be a Symbol!")
+        val sym = argsList[0].cast(Symbol::class)
 
         val varsSymbols: List<Symbol> = if (argsList[1] is Nil) {
 
             emptyList()
         } else {
 
-            val vars = argsList[1] as? Cons
-                ?: throw EvalException("Second arg must be cons not $argsList[0]")
-
-            vars.map {
-                it as? Symbol ?: throw EvalException("Variable must be Symbols not $it")
+            argsList[1].cast(Cons::class).map {
+                it.cast(Symbol::class)
             }
         }
 
@@ -139,7 +132,7 @@ object RunExpr : Func("run") {
     override fun invoke(env: Environment, args: Cons): SExpr {
 
         // The empty args list has still Nil as the last element
-        return evalAll(args, env).last()
+        return args.evalAll(env).last()
     }
 }
 
@@ -147,17 +140,12 @@ object Let : Func("let") {
     override fun invoke(env: Environment, args: Cons): SExpr {
         val argsList = args.toListCheckSize(2)
 
-        val firstAsCons =
-            argsList[0] as? Cons ?: throw EvalException("First arg must be Cons!")
+        val firstAsCons = argsList[0].cast(Cons::class)
 
         val symbolsMapped = firstAsCons.map {
-            (it as? Cons)?.toListCheckSize(2)
-                ?: throw EvalException("The bindings must be Cons!")
+            it.cast(Cons::class).toListCheckSize(2)
         }.map {
-            val firstAsSym = it[0] as? Symbol
-                ?: throw EvalException("The first arg in the let must be a symbol!")
-
-            Pair(firstAsSym, it[1].eval(env))
+            Pair(it[0].cast(Symbol::class), it[1].eval(env))
         }.toMap()
 
         val localEnv = LocalEnvironment(symbolsMapped.toMutableMap(), env)

@@ -2,16 +2,16 @@ package spready.lisp.functions
 
 import spready.lisp.Cons
 import spready.lisp.Environment
-import spready.lisp.EvalException
 import spready.lisp.Func
 import spready.lisp.Num
 import spready.lisp.SExpr
 import spready.lisp.Symbol
+import spready.lisp.cast
 import spready.lisp.evalAll
 
 fun foldToNum(args: List<SExpr>, start: Int, acc: (Int, Int) -> Int): Num {
     val argsMapped = args.map {
-        (it as? Num)?.value ?: throw EvalException("$it has to be Num!")
+        it.cast(Num::class).value
     }
 
     return Num(argsMapped.fold(start, acc))
@@ -20,21 +20,21 @@ fun foldToNum(args: List<SExpr>, start: Int, acc: (Int, Int) -> Int): Num {
 object Plus : Func("+") {
 
     override fun invoke(env: Environment, args: Cons): SExpr {
-        return foldToNum(evalAll(args, env), 0, Int::plus)
+        return foldToNum(args.evalAll(env), 0, Int::plus)
     }
 }
 
 object Minus : Func("-") {
 
     override fun invoke(env: Environment, args: Cons): SExpr {
-        return foldToNum(evalAll(args, env), 0, Int::minus)
+        return foldToNum(args.evalAll(env), 0, Int::minus)
     }
 }
 
 object Times : Func("*") {
 
     override fun invoke(env: Environment, args: Cons): SExpr {
-        return foldToNum(evalAll(args, env), 1, Int::times)
+        return foldToNum(args.evalAll(env), 1, Int::times)
     }
 }
 

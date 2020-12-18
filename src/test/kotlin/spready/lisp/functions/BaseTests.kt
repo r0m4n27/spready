@@ -8,6 +8,8 @@ import spready.lisp.Func
 import spready.lisp.Nil
 import spready.lisp.Num
 import spready.lisp.Symbol
+import spready.lisp.parse
+import spready.lisp.tokenize
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -178,6 +180,104 @@ class BaseTests {
                         Cons(Nil, Cons(Num(3), Nil))
                     )
                 )
+            }
+        }
+    }
+
+    @Nested
+    inner class IfTest {
+        @Test
+        fun `If normal`() {
+            val input = "(if (+ 1 2) 4 5)"
+            env[Symbol("if")] = IfExpr
+            env[Symbol("+")] = Plus
+
+            assertEquals(Num(4), env.eval(parse(tokenize(input)).first()))
+        }
+
+        @Test
+        fun `If true`() {
+            val input = "(if #t 4 5)"
+            env[Symbol("if")] = IfExpr
+
+            assertEquals(Num(4), env.eval(parse(tokenize(input)).first()))
+        }
+
+        @Test
+        fun `If false`() {
+            val input = "(if #f 4 5)"
+            env[Symbol("if")] = IfExpr
+
+            assertEquals(Num(5), env.eval(parse(tokenize(input)).first()))
+        }
+
+        @Test
+        fun `If nil`() {
+            val input = Cons(IfExpr, Cons(Nil, Cons(Num(4), Cons(Num(5), Nil))))
+            env[Symbol("if")] = IfExpr
+
+            assertEquals(Num(5), env.eval(input))
+        }
+    }
+
+    @Nested
+    inner class RunTest {
+        @Test
+        fun `Run Normal`() {
+            env[Symbol("run")] = RunExpr
+
+            val input = "(run 1 2 3)"
+
+            assertEquals(Num(3), env.eval(parse(tokenize(input)).first()))
+        }
+
+        @Test
+        fun `Run Nil`() {
+            env[Symbol("run")] = RunExpr
+
+            val input = Cons(RunExpr, Cons(Nil, Nil))
+
+            assertEquals(Nil, env.eval(input))
+        }
+    }
+
+    @Nested
+    inner class LetTest {
+        @Test
+        fun `let normal`() {
+            val input = "(let ((x 2)) x)"
+            env[Symbol("let")] = Let
+
+            assertEquals(Num(2), env.eval(parse(tokenize(input)).first()))
+        }
+
+        @Test
+        fun `let not cons`() {
+            val input = "(let 3 x)"
+            env[Symbol("let")] = Let
+
+            assertFailsWith<EvalException> {
+                env.eval(parse(tokenize(input)).first())
+            }
+        }
+
+        @Test
+        fun `let not Symbol`() {
+            val input = "(let ((3 3)) x)"
+            env[Symbol("let")] = Let
+
+            assertFailsWith<EvalException> {
+                env.eval(parse(tokenize(input)).first())
+            }
+        }
+
+        @Test
+        fun `let bindings not Cons`() {
+            val input = "(let (3) x)"
+            env[Symbol("let")] = Let
+
+            assertFailsWith<EvalException> {
+                env.eval(parse(tokenize(input)).first())
             }
         }
     }

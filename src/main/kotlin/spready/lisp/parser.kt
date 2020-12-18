@@ -28,6 +28,7 @@ fun parse(tokens: List<Token>): List<SExpr> {
     }
 }
 
+// TODO: Parse Nil
 fun parseAtom(token: Token): SExpr {
     return when (token.type) {
         TokenType.String -> Str(token.value)

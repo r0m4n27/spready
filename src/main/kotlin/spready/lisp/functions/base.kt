@@ -1,5 +1,6 @@
 package spready.lisp.functions
 
+import spready.lisp.Bool
 import spready.lisp.Cons
 import spready.lisp.Environment
 import spready.lisp.EvalException
@@ -116,8 +117,57 @@ object FunExpr : Func("fun") {
     }
 }
 
+object IfExpr : Func("if") {
+    override fun invoke(env: Environment, args: Cons): SExpr {
+        val argsList = args.toListCheckSize(3)
+
+        return when (val firstEvaluated = argsList[0].eval(env)) {
+            is Nil -> argsList[2].eval(env)
+            is Bool -> {
+                if (firstEvaluated.value) {
+                    argsList[1].eval(env)
+                } else {
+                    argsList[2].eval(env)
+                }
+            }
+            else -> argsList[1].eval(env)
+        }
+    }
+}
+
+object RunExpr : Func("run") {
+    override fun invoke(env: Environment, args: Cons): SExpr {
+
+        // The empty args list has still Nil as the last element
+        return evalAll(args, env).last()
+    }
+}
+
+object Let : Func("let") {
+    override fun invoke(env: Environment, args: Cons): SExpr {
+        val argsList = args.toListCheckSize(2)
+
+        val firstAsCons =
+            argsList[0] as? Cons ?: throw EvalException("First arg must be Cons!")
+
+        val symbolsMapped = firstAsCons.map {
+            (it as? Cons)?.toListCheckSize(2)
+                ?: throw EvalException("The bindings must be Cons!")
+        }.map {
+            val firstAsSym = it[0] as? Symbol
+                ?: throw EvalException("The first arg in the let must be a symbol!")
+
+            Pair(firstAsSym, it[1].eval(env))
+        }.toMap()
+
+        val localEnv = LocalEnvironment(symbolsMapped.toMutableMap(), env)
+
+        return argsList[1].eval(localEnv)
+    }
+}
+
 fun baseFunctions(): List<Pair<Symbol, Func>> {
-    return listOf(Lambda, Val, ValEval, FunExpr).map {
+    return listOf(Lambda, Val, ValEval, FunExpr, IfExpr, RunExpr, Let).map {
         Pair(Symbol(it.name), it)
     }
 }

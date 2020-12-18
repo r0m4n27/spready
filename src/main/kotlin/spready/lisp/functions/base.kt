@@ -1,6 +1,5 @@
 package spready.lisp.functions
 
-import spready.lisp.Bool
 import spready.lisp.Cons
 import spready.lisp.Environment
 import spready.lisp.EvalException
@@ -113,17 +112,12 @@ object FunExpr : Func("fun") {
 object IfExpr : Func("if") {
     override fun invoke(env: Environment, args: Cons): SExpr {
         val argsList = args.toListCheckSize(3)
+        val firstEvaluated = argsList[0].eval(env)
 
-        return when (val firstEvaluated = argsList[0].eval(env)) {
-            is Nil -> argsList[2].eval(env)
-            is Bool -> {
-                if (firstEvaluated.value) {
-                    argsList[1].eval(env)
-                } else {
-                    argsList[2].eval(env)
-                }
-            }
-            else -> argsList[1].eval(env)
+        return if (firstEvaluated.toBool().value) {
+            argsList[1].eval(env)
+        } else {
+            argsList[2].eval(env)
         }
     }
 }

@@ -98,7 +98,8 @@ class ParserTest {
                 Pair(Token(TokenType.String, "123"), Str("123")),
                 Pair(Token(TokenType.Symbol, "123"), Num(123)),
                 Pair(Token(TokenType.Symbol, "hallo"), Symbol("hallo")),
-                Pair(Token(TokenType.Symbol, "-123"), Num(-123))
+                Pair(Token(TokenType.Symbol, "-123"), Num(-123)),
+                Pair(Token(TokenType.Symbol, "nil"), Nil)
             )
 
         @ParameterizedTest

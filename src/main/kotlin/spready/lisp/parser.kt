@@ -28,16 +28,20 @@ fun parse(tokens: List<Token>): List<SExpr> {
     }
 }
 
-// TODO: Parse Nil
 fun parseAtom(token: Token): SExpr {
     return when (token.type) {
         TokenType.String -> Str(token.value)
         TokenType.Special -> parseSpecial(token)
         TokenType.Symbol -> {
-            try {
-                Num(token.value.toInt())
-            } catch (_: NumberFormatException) {
-                Symbol(token.value)
+            if (token.value == "nil") {
+                Nil
+            } else {
+
+                try {
+                    Num(token.value.toInt())
+                } catch (_: NumberFormatException) {
+                    Symbol(token.value)
+                }
             }
         }
         else -> throw IllegalArgumentException("$token isn't an atom!")

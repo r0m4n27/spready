@@ -44,4 +44,17 @@ class EnvironmentTest {
             Environment() -= Symbol("123")
         }
     }
+
+    @Test
+    fun `registerSExpr normal`() {
+        val env = Environment()
+
+        val expected = Num(123)
+        val sym = Symbol("123")
+        val expr = Symbol("456")
+        env[expr] = expected
+
+        assertEquals(expected, env.evalAndRegister(sym, expr))
+        assertEquals(expected, env[sym])
+    }
 }

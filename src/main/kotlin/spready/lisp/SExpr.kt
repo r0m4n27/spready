@@ -1,8 +1,16 @@
 package spready.lisp
 
+import kotlin.reflect.KClass
+import kotlin.reflect.safeCast
+
 sealed class SExpr {
     open fun eval(env: Environment): SExpr = this
     open fun toBool(): Bool = Bool(true)
+
+    fun <T : SExpr> cast(type: KClass<T>): T {
+        return type.safeCast(this)
+            ?: throw EvalException("Expected ${type.simpleName} got $this!")
+    }
 }
 
 data class Symbol(val value: String) : SExpr() {
@@ -43,6 +51,21 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
             }
         } else {
             throw EvalException("First element must be a Function not $firstEvaluated")
+        }
+    }
+
+    fun toListWithSize(size: Int): List<SExpr> {
+        val argsList = this.toList()
+        if (argsList.size != size) {
+            throw EvalException("Can only have $size arguments not ${argsList.size}")
+        }
+
+        return argsList
+    }
+
+    fun evalAll(env: Environment): List<SExpr> {
+        return this.map {
+            it.eval(env)
         }
     }
 

@@ -100,19 +100,39 @@ class SExprTest {
         }
     }
 
-    @Test
-    fun `cons iterable normal`() {
-        val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Nil))
-        val expected = listOf(Cons(Num(3), Nil), Symbol("123"))
+    @Nested
+    inner class ConsTest {
+        @Test
+        fun `toListCheckSize normal`() {
+            val input = Cons(Num(1), Cons(Num(2), Nil))
+            val expected = listOf(Num(1), Num(2))
 
-        assertEquals(expected, input.toList())
-    }
+            assertEquals(expected, input.toListWithSize(2))
+        }
 
-    @Test
-    fun `cons iterable non nil end`() {
-        val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Num(3)))
-        val expected = listOf(Cons(Num(3), Nil), Symbol("123"), Num(3))
+        @Test
+        fun `toListCheckSize fail`() {
+            val input = Cons(Num(1), Cons(Num(2), Nil))
 
-        assertEquals(expected, input.toList())
+            assertFailsWith<EvalException> {
+                input.toListWithSize(5)
+            }
+        }
+
+        @Test
+        fun `cons iterable normal`() {
+            val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Nil))
+            val expected = listOf(Cons(Num(3), Nil), Symbol("123"))
+
+            assertEquals(expected, input.toList())
+        }
+
+        @Test
+        fun `cons iterable non nil end`() {
+            val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Num(3)))
+            val expected = listOf(Cons(Num(3), Nil), Symbol("123"), Num(3))
+
+            assertEquals(expected, input.toList())
+        }
     }
 }

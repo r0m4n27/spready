@@ -1,31 +1,12 @@
-package spready.lisp.functions
+package spready.lisp.functions.forms
 
 import spready.lisp.Cons
 import spready.lisp.Environment
-import spready.lisp.EvalException
 import spready.lisp.Func
 import spready.lisp.LocalEnvironment
 import spready.lisp.Nil
 import spready.lisp.SExpr
 import spready.lisp.Symbol
-import spready.lisp.cast
-import spready.lisp.evalAll
-
-fun registerSExpr(symbol: Symbol, expr: SExpr, env: Environment): SExpr {
-    val evaluated = expr.eval(env)
-    env[symbol] = evaluated
-
-    return evaluated
-}
-
-fun Cons.toListCheckSize(size: Int): List<SExpr> {
-    val argsList = this.toList()
-    if (argsList.size != size) {
-        throw EvalException("Can only have $size arguments not ${argsList.size}")
-    }
-
-    return argsList
-}
 
 fun createLambda(name: String, variables: List<Symbol>, body: SExpr): Func {
     return object : Func(name) {
@@ -43,7 +24,7 @@ fun createLambda(name: String, variables: List<Symbol>, body: SExpr): Func {
 
 object Lambda : Func("lambda") {
     override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListCheckSize(2)
+        val argsList = args.toListWithSize(2)
 
         val representation: String
         val headSymbols: List<Symbol>
@@ -67,27 +48,26 @@ object Lambda : Func("lambda") {
 
 object ValEval : Func("val-eval") {
     override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListCheckSize(2)
+        val argsList = args.toListWithSize(2)
 
         val firstAsSym = argsList[0].eval(env).cast(Symbol::class)
-
-        return registerSExpr(firstAsSym, argsList[1], env)
+        return env.evalAndRegister(firstAsSym, argsList[1])
     }
 }
 
 object Val : Func("val") {
     override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListCheckSize(2)
+        val argsList = args.toListWithSize(2)
 
         val firstAsSym = argsList[0].cast(Symbol::class)
 
-        return registerSExpr(firstAsSym, argsList[1], env)
+        return env.evalAndRegister(firstAsSym, argsList[1])
     }
 }
 
 object FunExpr : Func("fun") {
     override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListCheckSize(3)
+        val argsList = args.toListWithSize(3)
 
         val sym = argsList[0].cast(Symbol::class)
 
@@ -110,7 +90,7 @@ object FunExpr : Func("fun") {
 
 object IfExpr : Func("if") {
     override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListCheckSize(3)
+        val argsList = args.toListWithSize(3)
         val firstEvaluated = argsList[0].eval(env)
 
         return if (firstEvaluated.toBool().value) {
@@ -129,65 +109,6 @@ object RunExpr : Func("run") {
     }
 }
 
-object Let : Func("let") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListCheckSize(2)
-
-        val firstAsCons = argsList[0].cast(Cons::class)
-
-        val symbolsMapped = firstAsCons.map {
-            it.cast(Cons::class).toListCheckSize(2)
-        }.map {
-            Pair(it[0].cast(Symbol::class), it[1].eval(env))
-        }
-
-        val localEnv = LocalEnvironment(env)
-        localEnv.addLocal(symbolsMapped)
-
-        return argsList[1].eval(localEnv)
-    }
-}
-
-object LetStar : Func("let*") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListCheckSize(2)
-        val firstAsCons = argsList[0].cast(Cons::class)
-
-        val localEnv = LocalEnvironment(env)
-
-        firstAsCons.map {
-            it.cast(Cons::class).toListCheckSize(2)
-        }.map {
-            Pair(it[0].cast(Symbol::class), it[1])
-        }.forEach {
-            localEnv.addLocal(it.first, it.second.eval(localEnv))
-        }
-
-        return argsList[1].eval(localEnv)
-    }
-}
-
-object LetRec : Func("letrec") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListCheckSize(2)
-        val firstAsCons = argsList[0].cast(Cons::class)
-
-        val localEnv = LocalEnvironment(env)
-
-        firstAsCons.map {
-            it.cast(Cons::class).toListCheckSize(2)
-        }.map {
-            val first = it[0].cast(Symbol::class)
-            localEnv.addLocal(first, Nil)
-            Pair(it[0].cast(Symbol::class), it[1])
-        }.forEach {
-            localEnv.addLocal(it.first, it.second.eval(localEnv))
-        }
-
-        return argsList[1].eval(localEnv)
-    }
-}
-
 fun baseFunctions(): List<Pair<Symbol, Func>> {
     return listOf(
         Lambda,
@@ -196,9 +117,6 @@ fun baseFunctions(): List<Pair<Symbol, Func>> {
         FunExpr,
         IfExpr,
         RunExpr,
-        Let,
-        LetStar,
-        LetRec
     ).map {
         Pair(Symbol(it.name), it)
     }

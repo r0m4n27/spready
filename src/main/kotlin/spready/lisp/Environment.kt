@@ -1,6 +1,7 @@
 package spready.lisp
 
-import spready.lisp.functions.baseFunctions
+import spready.lisp.functions.forms.baseFunctions
+import spready.lisp.functions.forms.bindingsFunctions
 import spready.lisp.functions.mathFunctions
 
 open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
@@ -8,6 +9,11 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
 
     fun eval(expr: SExpr): SExpr {
         return expr.eval(this)
+    }
+
+    fun evalAndRegister(symbol: Symbol, expr: SExpr): SExpr {
+        set(symbol, expr.eval(this))
+        return get(symbol)
     }
 
     open operator fun get(symbol: Symbol): SExpr {
@@ -47,8 +53,10 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
 
         fun defaultEnv(): Environment {
             val env = Environment()
-
+            // Forms
             env += baseFunctions()
+            env += bindingsFunctions()
+
             env += mathFunctions()
 
             return env

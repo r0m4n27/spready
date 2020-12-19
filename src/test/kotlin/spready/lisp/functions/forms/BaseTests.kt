@@ -1,4 +1,4 @@
-package spready.lisp.functions
+package spready.lisp.functions.forms
 
 import org.junit.jupiter.api.Nested
 import spready.lisp.Cons
@@ -8,6 +8,7 @@ import spready.lisp.Func
 import spready.lisp.Nil
 import spready.lisp.Num
 import spready.lisp.Symbol
+import spready.lisp.functions.Plus
 import spready.lisp.parse
 import spready.lisp.tokenize
 import kotlin.test.BeforeTest
@@ -22,34 +23,6 @@ class BaseTests {
     @BeforeTest
     fun resetEnv() {
         env = Environment()
-    }
-
-    @Test
-    fun `registerSExpr normal`() {
-        val expected = Num(123)
-        val sym = Symbol("123")
-        val expr = Symbol("456")
-        env[expr] = expected
-
-        assertEquals(expected, registerSExpr(sym, expr, env))
-        assertEquals(expected, env[sym])
-    }
-
-    @Test
-    fun `toListCheckSize normal`() {
-        val input = Cons(Num(1), Cons(Num(2), Nil))
-        val expected = listOf(Num(1), Num(2))
-
-        assertEquals(expected, input.toListCheckSize(2))
-    }
-
-    @Test
-    fun `toListCheckSize fail`() {
-        val input = Cons(Num(1), Cons(Num(2), Nil))
-
-        assertFailsWith<EvalException> {
-            input.toListCheckSize(5)
-        }
     }
 
     @Test
@@ -240,61 +213,4 @@ class BaseTests {
             assertEquals(Nil, env.eval(input))
         }
     }
-
-    @Nested
-    inner class LetTest {
-        @Test
-        fun `let normal`() {
-            val input = "(let ((x 2)) x)"
-            env[Symbol("let")] = Let
-
-            assertEquals(Num(2), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `let not cons`() {
-            val input = "(let 3 x)"
-            env[Symbol("let")] = Let
-
-            assertFailsWith<EvalException> {
-                env.eval(parse(tokenize(input)).first())
-            }
-        }
-
-        @Test
-        fun `let not Symbol`() {
-            val input = "(let ((3 3)) x)"
-            env[Symbol("let")] = Let
-
-            assertFailsWith<EvalException> {
-                env.eval(parse(tokenize(input)).first())
-            }
-        }
-
-        @Test
-        fun `let bindings not Cons`() {
-            val input = "(let (3) x)"
-            env[Symbol("let")] = Let
-
-            assertFailsWith<EvalException> {
-                env.eval(parse(tokenize(input)).first())
-            }
-        }
-    }
-
-    @Nested
-    inner class LetStarTest {
-        @Test
-        fun `letStar normal`() {
-            env[Symbol("let*")] = LetStar
-            env[Symbol("+")] = Plus
-
-            val input = "(let* ((x 3)(y (+ x 2))) y)"
-
-            assertEquals(Num(5), env.eval(parse(tokenize(input)).first()))
-        }
-    }
-
-    // TODO: Test Letrec
-    // Its hard without predicates
 }

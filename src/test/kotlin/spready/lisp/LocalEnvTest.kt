@@ -14,8 +14,9 @@ class LocalEnvTest {
     }
 
     @Test
-    fun `get Symbol from local`() {
-        val locEnv = LocalEnvironment(mutableMapOf(Symbol("123") to Num(3)), env)
+    fun `add to local and get Symbol from local`() {
+        val locEnv = LocalEnvironment(env)
+        locEnv.addLocal(Symbol("123"), Num(3))
 
         assertEquals(Num(3), locEnv[Symbol("123")])
     }
@@ -23,14 +24,15 @@ class LocalEnvTest {
     @Test
     fun `get Symbol from global`() {
         env += Pair(Symbol("123"), Num(3))
-        val locEnv = LocalEnvironment(mutableMapOf(), env)
+        val locEnv = LocalEnvironment(env)
 
         assertEquals(Num(3), locEnv[Symbol("123")])
     }
 
     @Test
     fun `set Symbol local`() {
-        val locEnv = LocalEnvironment(mutableMapOf(Symbol("123") to Num(3)), env)
+        val locEnv = LocalEnvironment(env)
+        locEnv.addLocal(Symbol("123"), Num(3))
         locEnv[Symbol("123")] = Num(4)
 
         assertEquals(Num(4), locEnv[Symbol("123")])
@@ -39,7 +41,7 @@ class LocalEnvTest {
     @Test
     fun `set Symbol global`() {
         env += Pair(Symbol("123"), Num(3))
-        val locEnv = LocalEnvironment(mutableMapOf(), env)
+        val locEnv = LocalEnvironment(env)
         locEnv[Symbol("123")] = Num(4)
 
         assertEquals(Num(4), locEnv[Symbol("123")])
@@ -47,7 +49,8 @@ class LocalEnvTest {
 
     @Test
     fun `minusAssign Symbol local`() {
-        val locEnv = LocalEnvironment(mutableMapOf(Symbol("123") to Num(3)), env)
+        val locEnv = LocalEnvironment(env)
+        locEnv.addLocal(Symbol("123"), Num(3))
         locEnv -= Symbol("123")
 
         assertFailsWith<EvalException> {
@@ -58,7 +61,7 @@ class LocalEnvTest {
     @Test
     fun `minusAssign Symbol global`() {
         env += Pair(Symbol("123"), Num(3))
-        val locEnv = LocalEnvironment(mutableMapOf(), env)
+        val locEnv = LocalEnvironment(env)
         locEnv -= Symbol("123")
 
         assertFailsWith<EvalException> {

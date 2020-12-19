@@ -32,10 +32,9 @@ fun createLambda(name: String, variables: List<Symbol>, body: SExpr): Func {
         override fun invoke(env: Environment, args: Cons): SExpr {
             val argsEvaluated = args.evalAll(env)
 
-            val localSymbols =
-                mutableMapOf(*variables.zip(argsEvaluated).toTypedArray())
-            val localEnv =
-                LocalEnvironment(localSymbols, env)
+            val localSymbols = variables.zip(argsEvaluated)
+            val localEnv = LocalEnvironment(env)
+            localEnv.addLocal(localSymbols)
 
             return body.eval(localEnv)
         }
@@ -140,16 +139,67 @@ object Let : Func("let") {
             it.cast(Cons::class).toListCheckSize(2)
         }.map {
             Pair(it[0].cast(Symbol::class), it[1].eval(env))
-        }.toMap()
+        }
 
-        val localEnv = LocalEnvironment(symbolsMapped.toMutableMap(), env)
+        val localEnv = LocalEnvironment(env)
+        localEnv.addLocal(symbolsMapped)
+
+        return argsList[1].eval(localEnv)
+    }
+}
+
+object LetStar : Func("let*") {
+    override fun invoke(env: Environment, args: Cons): SExpr {
+        val argsList = args.toListCheckSize(2)
+        val firstAsCons = argsList[0].cast(Cons::class)
+
+        val localEnv = LocalEnvironment(env)
+
+        firstAsCons.map {
+            it.cast(Cons::class).toListCheckSize(2)
+        }.map {
+            Pair(it[0].cast(Symbol::class), it[1])
+        }.forEach {
+            localEnv.addLocal(it.first, it.second.eval(localEnv))
+        }
+
+        return argsList[1].eval(localEnv)
+    }
+}
+
+object LetRec : Func("letrec") {
+    override fun invoke(env: Environment, args: Cons): SExpr {
+        val argsList = args.toListCheckSize(2)
+        val firstAsCons = argsList[0].cast(Cons::class)
+
+        val localEnv = LocalEnvironment(env)
+
+        firstAsCons.map {
+            it.cast(Cons::class).toListCheckSize(2)
+        }.map {
+            val first = it[0].cast(Symbol::class)
+            localEnv.addLocal(first, Nil)
+            Pair(it[0].cast(Symbol::class), it[1])
+        }.forEach {
+            localEnv.addLocal(it.first, it.second.eval(localEnv))
+        }
 
         return argsList[1].eval(localEnv)
     }
 }
 
 fun baseFunctions(): List<Pair<Symbol, Func>> {
-    return listOf(Lambda, Val, ValEval, FunExpr, IfExpr, RunExpr, Let).map {
+    return listOf(
+        Lambda,
+        Val,
+        ValEval,
+        FunExpr,
+        IfExpr,
+        RunExpr,
+        Let,
+        LetStar,
+        LetRec
+    ).map {
         Pair(Symbol(it.name), it)
     }
 }

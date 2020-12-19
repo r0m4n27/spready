@@ -281,4 +281,20 @@ class BaseTests {
             }
         }
     }
+
+    @Nested
+    inner class LetStarTest {
+        @Test
+        fun `letStar normal`() {
+            env[Symbol("let*")] = LetStar
+            env[Symbol("+")] = Plus
+
+            val input = "(let* ((x 3)(y (+ x 2))) y)"
+
+            assertEquals(Num(5), env.eval(parse(tokenize(input)).first()))
+        }
+    }
+
+    // TODO: Test Letrec
+    // Its hard without predicates
 }

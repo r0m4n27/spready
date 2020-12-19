@@ -24,6 +24,7 @@ object Plus : Func("+") {
     }
 }
 
+// TODO: Wrong implemented
 object Minus : Func("-") {
 
     override fun invoke(env: Environment, args: Cons): SExpr {

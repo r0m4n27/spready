@@ -1,10 +1,7 @@
 package spready.lisp
 
-class LocalEnvironment(
-    localSymbols: MutableMap<Symbol, SExpr>,
-    private val globEnv: Environment
-) :
-    Environment(localSymbols) {
+class LocalEnvironment(private val globEnv: Environment) :
+    Environment(mutableMapOf()) {
     override fun get(symbol: Symbol): SExpr {
         return symbols[symbol] ?: globEnv[symbol]
     }
@@ -22,6 +19,16 @@ class LocalEnvironment(
             super.minusAssign(symbol)
         } else {
             globEnv.minusAssign(symbol)
+        }
+    }
+
+    fun addLocal(symbol: Symbol, expr: SExpr) {
+        symbols[symbol] = expr
+    }
+
+    fun addLocal(mappings: List<Pair<Symbol, SExpr>>) {
+        for (item in mappings) {
+            addLocal(item.first, item.second)
         }
     }
 }

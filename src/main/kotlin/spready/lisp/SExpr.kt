@@ -113,6 +113,25 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
             }
         }
     }
+
+    companion object {
+
+        fun List<SExpr>.toCons(): Cons {
+            return if (this.isNotEmpty()) {
+                buildCons(this.toMutableList()) as Cons
+            } else {
+                Cons(Nil, Nil)
+            }
+        }
+
+        private fun buildCons(exprs: MutableList<SExpr>): SExpr {
+            return if (exprs.isEmpty()) {
+                Nil
+            } else {
+                Cons(exprs.removeFirst(), buildCons(exprs))
+            }
+        }
+    }
 }
 
 abstract class Func(val name: String) : SExpr() {

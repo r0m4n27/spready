@@ -3,6 +3,7 @@ package spready.lisp
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestInstance
+import spready.lisp.Cons.Companion.toCons
 import spready.lisp.functions.Plus
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -133,6 +134,25 @@ class SExprTest {
             val expected = listOf(Cons(Num(3), Nil), Symbol("123"), Num(3))
 
             assertEquals(expected, input.toList())
+        }
+
+        @Test
+        fun `toCons empty`() {
+
+            assertEquals(Cons(Nil, Nil), listOf<SExpr>().toCons())
+        }
+
+        @Test
+        fun `build cons normal`() {
+            val values = listOf(Num(123), Nil, Str("123"))
+
+            var cons: SExpr = values.toCons()
+            values.forEach {
+                assertEquals(it, (cons as Cons).first)
+                cons = (cons as Cons).second
+            }
+
+            assertEquals(Nil, cons as Nil)
         }
     }
 }

@@ -1,5 +1,7 @@
 package spready.lisp
 
+import spready.lisp.Cons.Companion.toCons
+
 fun parse(tokens: List<Token>): List<SExpr> {
 
     if (tokens.isNotEmpty()) {
@@ -78,7 +80,7 @@ fun parseCons(tokens: MutableList<Token>): SExpr {
 
                 tokens.removeFirst()
 
-                buildCons(exprs)
+                exprs.toCons()
             }
             else -> {
                 throw IllegalArgumentException("Unexpected token $first")
@@ -86,13 +88,5 @@ fun parseCons(tokens: MutableList<Token>): SExpr {
         }
     } else {
         throw IllegalArgumentException("Tokens can't be empty!")
-    }
-}
-
-fun buildCons(exprs: MutableList<SExpr>): SExpr {
-    return if (exprs.isEmpty()) {
-        Nil
-    } else {
-        Cons(exprs.removeFirst(), buildCons(exprs))
     }
 }

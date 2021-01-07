@@ -11,28 +11,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class ParserTest {
-    @Nested
-    inner class BuildCons {
-        @Test
-        fun `build cons empty`() {
-            val emptyList: List<SExpr> = listOf()
-
-            assertEquals(Nil, buildCons(emptyList.toMutableList()))
-        }
-
-        @Test
-        fun `build cons normal`() {
-            val values = listOf(Num(123), Nil, Str("123"))
-
-            var cons = buildCons(values.toMutableList())
-            values.forEach {
-                assertEquals(it, (cons as Cons).first)
-                cons = (cons as Cons).second
-            }
-
-            assertEquals(Nil, cons as Nil)
-        }
-    }
 
     @Nested
     inner class ParseCons {

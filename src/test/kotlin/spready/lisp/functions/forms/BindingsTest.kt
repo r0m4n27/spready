@@ -61,6 +61,9 @@ class BindingsTest {
                 env.eval(parse(tokenize(input)).first())
             }
         }
+
+        // TODO: Add Tests for named let
+        // Can be done when conditions are ready
     }
 
     @Nested

@@ -27,7 +27,7 @@ class BaseTests {
 
     @Test
     fun `createLambda overrideVal`() {
-        val lambda = createLambda("test", listOf(Symbol("x")), Symbol("x"))
+        val lambda = createLambda("test", listOf(Symbol("x")), listOf(Symbol("x")))
 
         env[Symbol("x")] = Num(3)
 
@@ -36,7 +36,7 @@ class BaseTests {
 
     @Test
     fun `createLambda empty args`() {
-        val lambda = createLambda("test", listOf(), Symbol("x"))
+        val lambda = createLambda("test", listOf(), listOf(Symbol("x")))
 
         env[Symbol("x")] = Num(3)
 

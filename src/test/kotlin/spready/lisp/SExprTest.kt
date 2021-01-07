@@ -121,6 +121,23 @@ class SExprTest {
         }
 
         @Test
+        fun `toMutListMinSize fail`() {
+            val input = Cons(Num(1), Nil)
+
+            assertFailsWith<EvalException> {
+                input.toMutListMinSize(2)
+            }
+        }
+
+        @Test
+        fun `toMutListMinSize normal`() {
+            val input = Cons(Num(1), Cons(Num(2), Cons(Symbol("x"), Nil)))
+            val expected = mutableListOf(Num(1), Num(2), Symbol("x"))
+
+            assertEquals(expected, input.toMutListMinSize(1))
+        }
+
+        @Test
         fun `cons iterable normal`() {
             val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Nil))
             val expected = listOf(Cons(Num(3), Nil), Symbol("123"))

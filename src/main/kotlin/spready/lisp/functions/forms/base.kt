@@ -8,16 +8,16 @@ import spready.lisp.Nil
 import spready.lisp.SExpr
 import spready.lisp.Symbol
 
-fun createLambda(name: String, variables: List<Symbol>, body: SExpr): Func {
+fun createLambda(name: String, variables: List<Symbol>, body: List<SExpr>): Func {
     return object : Func(name) {
         override fun invoke(env: Environment, args: Cons): SExpr {
-            val argsEvaluated = args.evalAll(env)
+            val argsEvaluated = env.eval(args.toList())
 
             val localSymbols = variables.zip(argsEvaluated)
             val localEnv = LocalEnvironment(env)
             localEnv.addLocal(localSymbols)
 
-            return body.eval(localEnv)
+            return localEnv.eval(body).last()
         }
     }
 }
@@ -42,7 +42,11 @@ object Lambda : Func("lambda") {
             }
         }
 
-        return createLambda("(lambda $representation)", headSymbols, argsList[1])
+        return createLambda(
+            "(lambda $representation)",
+            headSymbols,
+            listOf(argsList[1])
+        )
     }
 }
 
@@ -81,7 +85,7 @@ object FunExpr : Func("fun") {
             }
         }
 
-        val lambda = createLambda(sym.toString(), varsSymbols, argsList[2])
+        val lambda = createLambda(sym.toString(), varsSymbols, listOf(argsList[2]))
 
         env[sym] = lambda
         return sym

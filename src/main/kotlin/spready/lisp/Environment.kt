@@ -11,6 +11,10 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
         return expr.eval(this)
     }
 
+    fun eval(exprs: List<SExpr>): List<SExpr> {
+        return exprs.map { it.eval(this) }
+    }
+
     fun evalAndRegister(symbol: Symbol, expr: SExpr): SExpr {
         set(symbol, expr.eval(this))
         return get(symbol)

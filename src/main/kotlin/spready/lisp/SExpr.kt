@@ -63,6 +63,16 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
         return argsList
     }
 
+    fun toMutListMinSize(size: Int): MutableList<SExpr> {
+        val argsList = this.toMutableList()
+        if (argsList.size < size) {
+            throw EvalException(
+                "Must have at least $size arguments not ${argsList.size}"
+            )
+        }
+        return argsList
+    }
+
     fun evalAll(env: Environment): List<SExpr> {
         return this.map {
             it.eval(env)

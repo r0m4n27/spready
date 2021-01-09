@@ -5,6 +5,8 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import spready.lisp.functions.forms.Quasiquote
+import spready.lisp.functions.forms.Quote
 import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Nil
@@ -12,6 +14,8 @@ import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
+import spready.lisp.sexpr.Unquote
+import spready.lisp.sexpr.UnquoteSplice
 import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,7 +30,7 @@ class ParserTest {
             val input: List<Token> = listOf()
 
             assertThrows<IllegalArgumentException> {
-                parseCons(input.toMutableList())
+                parseOther(input.toMutableList())
             }
         }
 
@@ -40,7 +44,7 @@ class ParserTest {
             )
 
             assertThrows<IllegalArgumentException> {
-                parseCons(input.toMutableList())
+                parseOther(input.toMutableList())
             }
         }
 
@@ -51,7 +55,7 @@ class ParserTest {
             )
 
             assertThrows<IllegalArgumentException> {
-                parseCons(input.toMutableList())
+                parseOther(input.toMutableList())
             }
         }
 
@@ -70,7 +74,7 @@ class ParserTest {
             val expected =
                 Cons(Num(123), Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil))
 
-            val parsed = parseCons(input.toMutableList())
+            val parsed = parseOther(input.toMutableList())
             assertEquals(expected, parsed)
         }
     }
@@ -123,6 +127,125 @@ class ParserTest {
             assertFailsWith<IllegalArgumentException> {
                 parse(listOf(Token(TokenType.Special, "#123")))
             }
+        }
+    }
+
+    @Nested
+    inner class ParseQuotes {
+        @Test
+        fun `parse Quotes`() {
+            val input = listOf(
+                Token(TokenType.Quote, "'"),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "123"),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "456"),
+                Token(TokenType.String, "789"),
+                Token(TokenType.CloseParen, ")"),
+                Token(TokenType.CloseParen, ")")
+            )
+
+            val expected =
+                Cons(
+                    Quote,
+                    Cons(
+                        Cons(
+                            Num(123),
+                            Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil)
+                        ),
+                        Nil
+                    )
+                )
+
+            val parsed = parseOther(input.toMutableList())
+            assertEquals(expected, parsed)
+        }
+
+        @Test
+        fun `parse QuasiQuotes`() {
+            val input = listOf(
+                Token(TokenType.Quasiquote, "`"),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "123"),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "456"),
+                Token(TokenType.String, "789"),
+                Token(TokenType.CloseParen, ")"),
+                Token(TokenType.CloseParen, ")")
+            )
+
+            val expected =
+                Cons(
+                    Quasiquote,
+                    Cons(
+                        Cons(
+                            Num(123),
+                            Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil)
+                        ),
+                        Nil
+                    )
+                )
+
+            val parsed = parseOther(input.toMutableList())
+            assertEquals(expected, parsed)
+        }
+
+        @Test
+        fun `parse Unquote`() {
+            val input = listOf(
+                Token(TokenType.Unquote, ","),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "123"),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "456"),
+                Token(TokenType.String, "789"),
+                Token(TokenType.CloseParen, ")"),
+                Token(TokenType.CloseParen, ")")
+            )
+
+            val expected =
+                Cons(
+                    Unquote,
+                    Cons(
+                        Cons(
+                            Num(123),
+                            Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil)
+                        ),
+                        Nil
+                    )
+                )
+
+            val parsed = parseOther(input.toMutableList())
+            assertEquals(expected, parsed)
+        }
+
+        @Test
+        fun `parse UnquoteSplice`() {
+            val input = listOf(
+                Token(TokenType.UnquoteSplice, ",@"),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "123"),
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "456"),
+                Token(TokenType.String, "789"),
+                Token(TokenType.CloseParen, ")"),
+                Token(TokenType.CloseParen, ")")
+            )
+
+            val expected =
+                Cons(
+                    UnquoteSplice,
+                    Cons(
+                        Cons(
+                            Num(123),
+                            Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil)
+                        ),
+                        Nil
+                    )
+                )
+
+            val parsed = parseOther(input.toMutableList())
+            assertEquals(expected, parsed)
         }
     }
 

@@ -41,3 +41,11 @@ object Nil : SExpr() {
     override fun toString() = "nil"
     override fun toBool(): Bool = Bool(false)
 }
+
+object Unquote : SExpr() {
+    override fun toString() = "unquote"
+}
+
+object UnquoteSplice : SExpr() {
+    override fun toString() = "unquote-splice"
+}

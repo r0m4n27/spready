@@ -3,6 +3,10 @@ package spready.lisp
 enum class TokenType(val isAtom: Boolean) {
     OpenParen(false),
     CloseParen(false),
+    Quote(false),
+    Quasiquote(false),
+    Unquote(false),
+    UnquoteSplice(false),
     String(true),
     Special(true),
     Symbol(true)
@@ -11,7 +15,7 @@ enum class TokenType(val isAtom: Boolean) {
 data class Token(val type: TokenType, val value: String)
 
 fun tokenize(input: String): List<Token> {
-    val specialChars = arrayOf('(', ')', ' ')
+    val specialChars = arrayOf('(', ')', ' ', '\'', '`', ',')
 
     var s = input.trimStart()
     val tokens: MutableList<Token> = mutableListOf()
@@ -34,6 +38,15 @@ fun tokenize(input: String): List<Token> {
             '#' -> {
                 val special = s.takeWhile { !specialChars.contains(it) }
                 Token(TokenType.Special, special)
+            }
+            '\'' -> Token(TokenType.Quote, "'")
+            '`' -> Token(TokenType.Quasiquote, "`")
+            ',' -> {
+                if (s[1] == '@') {
+                    Token(TokenType.UnquoteSplice, ",@")
+                } else {
+                    Token(TokenType.Unquote, ",")
+                }
             }
 
             else -> {

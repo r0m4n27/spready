@@ -6,6 +6,13 @@ import spready.lisp.EvalException
 data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> {
 
     override fun eval(env: Environment): SExpr {
+        if (first is Unquote) {
+            throw EvalException(""", cant be used outside of "`" """)
+        }
+        if (first is UnquoteSplice) {
+            throw EvalException(""",@ cant be used outside of "`" """)
+        }
+
         val firstEvaluated = first.eval(env)
         return if (firstEvaluated is Func) {
             when (second) {
@@ -57,11 +64,11 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
 
     companion object {
 
-        fun List<SExpr>.toCons(): Cons {
+        fun List<SExpr>.toCons(): SExpr {
             return if (this.isNotEmpty()) {
                 buildCons(this.toMutableList()) as Cons
             } else {
-                Cons(Nil, Nil)
+                Nil
             }
         }
 

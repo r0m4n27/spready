@@ -1,12 +1,17 @@
 package spready.lisp
 
+import spready.lisp.functions.forms.Quasiquote
+import spready.lisp.functions.forms.Quote
 import spready.lisp.sexpr.Bool
+import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Cons.Companion.toCons
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
+import spready.lisp.sexpr.Unquote
+import spready.lisp.sexpr.UnquoteSplice
 
 fun parse(tokens: List<Token>): List<SExpr> {
 
@@ -20,11 +25,7 @@ fun parse(tokens: List<Token>): List<SExpr> {
             val expr = if (firstItem.type.isAtom) {
                 parseAtom(mutableTokens.removeFirst())
             } else {
-                if (firstItem.type == TokenType.CloseParen) {
-                    throw IllegalArgumentException("Unexpected token $firstItem")
-                }
-
-                parseCons(mutableTokens)
+                parseOther(mutableTokens)
             }
 
             expressions.add(expr)
@@ -64,35 +65,42 @@ fun parseSpecial(token: Token): SExpr {
     }
 }
 
-fun parseCons(tokens: MutableList<Token>): SExpr {
-    if (tokens.isNotEmpty()) {
-        val first = tokens.removeFirst()
+fun parseOther(tokens: MutableList<Token>): SExpr {
+    if (tokens.isEmpty()) {
+        throw IllegalArgumentException("Tokens can't be empty!")
+    }
 
-        return when {
-            first.type.isAtom -> {
+    val first = tokens.removeFirst()
+
+    return when (first.type) {
+        TokenType.OpenParen -> {
+            val exprs: MutableList<SExpr> = mutableListOf()
+            while (tokens.isNotEmpty() &&
+                tokens.first().type != TokenType.CloseParen
+            ) {
+                exprs.add(parseOther(tokens))
+            }
+
+            if (tokens.isEmpty()) {
+                throw IllegalArgumentException("Parenthesis weren't balanced!")
+            }
+
+            tokens.removeFirst()
+
+            exprs.toCons()
+        }
+
+        TokenType.Quote -> Cons(Quote, Cons(parseOther(tokens), Nil))
+        TokenType.Quasiquote -> Cons(Quasiquote, Cons(parseOther(tokens), Nil))
+        TokenType.Unquote -> Cons(Unquote, Cons(parseOther(tokens), Nil))
+        TokenType.UnquoteSplice -> Cons(UnquoteSplice, Cons(parseOther(tokens), Nil))
+
+        else -> {
+            if (first.type.isAtom) {
                 parseAtom(first)
-            }
-            first.type == TokenType.OpenParen -> {
-                val exprs: MutableList<SExpr> = mutableListOf()
-                while (tokens.isNotEmpty() &&
-                    tokens.first().type != TokenType.CloseParen
-                ) {
-                    exprs.add(parseCons(tokens))
-                }
-
-                if (tokens.isEmpty()) {
-                    throw IllegalArgumentException("Parenthesis weren't balanced!")
-                }
-
-                tokens.removeFirst()
-
-                exprs.toCons()
-            }
-            else -> {
+            } else {
                 throw IllegalArgumentException("Unexpected token $first")
             }
         }
-    } else {
-        throw IllegalArgumentException("Tokens can't be empty!")
     }
 }

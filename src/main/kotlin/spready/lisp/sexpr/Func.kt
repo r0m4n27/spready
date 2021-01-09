@@ -5,6 +5,7 @@ import spready.lisp.EvalException
 
 abstract class Func(val name: String) : SExpr() {
 
+    // TODO: Better representation
     override fun toString() = "Function #$name"
 
     abstract operator fun invoke(env: Environment, args: List<SExpr>): SExpr

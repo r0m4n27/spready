@@ -74,4 +74,75 @@ class TokenizerTest {
 
         assertEquals(expected, tokenize(input))
     }
+
+    @Test
+    fun `tokenize Quote`() {
+        val input = "1 2 '(3 4)"
+
+        val expected = listOf(
+            Token(TokenType.Symbol, "1"),
+            Token(TokenType.Symbol, "2"),
+            Token(TokenType.Quote, "'"),
+            Token(TokenType.OpenParen, "("),
+            Token(TokenType.Symbol, "3"),
+            Token(TokenType.Symbol, "4"),
+            Token(TokenType.CloseParen, ")")
+        )
+
+        assertEquals(expected, tokenize(input))
+    }
+
+    @Test
+    fun `tokenize Quasiquote`() {
+        val input = "1 2 `(3 4)"
+
+        val expected = listOf(
+            Token(TokenType.Symbol, "1"),
+            Token(TokenType.Symbol, "2"),
+            Token(TokenType.Quasiquote, "`"),
+            Token(TokenType.OpenParen, "("),
+            Token(TokenType.Symbol, "3"),
+            Token(TokenType.Symbol, "4"),
+            Token(TokenType.CloseParen, ")")
+        )
+
+        assertEquals(expected, tokenize(input))
+    }
+
+    @Test
+    fun `tokenize Unquote`() {
+        val input = "1 2 `(3 ,4)"
+
+        val expected = listOf(
+            Token(TokenType.Symbol, "1"),
+            Token(TokenType.Symbol, "2"),
+            Token(TokenType.Quasiquote, "`"),
+            Token(TokenType.OpenParen, "("),
+            Token(TokenType.Symbol, "3"),
+            Token(TokenType.Unquote, ","),
+            Token(TokenType.Symbol, "4"),
+
+            Token(TokenType.CloseParen, ")")
+        )
+
+        assertEquals(expected, tokenize(input))
+    }
+
+    @Test
+    fun `tokenize UnquoteSplice`() {
+        val input = "1 2 `(3 ,@4)"
+
+        val expected = listOf(
+            Token(TokenType.Symbol, "1"),
+            Token(TokenType.Symbol, "2"),
+            Token(TokenType.Quasiquote, "`"),
+            Token(TokenType.OpenParen, "("),
+            Token(TokenType.Symbol, "3"),
+            Token(TokenType.UnquoteSplice, ",@"),
+            Token(TokenType.Symbol, "4"),
+            Token(TokenType.CloseParen, ")")
+        )
+
+        assertEquals(expected, tokenize(input))
+    }
 }

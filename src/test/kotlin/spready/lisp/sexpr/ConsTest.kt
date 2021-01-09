@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Nested
 import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.functions.Plus
+import spready.lisp.parse
 import spready.lisp.sexpr.Cons.Companion.toCons
+import spready.lisp.tokenize
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -49,7 +51,7 @@ class ConsTest {
     @Test
     fun `toCons empty`() {
 
-        assertEquals(Cons(Nil, Nil), listOf<SExpr>().toCons())
+        assertEquals(Nil, listOf<SExpr>().toCons())
     }
 
     @Test
@@ -123,6 +125,26 @@ class ConsTest {
 
             val input = Cons(func, expected)
             input.eval(env)
+        }
+
+        @Test
+        fun `eval Unquote fail`() {
+            val input = ",(+ 1 2)"
+            env[Symbol("+")] = Plus
+
+            assertFailsWith<EvalException> {
+                env.eval(parse(tokenize(input)))
+            }
+        }
+
+        @Test
+        fun `eval UnquoteSplice fail`() {
+            val input = ",@(+ 1 2)"
+            env[Symbol("+")] = Plus
+
+            assertFailsWith<EvalException> {
+                env.eval(parse(tokenize(input)))
+            }
         }
     }
 }

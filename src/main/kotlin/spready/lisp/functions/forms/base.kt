@@ -92,19 +92,6 @@ object FunExpr : Func("fun") {
     }
 }
 
-object IfExpr : Func("if") {
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(3)
-        val firstEvaluated = args[0].eval(env)
-
-        return if (firstEvaluated.toBool().value) {
-            args[1].eval(env)
-        } else {
-            args[2].eval(env)
-        }
-    }
-}
-
 object RunExpr : Func("run") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         return env.eval(args).lastOrNull() ?: Nil

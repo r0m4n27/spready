@@ -9,7 +9,7 @@ abstract class Func(val name: String) : SExpr() {
 
     abstract operator fun invoke(env: Environment, args: List<SExpr>): SExpr
 
-    protected fun List<SExpr>.checkSize(size: Int): List<SExpr> {
+    protected fun <T : List<SExpr>> T.checkSize(size: Int): T {
         if (this.size != size) {
             throw EvalException("Can only have $size arguments not ${this.size}")
         }
@@ -17,7 +17,7 @@ abstract class Func(val name: String) : SExpr() {
         return this
     }
 
-    protected fun List<SExpr>.checkMinSize(size: Int): List<SExpr> {
+    protected fun <T : List<SExpr>> T.checkMinSize(size: Int): T {
         if (this.size < size) {
             throw EvalException(
                 "Must have at least $size arguments not ${this.size}"

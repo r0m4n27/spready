@@ -3,7 +3,6 @@ package spready.lisp.functions.forms
 import org.junit.jupiter.api.Nested
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.functions.Plus
 import spready.lisp.parse
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Func
@@ -146,42 +145,6 @@ class BaseTests {
                     listOf(Num(3), Nil, Num(3))
                 )
             }
-        }
-    }
-
-    @Nested
-    inner class IfTest {
-        @Test
-        fun `If normal`() {
-            val input = "(if (+ 1 2) 4 5)"
-            env[Symbol("if")] = IfExpr
-            env[Symbol("+")] = Plus
-
-            assertEquals(Num(4), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `If true`() {
-            val input = "(if #t 4 5)"
-            env[Symbol("if")] = IfExpr
-
-            assertEquals(Num(4), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `If false`() {
-            val input = "(if #f 4 5)"
-            env[Symbol("if")] = IfExpr
-
-            assertEquals(Num(5), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `If nil`() {
-            val input = Cons(IfExpr, Cons(Nil, Cons(Num(4), Cons(Num(5), Nil))))
-            env[Symbol("if")] = IfExpr
-
-            assertEquals(Num(5), env.eval(input))
         }
     }
 

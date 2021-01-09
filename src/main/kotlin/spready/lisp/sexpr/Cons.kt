@@ -8,10 +8,10 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
     override fun eval(env: Environment): SExpr {
         val firstEvaluated = first.eval(env)
         return if (firstEvaluated is Func) {
-            if (second is Cons) {
-                firstEvaluated(env, second.toList())
-            } else {
-                firstEvaluated(env, listOf(second))
+            when (second) {
+                is Cons -> firstEvaluated(env, second.toList())
+                is Nil -> firstEvaluated(env, listOf())
+                else -> firstEvaluated(env, listOf(second))
             }
         } else {
             throw EvalException("First element must be a Function not $firstEvaluated")

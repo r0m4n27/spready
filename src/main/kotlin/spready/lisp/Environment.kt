@@ -2,6 +2,7 @@ package spready.lisp
 
 import spready.lisp.functions.forms.baseFunctions
 import spready.lisp.functions.forms.bindingsFunctions
+import spready.lisp.functions.forms.conditionalFunctions
 import spready.lisp.functions.mathFunctions
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
@@ -62,6 +63,7 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
             // Forms
             env += baseFunctions()
             env += bindingsFunctions()
+            env += conditionalFunctions()
 
             env += mathFunctions()
 

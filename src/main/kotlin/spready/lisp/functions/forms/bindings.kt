@@ -76,8 +76,8 @@ object Let : Func("let") {
 
 object LetStar : Func("let*") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(2)
-        val firstAsCons = args[0].cast<Cons>()
+        val argsMut = args.toMutableList().checkMinSize(2)
+        val firstAsCons = argsMut.removeFirst().cast<Cons>()
 
         val localEnv = LocalEnvironment(env)
 
@@ -89,14 +89,14 @@ object LetStar : Func("let*") {
             localEnv.addLocal(it.first, it.second.eval(localEnv))
         }
 
-        return args[1].eval(localEnv)
+        return localEnv.eval(argsMut).last()
     }
 }
 
 object LetRec : Func("letrec") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(2)
-        val firstAsCons = args[0].cast<Cons>()
+        val argsMut = args.toMutableList().checkMinSize(2)
+        val firstAsCons = argsMut.removeFirst().cast<Cons>()
 
         val localEnv = LocalEnvironment(env)
 
@@ -110,7 +110,7 @@ object LetRec : Func("letrec") {
             localEnv.addLocal(it.first, it.second.eval(localEnv))
         }
 
-        return args[1].eval(localEnv)
+        return localEnv.eval(argsMut).last()
     }
 }
 

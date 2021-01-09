@@ -24,20 +24,19 @@ fun createLambda(name: String, variables: List<Symbol>, body: List<SExpr>): Func
 
 object Lambda : Func("lambda") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(2)
+        val argsMut = args.toMutableList().checkMinSize(2)
+        val head = argsMut.removeFirst()
 
         val representation: String
         val headSymbols: List<Symbol>
 
-        if (args[0] is Nil) {
+        if (head is Nil) {
             representation = "()"
             headSymbols = listOf()
         } else {
-            val head = args[0].cast<Cons>()
-
             representation = head.toString()
 
-            headSymbols = head.map {
+            headSymbols = head.cast<Cons>().map {
                 it.cast()
             }
         }
@@ -45,7 +44,7 @@ object Lambda : Func("lambda") {
         return createLambda(
             "(lambda $representation)",
             headSymbols,
-            listOf(args[1])
+            argsMut
         )
     }
 }
@@ -71,21 +70,22 @@ object Val : Func("val") {
 
 object FunExpr : Func("fun") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(3)
+        val argsMut = args.toMutableList().checkMinSize(3)
 
-        val sym = args[0].cast<Symbol>()
+        val sym = argsMut.removeFirst().cast<Symbol>()
 
-        val varsSymbols: List<Symbol> = if (args[1] is Nil) {
+        val vars = argsMut.removeFirst()
+        val varsSymbols: List<Symbol> = if (vars is Nil) {
 
             emptyList()
         } else {
 
-            args[1].cast<Cons>().map {
+            vars.cast<Cons>().map {
                 it.cast()
             }
         }
 
-        val lambda = createLambda(sym.toString(), varsSymbols, listOf(args[2]))
+        val lambda = createLambda(sym.toString(), varsSymbols, argsMut)
 
         env[sym] = lambda
         return sym

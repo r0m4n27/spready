@@ -67,4 +67,30 @@ class FuncTest {
             }
         }(env, listOf(Num(1), Num(2), Symbol("x")))
     }
+
+    @Test
+    fun `checkBetweenSize normal`() {
+        object : Func("test") {
+            override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+                assertDoesNotThrow {
+                    args.checkBetweenSize(1, 3)
+                }
+
+                return Nil
+            }
+        }(env, listOf(Num(1), Num(2), Symbol("x")))
+    }
+
+    @Test
+    fun `checkBetweenSize fail`() {
+        object : Func("test") {
+            override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+                assertFailsWith<EvalException> {
+                    args.checkBetweenSize(4, 10)
+                }
+
+                return Nil
+            }
+        }(env, listOf(Num(1)))
+    }
 }

@@ -81,4 +81,7 @@ class BindingsTest {
 
     // TODO: Test Letrec
     // Its hard without predicates
+
+    // TODO: Test Do
+    // Its hard without predicates
 }

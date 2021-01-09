@@ -26,4 +26,14 @@ abstract class Func(val name: String) : SExpr() {
 
         return this
     }
+
+    protected fun <T : List<SExpr>> T.checkBetweenSize(min: Int, max: Int): T {
+        if (this.size < min || this.size > max) {
+            throw EvalException(
+                "Args must be between $min and $max not ${this.size}!"
+            )
+        }
+
+        return this
+    }
 }

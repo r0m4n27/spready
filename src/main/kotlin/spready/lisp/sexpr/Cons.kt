@@ -42,25 +42,15 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
     }
 
     override fun iterator(): Iterator<SExpr> {
-        return object : Iterator<SExpr> {
+        return iterator {
             var pointer: SExpr = this@Cons
-
-            override fun hasNext(): Boolean {
-                return pointer !is Nil
+            while (pointer is Cons) {
+                yield(pointer.first)
+                pointer = pointer.second
             }
 
-            override fun next(): SExpr {
-                return if (pointer is Cons) {
-                    (pointer as Cons).first.also {
-                        pointer = (pointer as Cons).second
-                    }
-                } else {
-                    if (pointer is Nil) {
-                        throw NoSuchElementException("End of Cons")
-                    } else {
-                        pointer.also { pointer = Nil }
-                    }
-                }
+            if (pointer !is Nil) {
+                yield(pointer)
             }
         }
     }

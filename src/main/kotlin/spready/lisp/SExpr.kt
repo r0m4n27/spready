@@ -45,32 +45,13 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
         val firstEvaluated = first.eval(env)
         return if (firstEvaluated is Func) {
             if (second is Cons) {
-                firstEvaluated(env, second)
+                firstEvaluated(env, second.toList())
             } else {
-                firstEvaluated(env, Cons(second, Nil))
+                firstEvaluated(env, listOf(second))
             }
         } else {
             throw EvalException("First element must be a Function not $firstEvaluated")
         }
-    }
-
-    fun toListWithSize(size: Int): List<SExpr> {
-        val argsList = this.toList()
-        if (argsList.size != size) {
-            throw EvalException("Can only have $size arguments not ${argsList.size}")
-        }
-
-        return argsList
-    }
-
-    fun toMutListMinSize(size: Int): MutableList<SExpr> {
-        val argsList = this.toMutableList()
-        if (argsList.size < size) {
-            throw EvalException(
-                "Must have at least $size arguments not ${argsList.size}"
-            )
-        }
-        return argsList
     }
 
     fun evalAll(env: Environment): List<SExpr> {
@@ -112,7 +93,9 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
 
             override fun next(): SExpr {
                 return if (pointer is Cons) {
-                    (pointer as Cons).first.also { pointer = (pointer as Cons).second }
+                    (pointer as Cons).first.also {
+                        pointer = (pointer as Cons).second
+                    }
                 } else {
                     if (pointer is Nil) {
                         throw NoSuchElementException("End of Cons")
@@ -148,5 +131,23 @@ abstract class Func(val name: String) : SExpr() {
 
     override fun toString() = "Function #$name"
 
-    abstract operator fun invoke(env: Environment, args: Cons): SExpr
+    abstract operator fun invoke(env: Environment, args: List<SExpr>): SExpr
+
+    protected fun List<SExpr>.checkSize(size: Int): List<SExpr> {
+        if (this.size != size) {
+            throw EvalException("Can only have $size arguments not ${this.size}")
+        }
+
+        return this
+    }
+
+    protected fun List<SExpr>.checkMinSize(size: Int): List<SExpr> {
+        if (this.size < size) {
+            throw EvalException(
+                "Must have at least $size arguments not ${this.size}"
+            )
+        }
+
+        return this
+    }
 }

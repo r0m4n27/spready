@@ -3,6 +3,7 @@ package spready.lisp
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertDoesNotThrow
 import spready.lisp.Cons.Companion.toCons
 import spready.lisp.functions.Plus
 import kotlin.test.BeforeTest
@@ -88,9 +89,8 @@ class SExprTest {
             val expected = Num(3)
 
             val func = object : Func("Test") {
-                override fun invoke(env: Environment, args: Cons): SExpr {
-                    assertEquals(expected, args.first)
-                    assertEquals(Nil, args.second)
+                override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+                    assertEquals(expected, args[0])
 
                     return Nil
                 }
@@ -104,40 +104,6 @@ class SExprTest {
     @Nested
     inner class ConsTest {
         @Test
-        fun `toListCheckSize normal`() {
-            val input = Cons(Num(1), Cons(Num(2), Nil))
-            val expected = listOf(Num(1), Num(2))
-
-            assertEquals(expected, input.toListWithSize(2))
-        }
-
-        @Test
-        fun `toListCheckSize fail`() {
-            val input = Cons(Num(1), Cons(Num(2), Nil))
-
-            assertFailsWith<EvalException> {
-                input.toListWithSize(5)
-            }
-        }
-
-        @Test
-        fun `toMutListMinSize fail`() {
-            val input = Cons(Num(1), Nil)
-
-            assertFailsWith<EvalException> {
-                input.toMutListMinSize(2)
-            }
-        }
-
-        @Test
-        fun `toMutListMinSize normal`() {
-            val input = Cons(Num(1), Cons(Num(2), Cons(Symbol("x"), Nil)))
-            val expected = mutableListOf(Num(1), Num(2), Symbol("x"))
-
-            assertEquals(expected, input.toMutListMinSize(1))
-        }
-
-        @Test
         fun `cons iterable normal`() {
             val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Nil))
             val expected = listOf(Cons(Num(3), Nil), Symbol("123"))
@@ -149,6 +115,14 @@ class SExprTest {
         fun `cons iterable non nil end`() {
             val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Num(3)))
             val expected = listOf(Cons(Num(3), Nil), Symbol("123"), Num(3))
+
+            assertEquals(expected, input.toList())
+        }
+
+        @Test
+        fun `cons iterable nil`() {
+            val input = Cons(Nil, Cons(Nil, Cons(Num(3), Nil)))
+            val expected = listOf(Nil, Nil, Num(3))
 
             assertEquals(expected, input.toList())
         }
@@ -170,6 +144,62 @@ class SExprTest {
             }
 
             assertEquals(Nil, cons as Nil)
+        }
+    }
+
+    @Nested
+    inner class FuncTest {
+        @Test
+        fun `checkSize normal`() {
+
+            object : Func("test") {
+                override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+                    assertDoesNotThrow {
+                        args.checkSize(2)
+                    }
+
+                    return Nil
+                }
+            }(env, listOf(Num(1), Num(2)))
+        }
+
+        @Test
+        fun `checkSize fail`() {
+            object : Func("test") {
+                override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+                    assertFailsWith<EvalException> {
+                        args.checkSize(5)
+                    }
+
+                    return Nil
+                }
+            }(env, listOf(Num(1), Num(2)))
+        }
+
+        @Test
+        fun `checkMinSize fail`() {
+            object : Func("test") {
+                override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+                    assertFailsWith<EvalException> {
+                        args.checkMinSize(2)
+                    }
+
+                    return Nil
+                }
+            }(env, listOf(Num(1)))
+        }
+
+        @Test
+        fun `checkMinSize normal`() {
+            object : Func("test") {
+                override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+                    assertDoesNotThrow {
+                        args.checkMinSize(1)
+                    }
+
+                    return Nil
+                }
+            }(env, listOf(Num(1), Num(2), Symbol("x")))
         }
     }
 }

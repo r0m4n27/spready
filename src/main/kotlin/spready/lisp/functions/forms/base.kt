@@ -10,8 +10,8 @@ import spready.lisp.Symbol
 
 fun createLambda(name: String, variables: List<Symbol>, body: List<SExpr>): Func {
     return object : Func(name) {
-        override fun invoke(env: Environment, args: Cons): SExpr {
-            val argsEvaluated = env.eval(args.toList())
+        override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+            val argsEvaluated = env.eval(args)
 
             val localSymbols = variables.zip(argsEvaluated)
             val localEnv = LocalEnvironment(env)
@@ -23,17 +23,17 @@ fun createLambda(name: String, variables: List<Symbol>, body: List<SExpr>): Func
 }
 
 object Lambda : Func("lambda") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListWithSize(2)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        args.checkSize(2)
 
         val representation: String
         val headSymbols: List<Symbol>
 
-        if (argsList[0] is Nil) {
+        if (args[0] is Nil) {
             representation = "()"
             headSymbols = listOf()
         } else {
-            val head = argsList[0].cast(Cons::class)
+            val head = args[0].cast(Cons::class)
 
             representation = head.toString()
 
@@ -45,47 +45,47 @@ object Lambda : Func("lambda") {
         return createLambda(
             "(lambda $representation)",
             headSymbols,
-            listOf(argsList[1])
+            listOf(args[1])
         )
     }
 }
 
 object ValEval : Func("val-eval") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListWithSize(2)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        args.checkSize(2)
 
-        val firstAsSym = argsList[0].eval(env).cast(Symbol::class)
-        return env.evalAndRegister(firstAsSym, argsList[1])
+        val firstAsSym = args[0].eval(env).cast(Symbol::class)
+        return env.evalAndRegister(firstAsSym, args[1])
     }
 }
 
 object Val : Func("val") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListWithSize(2)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        args.checkSize(2)
 
-        val firstAsSym = argsList[0].cast(Symbol::class)
+        val firstAsSym = args[0].cast(Symbol::class)
 
-        return env.evalAndRegister(firstAsSym, argsList[1])
+        return env.evalAndRegister(firstAsSym, args[1])
     }
 }
 
 object FunExpr : Func("fun") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListWithSize(3)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        args.checkSize(3)
 
-        val sym = argsList[0].cast(Symbol::class)
+        val sym = args[0].cast(Symbol::class)
 
-        val varsSymbols: List<Symbol> = if (argsList[1] is Nil) {
+        val varsSymbols: List<Symbol> = if (args[1] is Nil) {
 
             emptyList()
         } else {
 
-            argsList[1].cast(Cons::class).map {
+            args[1].cast(Cons::class).map {
                 it.cast(Symbol::class)
             }
         }
 
-        val lambda = createLambda(sym.toString(), varsSymbols, listOf(argsList[2]))
+        val lambda = createLambda(sym.toString(), varsSymbols, listOf(args[2]))
 
         env[sym] = lambda
         return sym
@@ -93,23 +93,21 @@ object FunExpr : Func("fun") {
 }
 
 object IfExpr : Func("if") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListWithSize(3)
-        val firstEvaluated = argsList[0].eval(env)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        args.checkSize(3)
+        val firstEvaluated = args[0].eval(env)
 
         return if (firstEvaluated.toBool().value) {
-            argsList[1].eval(env)
+            args[1].eval(env)
         } else {
-            argsList[2].eval(env)
+            args[2].eval(env)
         }
     }
 }
 
 object RunExpr : Func("run") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-
-        // The empty args list has still Nil as the last element
-        return args.evalAll(env).last()
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        return env.eval(args).lastOrNull() ?: Nil
     }
 }
 

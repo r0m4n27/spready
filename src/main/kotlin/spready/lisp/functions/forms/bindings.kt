@@ -10,25 +10,26 @@ import spready.lisp.SExpr
 import spready.lisp.Symbol
 
 object Let : Func("let") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toMutListMinSize(2)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        args.checkMinSize(2)
+        val argsMut = args.toMutableList()
 
-        return when (val first = argsList.removeFirst()) {
+        return when (val first = argsMut.removeFirst()) {
             is Cons -> {
                 val mappedSymbols = mapSymbols(first, env)
 
-                normalLet(mappedSymbols, env, argsList)
+                normalLet(mappedSymbols, env, argsMut)
             }
             is Symbol -> {
-                if (argsList.size > 2) {
-                    val symbols = argsList.removeFirst().cast(Cons::class)
+                if (argsMut.size > 2) {
+                    val symbols = argsMut.removeFirst().cast(Cons::class)
 
                     val mappedSymbols = mapSymbols(symbols, env)
 
-                    namedLet(first, mappedSymbols, env, argsList)
+                    namedLet(first, mappedSymbols, env, argsMut)
                 } else {
                     throw EvalException(
-                        "Must have at least 3 arguments not ${argsList.size} + 1"
+                        "Must have at least 3 arguments not ${argsMut.size + 1}"
                     )
                 }
             }
@@ -66,7 +67,7 @@ object Let : Func("let") {
 
     private fun mapSymbols(symbols: Cons, env: Environment): List<Pair<Symbol, SExpr>> {
         return symbols.map {
-            it.cast(Cons::class).toListWithSize(2)
+            it.cast(Cons::class).toList().checkSize(2)
         }.map {
             Pair(it[0].cast(Symbol::class), it[1].eval(env))
         }
@@ -74,33 +75,33 @@ object Let : Func("let") {
 }
 
 object LetStar : Func("let*") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListWithSize(2)
-        val firstAsCons = argsList[0].cast(Cons::class)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        args.checkSize(2)
+        val firstAsCons = args[0].cast(Cons::class)
 
         val localEnv = LocalEnvironment(env)
 
         firstAsCons.map {
-            it.cast(Cons::class).toListWithSize(2)
+            it.cast(Cons::class).toList().checkSize(2)
         }.map {
             Pair(it[0].cast(Symbol::class), it[1])
         }.forEach {
             localEnv.addLocal(it.first, it.second.eval(localEnv))
         }
 
-        return argsList[1].eval(localEnv)
+        return args[1].eval(localEnv)
     }
 }
 
 object LetRec : Func("letrec") {
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        val argsList = args.toListWithSize(2)
-        val firstAsCons = argsList[0].cast(Cons::class)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        args.checkSize(2)
+        val firstAsCons = args[0].cast(Cons::class)
 
         val localEnv = LocalEnvironment(env)
 
         firstAsCons.map {
-            it.cast(Cons::class).toListWithSize(2)
+            it.cast(Cons::class).toList().checkSize(2)
         }.map {
             val first = it[0].cast(Symbol::class)
             localEnv.addLocal(first, Nil)
@@ -109,7 +110,7 @@ object LetRec : Func("letrec") {
             localEnv.addLocal(it.first, it.second.eval(localEnv))
         }
 
-        return argsList[1].eval(localEnv)
+        return args[1].eval(localEnv)
     }
 }
 

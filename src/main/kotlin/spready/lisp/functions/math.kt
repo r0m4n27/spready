@@ -1,6 +1,5 @@
 package spready.lisp.functions
 
-import spready.lisp.Cons
 import spready.lisp.Environment
 import spready.lisp.Func
 import spready.lisp.Num
@@ -17,23 +16,23 @@ fun foldToNum(args: List<SExpr>, start: Int, acc: (Int, Int) -> Int): Num {
 
 object Plus : Func("+") {
 
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        return foldToNum(args.evalAll(env), 0, Int::plus)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        return foldToNum(env.eval(args), 0, Int::plus)
     }
 }
 
 // TODO: Wrong implemented
 object Minus : Func("-") {
 
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        return foldToNum(args.evalAll(env), 0, Int::minus)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        return foldToNum(env.eval(args), 0, Int::minus)
     }
 }
 
 object Times : Func("*") {
 
-    override fun invoke(env: Environment, args: Cons): SExpr {
-        return foldToNum(args.evalAll(env), 1, Int::times)
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        return foldToNum(env.eval(args), 1, Int::times)
     }
 }
 

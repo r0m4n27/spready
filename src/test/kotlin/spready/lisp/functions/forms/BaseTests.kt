@@ -31,7 +31,7 @@ class BaseTests {
 
         env[Symbol("x")] = Num(3)
 
-        assertEquals(Num(5), lambda(env, Cons(Num(5), Nil)))
+        assertEquals(Num(5), lambda(env, listOf(Num(5))))
     }
 
     @Test
@@ -40,7 +40,7 @@ class BaseTests {
 
         env[Symbol("x")] = Num(3)
 
-        assertEquals(Num(3), lambda(env, Cons(Num(3), Nil)))
+        assertEquals(Num(3), lambda(env, listOf(Num(3))))
     }
 
     @Nested
@@ -50,18 +50,18 @@ class BaseTests {
             val lambdaFunc =
                 Lambda(
                     env,
-                    Cons(Cons(Symbol("x"), Nil), Cons(Symbol("x"), Nil))
+                    listOf(Cons(Symbol("x"), Nil), Symbol("x"))
                 ) as Func
 
-            assertEquals(Num(3), lambdaFunc(env, Cons(Num(3), Nil)))
+            assertEquals(Num(3), lambdaFunc(env, listOf(Num(3))))
         }
 
         @Test
         fun `Lambda Empty args`() {
             val lambdaFunc =
-                Lambda(env, Cons(Nil, Cons(Num(3), Nil))) as Func
+                Lambda(env, listOf(Nil, Num(3))) as Func
 
-            assertEquals(Num(3), lambdaFunc(env, Cons(Nil, Nil)))
+            assertEquals(Num(3), lambdaFunc(env, listOf()))
         }
 
         @Test
@@ -69,10 +69,7 @@ class BaseTests {
             assertFailsWith<EvalException> {
                 Lambda(
                     env,
-                    Cons(
-                        Cons(Symbol("x"), Cons(Num(4), Nil)),
-                        Cons(Symbol("x"), Nil)
-                    )
+                    listOf(Cons(Symbol("x"), Cons(Num(4), Nil)), Symbol("x"))
                 )
             }
         }
@@ -84,14 +81,14 @@ class BaseTests {
         fun `ValEval normal`() {
             env[Symbol("y")] = Symbol("x")
 
-            assertEquals(Num(3), ValEval(env, Cons(Symbol("y"), Cons(Num(3), Nil))))
+            assertEquals(Num(3), ValEval(env, listOf(Symbol("y"), Num(3))))
             assertEquals(Num(3), env[Symbol("x")])
         }
 
         @Test
         fun `ValEval fail`() {
             assertFailsWith<EvalException> {
-                ValEval(env, Cons(Symbol("y"), Cons(Num(3), Nil)))
+                ValEval(env, listOf(Symbol("y"), Num(3)))
             }
         }
     }
@@ -100,7 +97,7 @@ class BaseTests {
     inner class ValTest {
         @Test
         fun `Val normal`() {
-            assertEquals(Num(3), Val(env, Cons(Symbol("y"), Cons(Num(3), Nil))))
+            assertEquals(Num(3), Val(env, listOf(Symbol("y"), Num(3))))
             assertEquals(Num(3), env[Symbol("y")])
         }
 
@@ -108,7 +105,7 @@ class BaseTests {
         fun `Val fail`() {
             // TODO: Check message
             assertFailsWith<EvalException> {
-                Val(env, Cons(Num(3), Cons(Num(3), Nil)))
+                Val(env, listOf(Num(3), Num(3)))
             }
         }
     }
@@ -119,9 +116,10 @@ class BaseTests {
         fun `FuncExpr normal`() {
             val funcSymbol = FunExpr(
                 env,
-                Cons(
+                listOf(
                     Symbol("test"),
-                    Cons(Cons(Symbol("x"), Nil), Cons(Symbol("x"), Nil))
+                    Cons(Symbol("x"), Nil),
+                    Symbol("x")
                 )
             )
 
@@ -133,10 +131,7 @@ class BaseTests {
         fun `FuncExpr empty args`() {
             val funcSymbol = FunExpr(
                 env,
-                Cons(
-                    Symbol("test"),
-                    Cons(Nil, Cons(Num(3), Nil))
-                )
+                listOf(Symbol("test"), Nil, Num(3))
             )
 
             assertEquals(Symbol("test"), funcSymbol)
@@ -148,10 +143,7 @@ class BaseTests {
             assertFailsWith<EvalException> {
                 FunExpr(
                     env,
-                    Cons(
-                        Num(3),
-                        Cons(Nil, Cons(Num(3), Nil))
-                    )
+                    listOf(Num(3), Nil, Num(3))
                 )
             }
         }

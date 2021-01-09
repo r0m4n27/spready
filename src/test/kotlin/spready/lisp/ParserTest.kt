@@ -5,6 +5,13 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import spready.lisp.sexpr.Bool
+import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Nil
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.SExpr
+import spready.lisp.sexpr.Str
+import spready.lisp.sexpr.Symbol
 import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -1,12 +1,12 @@
 package spready.lisp.functions
 
 import org.junit.jupiter.api.TestInstance
-import spready.lisp.Cons
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.Nil
-import spready.lisp.Num
-import spready.lisp.Symbol
+import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Nil
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.Symbol
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

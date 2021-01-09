@@ -3,10 +3,10 @@ package spready.lisp.functions.forms
 import org.junit.jupiter.api.Nested
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.Num
-import spready.lisp.Symbol
 import spready.lisp.functions.Plus
 import spready.lisp.parse
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.Symbol
 import spready.lisp.tokenize
 import kotlin.test.BeforeTest
 import kotlin.test.Test

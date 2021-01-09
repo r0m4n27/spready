@@ -2,6 +2,9 @@ package spready.lisp
 
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.SExpr
+import spready.lisp.sexpr.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

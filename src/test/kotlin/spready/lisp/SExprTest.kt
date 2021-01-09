@@ -4,8 +4,15 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertDoesNotThrow
-import spready.lisp.Cons.Companion.toCons
 import spready.lisp.functions.Plus
+import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Cons.Companion.toCons
+import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.Nil
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.SExpr
+import spready.lisp.sexpr.Str
+import spready.lisp.sexpr.Symbol
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

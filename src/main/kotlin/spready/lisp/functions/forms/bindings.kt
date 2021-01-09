@@ -1,13 +1,13 @@
 package spready.lisp.functions.forms
 
-import spready.lisp.Cons
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.Func
 import spready.lisp.LocalEnvironment
-import spready.lisp.Nil
-import spready.lisp.SExpr
-import spready.lisp.Symbol
+import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.Nil
+import spready.lisp.sexpr.SExpr
+import spready.lisp.sexpr.Symbol
 
 object Let : Func("let") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {

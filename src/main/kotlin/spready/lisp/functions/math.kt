@@ -1,10 +1,10 @@
 package spready.lisp.functions
 
 import spready.lisp.Environment
-import spready.lisp.Func
-import spready.lisp.Num
-import spready.lisp.SExpr
-import spready.lisp.Symbol
+import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.SExpr
+import spready.lisp.sexpr.Symbol
 
 fun foldToNum(args: List<SExpr>, start: Int, acc: (Int, Int) -> Int): Num {
     val argsMapped = args.map {

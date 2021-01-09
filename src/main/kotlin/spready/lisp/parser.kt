@@ -1,6 +1,12 @@
 package spready.lisp
 
-import spready.lisp.Cons.Companion.toCons
+import spready.lisp.sexpr.Bool
+import spready.lisp.sexpr.Cons.Companion.toCons
+import spready.lisp.sexpr.Nil
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.SExpr
+import spready.lisp.sexpr.Str
+import spready.lisp.sexpr.Symbol
 
 fun parse(tokens: List<Token>): List<SExpr> {
 

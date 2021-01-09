@@ -1,5 +1,7 @@
 package spready.lisp
 
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.Symbol
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

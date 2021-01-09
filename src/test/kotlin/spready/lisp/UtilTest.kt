@@ -2,6 +2,10 @@ package spready.lisp
 
 import org.junit.jupiter.api.TestInstance
 import spready.lisp.functions.Plus
+import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Nil
+import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.SExpr
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

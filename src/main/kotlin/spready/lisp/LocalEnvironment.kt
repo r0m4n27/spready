@@ -1,5 +1,8 @@
 package spready.lisp
 
+import spready.lisp.sexpr.SExpr
+import spready.lisp.sexpr.Symbol
+
 class LocalEnvironment(private val globEnv: Environment) :
     Environment(mutableMapOf()) {
     override fun get(symbol: Symbol): SExpr {

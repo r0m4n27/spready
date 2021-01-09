@@ -2,14 +2,15 @@ package spready.lisp.sexpr
 
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 abstract class SExpr {
     open fun eval(env: Environment): SExpr = this
     open fun toBool(): Bool = Bool(true)
 
-    fun <T : SExpr> cast(type: KClass<T>): T {
+    inline fun <reified T : SExpr> cast(): T {
+        val type = T::class
+
         return type.safeCast(this)
             ?: throw EvalException("Expected ${type.simpleName} got $this!")
     }

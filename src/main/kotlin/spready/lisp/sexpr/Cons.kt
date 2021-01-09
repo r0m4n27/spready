@@ -18,12 +18,6 @@ data class Cons(val first: SExpr, val second: SExpr) : SExpr(), Iterable<SExpr> 
         }
     }
 
-    fun evalAll(env: Environment): List<SExpr> {
-        return this.map {
-            it.eval(env)
-        }
-    }
-
     override fun toString(): String {
         var pointer: SExpr = this
 

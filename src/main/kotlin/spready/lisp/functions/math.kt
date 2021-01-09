@@ -8,7 +8,7 @@ import spready.lisp.sexpr.Symbol
 
 fun foldToNum(args: List<SExpr>, start: Int, acc: (Int, Int) -> Int): Num {
     val argsMapped = args.map {
-        it.cast(Num::class).value
+        it.cast<Num>().value
     }
 
     return Num(argsMapped.fold(start, acc))

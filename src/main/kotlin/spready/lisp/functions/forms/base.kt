@@ -33,12 +33,12 @@ object Lambda : Func("lambda") {
             representation = "()"
             headSymbols = listOf()
         } else {
-            val head = args[0].cast(Cons::class)
+            val head = args[0].cast<Cons>()
 
             representation = head.toString()
 
             headSymbols = head.map {
-                it.cast(Symbol::class)
+                it.cast()
             }
         }
 
@@ -54,7 +54,7 @@ object ValEval : Func("val-eval") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
 
-        val firstAsSym = args[0].eval(env).cast(Symbol::class)
+        val firstAsSym = args[0].eval(env).cast<Symbol>()
         return env.evalAndRegister(firstAsSym, args[1])
     }
 }
@@ -63,7 +63,7 @@ object Val : Func("val") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
 
-        val firstAsSym = args[0].cast(Symbol::class)
+        val firstAsSym = args[0].cast<Symbol>()
 
         return env.evalAndRegister(firstAsSym, args[1])
     }
@@ -73,15 +73,15 @@ object FunExpr : Func("fun") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(3)
 
-        val sym = args[0].cast(Symbol::class)
+        val sym = args[0].cast<Symbol>()
 
         val varsSymbols: List<Symbol> = if (args[1] is Nil) {
 
             emptyList()
         } else {
 
-            args[1].cast(Cons::class).map {
-                it.cast(Symbol::class)
+            args[1].cast<Cons>().map {
+                it.cast()
             }
         }
 

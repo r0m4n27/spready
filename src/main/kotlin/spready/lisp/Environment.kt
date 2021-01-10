@@ -5,6 +5,7 @@ import spready.lisp.functions.forms.bindingsFunctions
 import spready.lisp.functions.forms.conditionalFunctions
 import spready.lisp.functions.forms.quotingFunctions
 import spready.lisp.functions.mathFunctions
+import spready.lisp.functions.procedures.identityFunctions
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 
@@ -66,6 +67,9 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
             env += bindingsFunctions()
             env += conditionalFunctions()
             env += quotingFunctions()
+
+            // Procedures
+            env += identityFunctions()
 
             env += mathFunctions()
 

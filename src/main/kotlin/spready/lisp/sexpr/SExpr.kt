@@ -43,9 +43,9 @@ object Nil : SExpr() {
 }
 
 object Unquote : SExpr() {
-    override fun toString() = "unquote"
+    override fun toString() = "#<unquote>"
 }
 
 object UnquoteSplice : SExpr() {
-    override fun toString() = "unquote-splice"
+    override fun toString() = "#<unquote-splice>"
 }

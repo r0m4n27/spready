@@ -16,7 +16,7 @@ enum class TokenType(val isAtom: Boolean) {
 data class Token(val type: TokenType, val value: String)
 
 fun tokenize(input: String): List<Token> {
-    val specialChars = arrayOf('(', ')', ' ', '\'', '`', ',')
+    val specialChars = arrayOf('(', ')', ' ', '\'', '`', ',', '\n')
 
     var s = input.trimStart()
     val tokens: MutableList<Token> = mutableListOf()

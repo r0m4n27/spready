@@ -22,19 +22,19 @@ class MathTest {
     }
 
     @Test
-    fun `foldToNum success`() {
+    fun `reduceToNum success`() {
         val input = listOf(Num(1), Num(2), Num(3))
         val expected = Num(6)
 
-        assertEquals(expected, foldToNum(input, 0, Int::plus))
+        assertEquals(expected, reduceToNum(input, Int::plus))
     }
 
     @Test
-    fun `foldToNum fail`() {
+    fun `reduceToNum fail`() {
         val input = listOf(Num(1), Symbol("123"), Num(3))
 
         assertFailsWith<EvalException> {
-            foldToNum(input, 0, Int::plus)
+            reduceToNum(input, Int::plus)
         }
     }
 
@@ -47,8 +47,8 @@ class MathTest {
 
     @Test
     fun `Minus normal`() {
-        val input = Cons(Minus, Cons(Num(1), Cons(Num(2), Cons(Num(3), Nil))))
-        val expected = Num(-6)
+        val input = Cons(Minus, Cons(Num(10), Cons(Num(2), Cons(Num(3), Nil))))
+        val expected = Num(5)
         assertEquals(expected, input.eval(env))
     }
 

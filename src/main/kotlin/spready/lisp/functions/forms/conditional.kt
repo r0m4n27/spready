@@ -2,7 +2,6 @@ package spready.lisp.functions.forms
 
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Func
 import spready.lisp.sexpr.Nil
@@ -19,30 +18,6 @@ object IfExpr : Func("if") {
             argsList[1].eval(env)
         } else {
             argsList[2].eval(env)
-        }
-    }
-}
-
-object AndExpr : Func("and") {
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        val argsBool = env.eval(args).map { it.toBool() }
-
-        return if (argsBool.all { it.value }) {
-            Bool(true)
-        } else {
-            Bool(false)
-        }
-    }
-}
-
-object OrExpr : Func("or") {
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        val argsBool = env.eval(args).map { it.toBool() }
-
-        return if (argsBool.any { it.value }) {
-            Bool(true)
-        } else {
-            Bool(false)
         }
     }
 }
@@ -122,7 +97,7 @@ object Case : Func("case") {
 }
 
 fun conditionalFunctions(): List<Pair<Symbol, Func>> {
-    return listOf(IfExpr, AndExpr, OrExpr, Cond, Case).map {
+    return listOf(IfExpr, Cond, Case).map {
         Pair(Symbol(it.name), it)
     }
 }

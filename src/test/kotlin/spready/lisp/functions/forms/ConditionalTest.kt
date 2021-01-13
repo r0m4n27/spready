@@ -5,7 +5,6 @@ import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.functions.Plus
 import spready.lisp.parse
-import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
@@ -62,56 +61,6 @@ class ConditionalTest {
             env[Symbol("if")] = IfExpr
 
             assertEquals(Num(5), env.eval(input))
-        }
-    }
-
-    @Nested
-    inner class AndTest {
-        @Test
-        fun `And True`() {
-            val input = "(and 1 2 3)"
-            env[Symbol("and")] = AndExpr
-            assertEquals(Bool(true), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `And False`() {
-            val input = "(and 1 2 #f)"
-            env[Symbol("and")] = AndExpr
-            assertEquals(Bool(false), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `And Empty`() {
-            val input = "(and)"
-            env[Symbol("and")] = AndExpr
-
-            assertEquals(Bool(true), env.eval(parse(tokenize(input)).first()))
-        }
-    }
-
-    @Nested
-    inner class OrTest {
-        @Test
-        fun `Or True`() {
-            val input = "(or 1 2 #f)"
-            env[Symbol("or")] = OrExpr
-            assertEquals(Bool(true), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `And False`() {
-            val input = "(or nil #f #f)"
-            env[Symbol("or")] = OrExpr
-            assertEquals(Bool(false), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `And Empty`() {
-            val input = "(or)"
-            env[Symbol("or")] = OrExpr
-
-            assertEquals(Bool(false), env.eval(parse(tokenize(input)).first()))
         }
     }
 

@@ -4,6 +4,7 @@ import spready.lisp.functions.forms.baseFunctions
 import spready.lisp.functions.forms.bindingsFunctions
 import spready.lisp.functions.forms.conditionalFunctions
 import spready.lisp.functions.forms.quotingFunctions
+import spready.lisp.functions.logicFunctions
 import spready.lisp.functions.mathFunctions
 import spready.lisp.functions.procedures.identityFunctions
 import spready.lisp.functions.procedures.listFunctions
@@ -72,6 +73,7 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
             // Procedures
             env += identityFunctions()
             env += listFunctions()
+            env += logicFunctions()
 
             env += mathFunctions()
 

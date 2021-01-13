@@ -3,7 +3,7 @@ package spready.lisp.sexpr
 import spready.lisp.Environment
 import spready.lisp.EvalException
 
-abstract class Func(val name: String) : SExpr() {
+abstract class Func(val name: String) : SExpr {
 
     override fun toString() = "#<$name>"
 

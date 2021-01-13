@@ -10,6 +10,7 @@ import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
+import spready.lisp.sexpr.cast
 
 object ListFunc : Func("list") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {

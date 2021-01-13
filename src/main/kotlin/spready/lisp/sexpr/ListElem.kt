@@ -4,7 +4,7 @@ import spready.lisp.Environment
 import spready.lisp.EvalException
 
 // TODO: Maybe use Sequence
-sealed class ListElem : SExpr(), Iterable<SExpr> {
+sealed class ListElem : SExpr, Iterable<SExpr> {
     abstract val head: SExpr
     abstract val tail: SExpr
 

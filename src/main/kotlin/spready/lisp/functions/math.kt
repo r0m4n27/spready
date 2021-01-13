@@ -5,6 +5,7 @@ import spready.lisp.sexpr.Func
 import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
+import spready.lisp.sexpr.cast
 
 fun foldToNum(args: List<SExpr>, start: Int, acc: (Int, Int) -> Int): Num {
     val argsMapped = args.map {

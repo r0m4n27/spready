@@ -7,6 +7,7 @@ import spready.lisp.sexpr.Func
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
+import spready.lisp.sexpr.cast
 
 fun createLambda(name: String, variables: List<Symbol>, body: List<SExpr>): Func {
     return object : Func(name) {

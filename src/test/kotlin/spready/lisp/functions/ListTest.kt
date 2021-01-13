@@ -1,5 +1,6 @@
 package spready.lisp.functions
 
+import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Nil
@@ -131,33 +132,65 @@ class ListTest : BaseEval() {
         equalsEval("'(2 3)", "(sublist 1 '(1 2 3))")
     }
 
-    @Test
-    fun `member nil`() {
-        equalsEval("'()", "(member 2 '())")
+    @Nested
+    inner class MemberTest {
+        @Test
+        fun `member nil`() {
+            equalsEval("'()", "(member 2 '())")
+        }
+
+        @Test
+        fun `member not found`() {
+            equalsEval("'()", "(member 2 '(1 3 4))")
+        }
+
+        @Test
+        fun `member normal`() {
+            equalsEval("'(3 4 5)", "(member 3 '(1 2 3 4 5))")
+        }
+
+        @Test
+        fun `member custom fun wrong`() {
+            failsEval("(member 3 '(1 2 3) nil)")
+        }
+
+        @Test
+        fun `member custom fun`() {
+            equalsEval(
+                "'(4 5)",
+                "(member 3 '(1 2 3 4 5) (lambda (x y) (eq? (+ x 1) y)))"
+            )
+        }
     }
 
-    @Test
-    fun `member not found`() {
-        equalsEval("'()", "(member 2 '(1 3 4))")
-    }
+    @Nested
+    inner class AssocTest {
+        @Test
+        fun `assoc nil`() {
+            equalsEval("'()", "(assoc 2 '())")
+        }
 
-    @Test
-    fun `member normal`() {
-        equalsEval("'(3 4 5)", "(member 3 '(1 2 3 4 5))")
-    }
+        @Test
+        fun `assoc not found`() {
+            equalsEval("'()", "(assoc 7 '((1 2) (3 4 5) (6)))")
+        }
 
-    @Test
-    fun `assoc nil`() {
-        equalsEval("'()", "(assoc 2 '())")
-    }
+        @Test
+        fun `assoc normal`() {
+            equalsEval("'(3 4 5)", "(assoc 3 '((1 2) (3 4 5) (6)))")
+        }
 
-    @Test
-    fun `assoc not found`() {
-        equalsEval("'()", "(assoc 7 '((1 2) (3 4 5) (6)))")
-    }
+        @Test
+        fun `assoc custom fun wrong`() {
+            failsEval("(assoc 3 '(1 2 3) nil)")
+        }
 
-    @Test
-    fun `assoc normal`() {
-        equalsEval("'(3 4 5)", "(assoc 3 '((1 2) (3 4 5) (6)))")
+        @Test
+        fun `assoc custom fun`() {
+            equalsEval(
+                "'(3 4)",
+                "(assoc 2 '((1 2) (3 4) (5)) (lambda (x y) (eq? (+ x 1) y)))"
+            )
+        }
     }
 }

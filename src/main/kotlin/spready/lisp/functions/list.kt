@@ -147,12 +147,17 @@ object Sublist : Func("sublist") {
     }
 }
 
-// TODO: Custom checkfun
 object Member : Func("member") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(2)
-        val search = env.eval(args[0])
-        val cons = env.eval(args[1]).cast<ListElem>()
+        val mutArgs = args.toMutableList().checkBetweenSize(2, 3)
+        val search = env.eval(mutArgs.removeFirst())
+        val cons = env.eval(mutArgs.removeFirst()).cast<ListElem>()
+
+        val eqFun = if (mutArgs.isEmpty()) {
+            EqExpr
+        } else {
+            env.eval(mutArgs.first()).cast<Func>()
+        }
 
         if (cons is Nil) {
             return Nil
@@ -161,7 +166,9 @@ object Member : Func("member") {
         var pointer: SExpr = cons
 
         while (pointer is Cons) {
-            if (pointer.head == search) {
+            val evaluated = eqFun(env, listOf(search, pointer.head))
+
+            if (evaluated.toBool().value) {
                 return pointer
             } else {
                 pointer = pointer.tail
@@ -172,17 +179,24 @@ object Member : Func("member") {
     }
 }
 
-// TODO: Custom checkfun
 object Assoc : Func("assoc") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(2)
-        val search = env.eval(args[0])
-        val cons = env.eval(args[1]).cast<ListElem>()
+        val mutArgs = args.toMutableList().checkBetweenSize(2, 3)
+        val search = env.eval(mutArgs.removeFirst())
+        val cons = env.eval(mutArgs.removeFirst()).cast<ListElem>()
+
+        val eqFun = if (mutArgs.isEmpty()) {
+            EqExpr
+        } else {
+            env.eval(mutArgs.first()).cast<Func>()
+        }
 
         cons.map {
             it.cast<ListElem>()
         }.forEach {
-            if (it.head == search) {
+            val evaluated = eqFun(env, listOf(search, it.head))
+
+            if (evaluated.toBool().value) {
                 return it
             }
         }

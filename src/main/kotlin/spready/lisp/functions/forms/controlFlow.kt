@@ -96,8 +96,14 @@ object Case : Func("case") {
     }
 }
 
-fun conditionalFunctions(): List<Pair<Symbol, Func>> {
-    return listOf(IfExpr, Cond, Case).map {
+object RunExpr : Func("run") {
+    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
+        return env.eval(args).lastOrNull() ?: Nil
+    }
+}
+
+fun controlFlowFunctions(): List<Pair<Symbol, Func>> {
+    return listOf(IfExpr, Cond, Case, RunExpr).map {
         Pair(Symbol(it.name), it)
     }
 }

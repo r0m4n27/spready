@@ -16,7 +16,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class ConditionalTest {
+class ControlFlowTest {
     private var env = Environment()
 
     @BeforeTest
@@ -165,6 +165,27 @@ class ConditionalTest {
             val input = "(case 3 ((1 2) 3) ((3 4 5) 4))"
             env[Symbol("case")] = Case
             assertEquals(Num(4), evalString(input))
+        }
+    }
+
+    @Nested
+    inner class RunTest {
+        @Test
+        fun `Run Normal`() {
+            env[Symbol("run")] = RunExpr
+
+            val input = "(run 1 2 3)"
+
+            assertEquals(Num(3), env.eval(parse(tokenize(input)).first()))
+        }
+
+        @Test
+        fun `Run Nil`() {
+            env[Symbol("run")] = RunExpr
+
+            val input = Cons(RunExpr, Cons(Nil, Nil))
+
+            assertEquals(Nil, env.eval(input))
         }
     }
 }

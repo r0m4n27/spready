@@ -1,4 +1,4 @@
-package spready.lisp.functions.procedures
+package spready.lisp.functions
 
 import spready.lisp.Environment
 import spready.lisp.sexpr.Bool

@@ -1,4 +1,4 @@
-package spready.lisp.functions.procedures
+package spready.lisp.functions
 
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows

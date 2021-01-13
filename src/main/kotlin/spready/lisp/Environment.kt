@@ -1,13 +1,13 @@
 package spready.lisp
 
-import spready.lisp.functions.forms.baseFunctions
 import spready.lisp.functions.forms.bindingsFunctions
-import spready.lisp.functions.forms.conditionalFunctions
+import spready.lisp.functions.forms.controlFlowFunctions
+import spready.lisp.functions.forms.definitionFunctions
 import spready.lisp.functions.forms.quotingFunctions
+import spready.lisp.functions.identityFunctions
+import spready.lisp.functions.listFunctions
 import spready.lisp.functions.logicFunctions
 import spready.lisp.functions.mathFunctions
-import spready.lisp.functions.procedures.identityFunctions
-import spready.lisp.functions.procedures.listFunctions
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 
@@ -65,16 +65,14 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
         fun defaultEnv(): Environment {
             val env = Environment()
             // Forms
-            env += baseFunctions()
+            env += definitionFunctions()
             env += bindingsFunctions()
-            env += conditionalFunctions()
+            env += controlFlowFunctions()
             env += quotingFunctions()
 
-            // Procedures
             env += identityFunctions()
             env += listFunctions()
             env += logicFunctions()
-
             env += mathFunctions()
 
             return env

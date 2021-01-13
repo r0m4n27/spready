@@ -93,20 +93,13 @@ object FunExpr : Func("fun") {
     }
 }
 
-object RunExpr : Func("run") {
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        return env.eval(args).lastOrNull() ?: Nil
-    }
-}
-
-fun baseFunctions(): List<Pair<Symbol, Func>> {
+fun definitionFunctions(): List<Pair<Symbol, Func>> {
     return listOf(
         Lambda,
         Val,
         ValEval,
         FunExpr,
-        IfExpr,
-        RunExpr,
+        IfExpr
     ).map {
         Pair(Symbol(it.name), it)
     }

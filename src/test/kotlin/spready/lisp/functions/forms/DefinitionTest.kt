@@ -3,19 +3,17 @@ package spready.lisp.functions.forms
 import org.junit.jupiter.api.Nested
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.parse
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Func
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.Symbol
-import spready.lisp.tokenize
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class BaseTests {
+class DefinitionTest {
 
     private var env = Environment()
 
@@ -145,27 +143,6 @@ class BaseTests {
                     listOf(Num(3), Nil, Num(3))
                 )
             }
-        }
-    }
-
-    @Nested
-    inner class RunTest {
-        @Test
-        fun `Run Normal`() {
-            env[Symbol("run")] = RunExpr
-
-            val input = "(run 1 2 3)"
-
-            assertEquals(Num(3), env.eval(parse(tokenize(input)).first()))
-        }
-
-        @Test
-        fun `Run Nil`() {
-            env[Symbol("run")] = RunExpr
-
-            val input = Cons(RunExpr, Cons(Nil, Nil))
-
-            assertEquals(Nil, env.eval(input))
         }
     }
 }

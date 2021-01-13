@@ -1,4 +1,4 @@
-package spready.lisp.functions.procedures
+package spready.lisp.functions
 
 import spready.lisp.BaseEval
 import spready.lisp.sexpr.Cons

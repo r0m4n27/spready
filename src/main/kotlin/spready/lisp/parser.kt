@@ -4,7 +4,7 @@ import spready.lisp.functions.forms.Quasiquote
 import spready.lisp.functions.forms.Quote
 import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
-import spready.lisp.sexpr.Cons.Companion.toCons
+import spready.lisp.sexpr.ListElem.Companion.toListElem
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
@@ -87,7 +87,7 @@ fun parseOther(tokens: MutableList<Token>): SExpr {
 
             tokens.removeFirst()
 
-            exprs.toCons()
+            exprs.toListElem()
         }
 
         TokenType.Quote -> Cons(Quote, Cons(parseOther(tokens), Nil))

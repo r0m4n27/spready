@@ -3,8 +3,8 @@ package spready.lisp.functions.forms
 import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.sexpr.Cons
-import spready.lisp.sexpr.Cons.Companion.toCons
 import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.ListElem.Companion.toListElem
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.Unquote
@@ -27,7 +27,7 @@ object Quasiquote : Func("quasiquote") {
             is Cons -> {
                 first.flatMap {
                     handleExpr(it, env)
-                }.toCons()
+                }.toListElem()
             }
             else -> args[0]
         }
@@ -37,7 +37,7 @@ object Quasiquote : Func("quasiquote") {
         return if (expr is Cons) {
             val exprList = expr.toList()
 
-            when (expr.first) {
+            when (expr.head) {
                 is Unquote -> {
                     exprList.checkSize(2)
 
@@ -60,7 +60,7 @@ object Quasiquote : Func("quasiquote") {
                     listOf(
                         exprList.flatMap {
                             handleExpr(it, env)
-                        }.toCons()
+                        }.toListElem()
                     )
                 }
             }

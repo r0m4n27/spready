@@ -4,6 +4,7 @@ import spready.lisp.Environment
 import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.ListElem
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
@@ -30,7 +31,7 @@ object IsPair : Func("pair?") {
         args.checkSize(1)
 
         val first = env.eval(args[0])
-        return if (first is Cons && first.second !is Cons) {
+        return if (first is Cons && first.tail !is ListElem) {
             Bool(true)
         } else {
             Bool(false)
@@ -43,10 +44,10 @@ object IsList : Func("list?") {
         args.checkSize(1)
 
         val first = env.eval(args[0])
-        return if (first is Cons && first.second is Cons) {
-            Bool(true)
-        } else {
-            Bool(false)
+        return when {
+            first is Cons && first.tail is ListElem -> Bool(true)
+            first is Nil -> Bool(true)
+            else -> Bool(false)
         }
     }
 }

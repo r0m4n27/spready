@@ -2,24 +2,18 @@ package spready.lisp.sexpr
 
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
+import spready.lisp.BaseEval
 import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.functions.Plus
 import spready.lisp.parse
-import spready.lisp.sexpr.Cons.Companion.toCons
+import spready.lisp.sexpr.ListElem.Companion.toListElem
 import spready.lisp.tokenize
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class ConsTest {
-    private var env = Environment()
-
-    @BeforeTest
-    fun resetEnv() {
-        env = Environment()
-    }
+class ListElemTest : BaseEval() {
 
     @Nested
     inner class Iterable {
@@ -46,22 +40,30 @@ class ConsTest {
 
             assertEquals(expected, input.toList())
         }
+
+        @Test
+        fun `nil iterable`() {
+            val input = Nil
+            val expected = listOf<SExpr>()
+
+            assertEquals(expected, input.toList())
+        }
     }
 
     @Test
     fun `toCons empty`() {
 
-        assertEquals(Nil, listOf<SExpr>().toCons())
+        assertEquals(Nil, listOf<SExpr>().toListElem())
     }
 
     @Test
     fun `build cons normal`() {
         val values = listOf(Num(123), Nil, Str("123"))
 
-        var cons: SExpr = values.toCons()
+        var cons: SExpr = values.toListElem()
         values.forEach {
-            assertEquals(it, (cons as Cons).first)
-            cons = (cons as Cons).second
+            assertEquals(it, (cons as Cons).head)
+            cons = (cons as Cons).tail
         }
 
         assertEquals(Nil, cons as Nil)
@@ -145,6 +147,29 @@ class ConsTest {
             assertFailsWith<EvalException> {
                 env.eval(parse(tokenize(input)))
             }
+        }
+    }
+
+    @Nested
+    inner class HeadTail {
+        @Test
+        fun `nil head`() {
+            assertEquals(Nil, Nil.head)
+        }
+
+        @Test
+        fun `nil tail`() {
+            assertEquals(Nil, Nil.tail)
+        }
+
+        @Test
+        fun `cons head`() {
+            assertEquals(Num(3), Cons(Num(3), Num(4)).head)
+        }
+
+        @Test
+        fun `cons tail`() {
+            assertEquals(Num(4), Cons(Num(3), Num(4)).tail)
         }
     }
 }

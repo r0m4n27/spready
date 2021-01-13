@@ -4,6 +4,7 @@ import spready.lisp.Environment
 import spready.lisp.EvalException
 import kotlin.reflect.safeCast
 
+// TODO: Change to interface
 abstract class SExpr {
     open fun eval(env: Environment): SExpr = this
     open fun toBool(): Bool = Bool(true)
@@ -35,11 +36,6 @@ data class Num(val value: Int) : SExpr() {
 data class Bool(val value: Boolean) : SExpr() {
     override fun toString() = value.toString()
     override fun toBool(): Bool = this
-}
-
-object Nil : SExpr() {
-    override fun toString() = "nil"
-    override fun toBool(): Bool = Bool(false)
 }
 
 object Unquote : SExpr() {

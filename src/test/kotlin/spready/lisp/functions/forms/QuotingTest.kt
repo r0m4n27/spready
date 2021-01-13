@@ -1,31 +1,15 @@
 package spready.lisp.functions.forms
 
 import org.junit.jupiter.api.Nested
-import spready.lisp.Environment
-import spready.lisp.functions.Plus
-import spready.lisp.parse
+import spready.lisp.BaseEval
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
-import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
-import spready.lisp.tokenize
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class QuotingTest {
-    private var env = Environment()
-
-    @BeforeTest
-    fun resetEnv() {
-        env = Environment()
-        env += quotingFunctions()
-    }
-
-    fun evalString(string: String): SExpr {
-        return env.eval(parse(tokenize(string)).first())
-    }
+class QuotingTest : BaseEval() {
 
     @Nested
     inner class QuoteTest {
@@ -69,7 +53,6 @@ class QuotingTest {
         @Test
         fun `quasiquote cons`() {
             val input = "`(1 2 ,(+ 1 2))"
-            env[Symbol("+")] = Plus
 
             assertEquals(
                 Cons(Num(1), Cons(Num(2), Cons(Num(3), Nil))),
@@ -80,7 +63,6 @@ class QuotingTest {
         @Test
         fun `quasiquote mutiple cons`() {
             val input = "`(1 (2 ,(+ 1 2)))"
-            env[Symbol("+")] = Plus
 
             assertEquals(
                 Cons(Num(1), Cons(Cons(Num(2), Cons(Num(3), Nil)), Nil)),
@@ -88,6 +70,9 @@ class QuotingTest {
             )
         }
 
-        // TODO: Test QuoteSplicing
+        @Test
+        fun `quasiquote splice`() {
+            equalsEval("'(1 2 3 4)", "`(1 ,@(list 2 3) 4)")
+        }
     }
 }

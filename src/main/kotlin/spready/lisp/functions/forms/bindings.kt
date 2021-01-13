@@ -22,7 +22,7 @@ object Let : Func("let") {
                 normalLet(mappedSymbols, env, argsMut)
             }
             is Symbol -> {
-                if (argsMut.size > 2) {
+                if (argsMut.size >= 2) {
                     val symbols = argsMut.removeFirst().cast<Cons>()
 
                     val mappedSymbols = mapSymbols(symbols, env)
@@ -131,7 +131,7 @@ object DoFunc : Func("do") {
             localEnv.eval(exprs)
 
             updateMap.forEach {
-                updateMap[it.key] = localEnv.eval(it.value)
+                localEnv[it.key] = localEnv.eval(it.value)
             }
         }
 

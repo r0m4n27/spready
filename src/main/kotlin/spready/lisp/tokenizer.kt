@@ -7,9 +7,10 @@ enum class TokenType(val isAtom: Boolean) {
     Quasiquote(false),
     Unquote(false),
     UnquoteSplice(false),
+    Dot(false),
     String(true),
     Special(true),
-    Symbol(true)
+    Symbol(true),
 }
 
 data class Token(val type: TokenType, val value: String)
@@ -39,6 +40,7 @@ fun tokenize(input: String): List<Token> {
                 val special = s.takeWhile { !specialChars.contains(it) }
                 Token(TokenType.Special, special)
             }
+            '.' -> Token(TokenType.Dot, ".")
             '\'' -> Token(TokenType.Quote, "'")
             '`' -> Token(TokenType.Quasiquote, "`")
             ',' -> {

@@ -284,4 +284,48 @@ class ParserTest {
             }
         }
     }
+
+    @Nested
+    inner class ParseDot {
+        @Test
+        fun `parse only dot fail`() {
+            val input = listOf(
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Dot, "."),
+                Token(TokenType.CloseParen, ")")
+            )
+
+            assertThrows<IllegalArgumentException>() {
+                parse(input)
+            }
+        }
+
+        @Test
+        fun `parse one elem with dot fail`() {
+            val input = listOf(
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Special, "123"),
+                Token(TokenType.Dot, "."),
+                Token(TokenType.CloseParen, ")")
+            )
+
+            assertThrows<IllegalArgumentException>() {
+                parse(input)
+            }
+        }
+
+        @Test
+        fun `parse dot normal`() {
+            val input = listOf(
+                Token(TokenType.OpenParen, "("),
+                Token(TokenType.Symbol, "123"),
+                Token(TokenType.Symbol, "456"),
+                Token(TokenType.Dot, "."),
+                Token(TokenType.Symbol, "789"),
+                Token(TokenType.CloseParen, ")")
+            )
+
+            assertEquals(Cons(Num(123), Cons(Num(456), Num(789))), parse(input).first())
+        }
+    }
 }

@@ -4,6 +4,7 @@ import spready.lisp.functions.forms.Quasiquote
 import spready.lisp.functions.forms.Quote
 import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.ListElem.Companion.toConsWithTail
 import spready.lisp.sexpr.ListElem.Companion.toListElem
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
@@ -75,10 +76,17 @@ fun parseOther(tokens: MutableList<Token>): SExpr {
     return when (first.type) {
         TokenType.OpenParen -> {
             val exprs: MutableList<SExpr> = mutableListOf()
+            var isDot = false
+
             while (tokens.isNotEmpty() &&
                 tokens.first().type != TokenType.CloseParen
             ) {
-                exprs.add(parseOther(tokens))
+                if (tokens.first().type == TokenType.Dot) {
+                    isDot = true
+                    tokens.removeFirst()
+                } else {
+                    exprs.add(parseOther(tokens))
+                }
             }
 
             if (tokens.isEmpty()) {
@@ -87,7 +95,11 @@ fun parseOther(tokens: MutableList<Token>): SExpr {
 
             tokens.removeFirst()
 
-            exprs.toListElem()
+            if (isDot) {
+                exprs.toConsWithTail()
+            } else {
+                exprs.toListElem()
+            }
         }
 
         TokenType.Quote -> Cons(Quote, Cons(parseOther(tokens), Nil))

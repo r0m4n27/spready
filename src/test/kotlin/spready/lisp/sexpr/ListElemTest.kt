@@ -1,12 +1,12 @@
 package spready.lisp.sexpr
 
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.functions.Plus
 import spready.lisp.parse
+import spready.lisp.sexpr.ListElem.Companion.toConsWithTail
 import spready.lisp.sexpr.ListElem.Companion.toListElem
 import spready.lisp.tokenize
 import kotlin.test.Test
@@ -50,23 +50,51 @@ class ListElemTest : BaseEval() {
         }
     }
 
-    @Test
-    fun `toCons empty`() {
+    @Nested
+    inner class ToListElemTest {
+        @Test
+        fun `toListElem empty`() {
 
-        assertEquals(Nil, listOf<SExpr>().toListElem())
-    }
-
-    @Test
-    fun `build cons normal`() {
-        val values = listOf(Num(123), Nil, Str("123"))
-
-        var cons: SExpr = values.toListElem()
-        values.forEach {
-            assertEquals(it, (cons as Cons).head)
-            cons = (cons as Cons).tail
+            assertEquals(Nil, listOf<SExpr>().toListElem())
         }
 
-        assertEquals(Nil, cons as Nil)
+        @Test
+        fun `toListElem normal`() {
+            val values = listOf(Num(123), Nil, Str("123"))
+
+            var cons: SExpr = values.toListElem()
+            values.forEach {
+                assertEquals(it, (cons as Cons).head)
+                cons = (cons as Cons).tail
+            }
+
+            assertEquals(Nil, cons as Nil)
+        }
+    }
+
+    @Nested
+    inner class ToConsWithTailTest {
+        @Test
+        fun `toConsWithTail normal`() {
+            val input = listOf(Num(1), Num(2), Num(3))
+            val expected = Cons(Num(1), Cons(Num(2), Num(3)))
+
+            assertEquals(expected, input.toConsWithTail())
+        }
+
+        @Test
+        fun `toConsWithTail fail empty`() {
+            val input = listOf<SExpr>()
+
+            assertFailsWith<IllegalArgumentException> { input.toConsWithTail() }
+        }
+
+        @Test
+        fun `toConsWithTail fail one`() {
+            val input = listOf<SExpr>(Num(1))
+
+            assertFailsWith<IllegalArgumentException> { input.toConsWithTail() }
+        }
     }
 
     @Nested
@@ -86,10 +114,9 @@ class ListElemTest : BaseEval() {
         }
 
         @Test
-        @Disabled
         fun `Cons toString end is not Nil`() {
             val input = Cons(Num(1), Cons(Num(2), Num(3)))
-            val expected = "(1 2 3)"
+            val expected = "(1 2 . 3)"
             assertEquals(expected, input.toString())
         }
     }

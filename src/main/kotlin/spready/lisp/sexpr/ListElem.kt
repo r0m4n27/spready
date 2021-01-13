@@ -3,7 +3,6 @@ package spready.lisp.sexpr
 import spready.lisp.Environment
 import spready.lisp.EvalException
 
-// TODO: Maybe use Sequence
 sealed class ListElem : SExpr, Iterable<SExpr> {
     abstract val head: SExpr
     abstract val tail: SExpr
@@ -12,6 +11,16 @@ sealed class ListElem : SExpr, Iterable<SExpr> {
         fun List<SExpr>.toListElem(): ListElem {
             return this.foldRight<SExpr, ListElem>(Nil) { head, tail ->
                 Cons(head, tail)
+            }
+        }
+
+        fun List<SExpr>.toConsWithTail(): SExpr {
+            if (this.size <= 1) {
+                throw IllegalArgumentException("Cant convert to Cons with tail!")
+            }
+
+            return this.reduceRight { expr, acc ->
+                Cons(expr, acc)
             }
         }
     }
@@ -39,15 +48,26 @@ data class Cons(override val head: SExpr, override val tail: SExpr) : ListElem()
         }
     }
 
-    // TODO: Support dot notation
     override fun toString(): String {
+
         return buildString {
             append("(")
-            this@Cons.forEach {
-                append("$it ")
+            var pointer: SExpr = this@Cons
+
+            while (pointer is Cons) {
+                append(pointer.head)
+
+                if (pointer.tail !is Nil) {
+                    append(" ")
+                }
+
+                pointer = pointer.tail
             }
 
-            deleteCharAt(length - 1)
+            if (pointer !is Nil) {
+                append(". $pointer")
+            }
+
             append(")")
         }
     }

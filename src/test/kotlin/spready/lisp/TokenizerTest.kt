@@ -38,6 +38,13 @@ class TokenizerTest {
     }
 
     @Test
+    fun `tokenize dot`() {
+        val input = "."
+        val expected = listOf(Token(TokenType.Dot, "."))
+        assertEquals(expected, tokenize(input))
+    }
+
+    @Test
     fun `tokenize String`() {
         val input = "\"Hallo, 123!\""
 

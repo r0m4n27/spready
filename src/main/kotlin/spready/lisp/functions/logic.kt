@@ -39,23 +39,7 @@ object NotExpr : Func("not") {
     }
 }
 
-object EqExpr : Func("eq?") {
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(2)
-
-        return Bool(env.eval(args[0]) == env.eval(args[1]))
-    }
-}
-
-object NeqExpr : Func("neq?") {
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkSize(2)
-
-        return Bool(env.eval(args[0]) != env.eval(args[1]))
-    }
-}
-
 fun logicFunctions(): List<Pair<Symbol, Func>> =
-    listOf(AndExpr, OrExpr, NotExpr, EqExpr, NeqExpr).map {
+    listOf(AndExpr, OrExpr, NotExpr).map {
         Pair(Symbol(it.name), it)
     }

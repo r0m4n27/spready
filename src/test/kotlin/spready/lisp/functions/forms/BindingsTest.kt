@@ -54,7 +54,7 @@ class BindingsTest : BaseEval() {
                 "6",
                 """
                 (let fac ((n 1))
-                  (if (eq? 4 n)
+                  (if (= 4 n)
                     1
                     (* n (fac (+ n 1)))))
                 """.trimIndent()
@@ -80,10 +80,10 @@ class BindingsTest : BaseEval() {
                 "24",
                 """
                 (letrec ((fac1 (lambda (x)
-                          (if (eq? x 1) 1
+                          (if (= x 1) 1
                           (* x (fac2 (- x 1))))))
                          (fac2 (lambda (x)
-                          (if (eq? x 1) 1
+                          (if (= x 1) 1
                           (* x (fac1 (- x 1)))))))
                   (fac1 4))
                 """.trimIndent()

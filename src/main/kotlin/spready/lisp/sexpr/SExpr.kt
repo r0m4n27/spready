@@ -21,12 +21,20 @@ data class Symbol(val value: String) : SExpr {
     override fun toString() = value
 }
 
-data class Str(val value: String) : SExpr {
+data class Str(val value: String) : SExpr, Comparable<Str> {
     override fun toString() = "\"$value\""
+
+    override fun compareTo(other: Str): Int {
+        return value.compareTo(other.value)
+    }
 }
 
-data class Num(val value: Int) : SExpr {
+data class Num(val value: Int) : SExpr, Comparable<Num> {
     override fun toString() = value.toString()
+
+    override fun compareTo(other: Num): Int {
+        return value.compareTo(other.value)
+    }
 }
 
 data class Bool(val value: Boolean) : SExpr {

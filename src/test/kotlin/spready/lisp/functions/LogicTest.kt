@@ -54,40 +54,4 @@ class LogicTest : BaseEval() {
             equalsEval("#t", "(not '())")
         }
     }
-
-    @Nested
-    inner class EqTest {
-        @Test
-        fun `Eq True`() {
-            equalsEval("#t", "(eq? '(1 2) '(1 2))")
-        }
-
-        @Test
-        fun `Eq True nil`() {
-            equalsEval("#t", "(eq? '() nil)")
-        }
-
-        @Test
-        fun `Eq False`() {
-            equalsEval("#f", "(eq? 3 '(1 2))")
-        }
-    }
-
-    @Nested
-    inner class NeqTest {
-        @Test
-        fun `Neq True`() {
-            equalsEval("#f", "(neq? '(1 2) '(1 2))")
-        }
-
-        @Test
-        fun `Neq True nil`() {
-            equalsEval("#f", "(neq? '() nil)")
-        }
-
-        @Test
-        fun `Neq False`() {
-            equalsEval("#t", "(neq? 3 '(1 2))")
-        }
-    }
 }

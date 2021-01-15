@@ -158,7 +158,7 @@ class ListTest : BaseEval() {
         fun `member custom fun`() {
             equalsEval(
                 "'(4 5)",
-                "(member 3 '(1 2 3 4 5) (lambda (x y) (eq? (+ x 1) y)))"
+                "(member 3 '(1 2 3 4 5) (lambda (x y) (= (+ x 1) y)))"
             )
         }
     }
@@ -189,7 +189,7 @@ class ListTest : BaseEval() {
         fun `assoc custom fun`() {
             equalsEval(
                 "'(3 4)",
-                "(assoc 2 '((1 2) (3 4) (5)) (lambda (x y) (eq? (+ x 1) y)))"
+                "(assoc 2 '((1 2) (3 4) (5)) (lambda (x y) (= (+ x 1) y)))"
             )
         }
     }

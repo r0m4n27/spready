@@ -1,6 +1,7 @@
 package spready.lisp
 
 import spready.lisp.functions.conversionFunctions
+import spready.lisp.functions.equalityFunctions
 import spready.lisp.functions.forms.bindingsFunctions
 import spready.lisp.functions.forms.controlFlowFunctions
 import spready.lisp.functions.forms.definitionFunctions
@@ -79,6 +80,8 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
             env += functionalFunctions()
             env += conversionFunctions()
             env += stringFunctions()
+            env += equalityFunctions()
+
             env += mathFunctions()
 
             return env

@@ -10,6 +10,7 @@ import spready.lisp.functions.identityFunctions
 import spready.lisp.functions.listFunctions
 import spready.lisp.functions.logicFunctions
 import spready.lisp.functions.mathFunctions
+import spready.lisp.functions.stringFunctions
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 
@@ -77,6 +78,7 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
             env += logicFunctions()
             env += functionalFunctions()
             env += conversionFunctions()
+            env += stringFunctions()
             env += mathFunctions()
 
             return env

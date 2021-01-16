@@ -26,18 +26,14 @@ inline fun createCompFun(
                     evaluated.map {
                         it.cast<Num>()
                     }.zipWithNext().map {
-                        val first = it.first.value
-                        val second = it.second.value
-                        first.compareTo(second)
+                        it.first.compareTo(it.second)
                     }
                 }
                 is Str -> {
                     evaluated.map {
                         it.cast<Str>()
                     }.zipWithNext().map {
-                        val first = it.first.value
-                        val second = it.second.value
-                        first.compareTo(second)
+                        it.first.compareTo(it.second)
                     }
                 }
                 else -> throw EvalException("${evaluated.first()} can't be compared!")

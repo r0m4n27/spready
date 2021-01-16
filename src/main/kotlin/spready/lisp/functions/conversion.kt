@@ -3,6 +3,7 @@ package spready.lisp.functions
 import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.ListElem
 import spready.lisp.sexpr.ListElem.Companion.toListElem
 import spready.lisp.sexpr.Num
@@ -41,7 +42,7 @@ object ToStringFunc : Func("to-str") {
         return when (expr) {
             is Str -> expr
             is Symbol -> Str(expr.value)
-            is Num -> Str(expr.value.toString())
+            is Num -> Str(expr.toString())
             is ListElem -> {
                 Str(
                     buildString {
@@ -61,7 +62,7 @@ val toNumConv = createConv("to-num") {
         is Num -> it
         is Str -> {
             try {
-                Num(it.value.toInt())
+                Integer(it.value.toInt())
             } catch (_: NumberFormatException) {
                 throw EvalException("Can't convert $it to num!")
             }

@@ -9,8 +9,10 @@ import spready.lisp.functions.forms.Quasiquote
 import spready.lisp.functions.forms.Quote
 import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Flt
+import spready.lisp.sexpr.Fraction
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.Nil
-import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
@@ -72,7 +74,7 @@ class ParserTest {
             )
 
             val expected =
-                Cons(Num(123), Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil))
+                Cons(Integer(123), Cons(Cons(Integer(456), Cons(Str("789"), Nil)), Nil))
 
             val parsed = parseOther(input.toMutableList())
             assertEquals(expected, parsed)
@@ -85,10 +87,13 @@ class ParserTest {
         private fun parseAtomProvider() =
             Stream.of(
                 Pair(Token(TokenType.String, "123"), Str("123")),
-                Pair(Token(TokenType.Symbol, "123"), Num(123)),
+                Pair(Token(TokenType.Symbol, "123"), Integer(123)),
                 Pair(Token(TokenType.Symbol, "hallo"), Symbol("hallo")),
-                Pair(Token(TokenType.Symbol, "-123"), Num(-123)),
-                Pair(Token(TokenType.Symbol, "nil"), Nil)
+                Pair(Token(TokenType.Symbol, "-123"), Integer(-123)),
+                Pair(Token(TokenType.Symbol, "nil"), Nil),
+                Pair(Token(TokenType.Symbol, "-1.123"), Flt(-1.123)),
+                Pair(Token(TokenType.Symbol, "1/2"), Fraction.create(1, 2)),
+                Pair(Token(TokenType.Symbol, "-1/2"), Fraction.create(-1, 2)),
             )
 
         @ParameterizedTest
@@ -150,8 +155,8 @@ class ParserTest {
                     Quote,
                     Cons(
                         Cons(
-                            Num(123),
-                            Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil)
+                            Integer(123),
+                            Cons(Cons(Integer(456), Cons(Str("789"), Nil)), Nil)
                         ),
                         Nil
                     )
@@ -179,8 +184,8 @@ class ParserTest {
                     Quasiquote,
                     Cons(
                         Cons(
-                            Num(123),
-                            Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil)
+                            Integer(123),
+                            Cons(Cons(Integer(456), Cons(Str("789"), Nil)), Nil)
                         ),
                         Nil
                     )
@@ -208,8 +213,8 @@ class ParserTest {
                     Unquote,
                     Cons(
                         Cons(
-                            Num(123),
-                            Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil)
+                            Integer(123),
+                            Cons(Cons(Integer(456), Cons(Str("789"), Nil)), Nil)
                         ),
                         Nil
                     )
@@ -237,8 +242,8 @@ class ParserTest {
                     UnquoteSplice,
                     Cons(
                         Cons(
-                            Num(123),
-                            Cons(Cons(Num(456), Cons(Str("789"), Nil)), Nil)
+                            Integer(123),
+                            Cons(Cons(Integer(456), Cons(Str("789"), Nil)), Nil)
                         ),
                         Nil
                     )
@@ -255,7 +260,7 @@ class ParserTest {
         fun `parse just Atom`() {
             val input = listOf(Token(TokenType.Symbol, "123"))
 
-            assertEquals(listOf(Num(123)), parse(input))
+            assertEquals(listOf(Integer(123)), parse(input))
         }
 
         @Test
@@ -267,7 +272,7 @@ class ParserTest {
                 Token(TokenType.CloseParen, ")")
             )
 
-            assertEquals(listOf(Num(123), Cons(Num(123), Nil)), parse(input))
+            assertEquals(listOf(Integer(123), Cons(Integer(123), Nil)), parse(input))
         }
 
         @Test
@@ -325,7 +330,10 @@ class ParserTest {
                 Token(TokenType.CloseParen, ")")
             )
 
-            assertEquals(Cons(Num(123), Cons(Num(456), Num(789))), parse(input).first())
+            assertEquals(
+                Cons(Integer(123), Cons(Integer(456), Integer(789))),
+                parse(input).first()
+            )
         }
     }
 }

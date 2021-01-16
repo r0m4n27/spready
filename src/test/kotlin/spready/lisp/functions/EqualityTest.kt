@@ -1,5 +1,6 @@
 package spready.lisp.functions
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -96,6 +97,7 @@ class EqualityTest : BaseEval() {
 
         @ParameterizedTest
         @MethodSource("compareMultipleProvider")
+        @Disabled
         fun `compare multiple`(data: Pair<String, String>) {
             equalsEval(data.first, data.second)
         }

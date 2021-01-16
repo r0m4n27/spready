@@ -1,6 +1,6 @@
 package spready.lisp
 
-import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.Symbol
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -18,41 +18,41 @@ class LocalEnvTest {
     @Test
     fun `add to local and get Symbol from local`() {
         val locEnv = LocalEnvironment(env)
-        locEnv.addLocal(Symbol("123"), Num(3))
+        locEnv.addLocal(Symbol("123"), Integer(3))
 
-        assertEquals(Num(3), locEnv[Symbol("123")])
+        assertEquals(Integer(3), locEnv[Symbol("123")])
     }
 
     @Test
     fun `get Symbol from global`() {
-        env += Pair(Symbol("123"), Num(3))
+        env += Pair(Symbol("123"), Integer(3))
         val locEnv = LocalEnvironment(env)
 
-        assertEquals(Num(3), locEnv[Symbol("123")])
+        assertEquals(Integer(3), locEnv[Symbol("123")])
     }
 
     @Test
     fun `set Symbol local`() {
         val locEnv = LocalEnvironment(env)
-        locEnv.addLocal(Symbol("123"), Num(3))
-        locEnv[Symbol("123")] = Num(4)
+        locEnv.addLocal(Symbol("123"), Integer(3))
+        locEnv[Symbol("123")] = Integer(4)
 
-        assertEquals(Num(4), locEnv[Symbol("123")])
+        assertEquals(Integer(4), locEnv[Symbol("123")])
     }
 
     @Test
     fun `set Symbol global`() {
-        env += Pair(Symbol("123"), Num(3))
+        env += Pair(Symbol("123"), Integer(3))
         val locEnv = LocalEnvironment(env)
-        locEnv[Symbol("123")] = Num(4)
+        locEnv[Symbol("123")] = Integer(4)
 
-        assertEquals(Num(4), locEnv[Symbol("123")])
+        assertEquals(Integer(4), locEnv[Symbol("123")])
     }
 
     @Test
     fun `minusAssign Symbol local`() {
         val locEnv = LocalEnvironment(env)
-        locEnv.addLocal(Symbol("123"), Num(3))
+        locEnv.addLocal(Symbol("123"), Integer(3))
         locEnv -= Symbol("123")
 
         assertFailsWith<EvalException> {
@@ -62,7 +62,7 @@ class LocalEnvTest {
 
     @Test
     fun `minusAssign Symbol global`() {
-        env += Pair(Symbol("123"), Num(3))
+        env += Pair(Symbol("123"), Integer(3))
         val locEnv = LocalEnvironment(env)
         locEnv -= Symbol("123")
 

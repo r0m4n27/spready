@@ -3,8 +3,8 @@ package spready.lisp.functions
 import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.functions.forms.Quote
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.ListElem.Companion.toListElem
-import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import kotlin.test.Test
@@ -16,15 +16,18 @@ class FunctionalTest : BaseEval() {
         @Test
         fun `zip args normal`() {
             val input = listOf(
-                listOf(Quote, listOf(Num(1), Num(2), Num(3)).toListElem()).toListElem(),
-                listOf(Quote, listOf(Num(4), Num(5)).toListElem()).toListElem(),
-                listOf(Quote, listOf(Num(6), Num(7)).toListElem()).toListElem()
+                listOf(
+                    Quote,
+                    listOf(Integer(1), Integer(2), Integer(3)).toListElem()
+                ).toListElem(),
+                listOf(Quote, listOf(Integer(4), Integer(5)).toListElem()).toListElem(),
+                listOf(Quote, listOf(Integer(6), Integer(7)).toListElem()).toListElem()
             )
 
             assertEquals(
                 listOf(
-                    listOf(Num(1), Num(4), Num(6)),
-                    listOf(Num(2), Num(5), Num(7))
+                    listOf(Integer(1), Integer(4), Integer(6)),
+                    listOf(Integer(2), Integer(5), Integer(7))
                 ),
                 zipArgs(input, env)
             )
@@ -33,9 +36,12 @@ class FunctionalTest : BaseEval() {
         @Test
         fun `zip args empty`() {
             val input = listOf(
-                listOf(Quote, listOf(Num(1), Num(2), Num(3)).toListElem()).toListElem(),
+                listOf(
+                    Quote,
+                    listOf(Integer(1), Integer(2), Integer(3)).toListElem()
+                ).toListElem(),
                 listOf<SExpr>().toListElem(),
-                listOf(Quote, listOf(Num(4), Num(5)).toListElem()).toListElem()
+                listOf(Quote, listOf(Integer(4), Integer(5)).toListElem()).toListElem()
             )
 
             assertEquals(listOf(), zipArgs(input, env))
@@ -86,7 +92,7 @@ class FunctionalTest : BaseEval() {
                 """.trimIndent()
             )
 
-            assertEquals(Num(6), env[Symbol("z")])
+            assertEquals(Integer(6), env[Symbol("z")])
         }
 
         @Test

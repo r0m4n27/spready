@@ -5,8 +5,8 @@ import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.Nil
-import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.Symbol
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -26,18 +26,18 @@ class DefinitionTest {
     fun `createLambda overrideVal`() {
         val lambda = createLambda("test", listOf(Symbol("x")), listOf(Symbol("x")))
 
-        env[Symbol("x")] = Num(3)
+        env[Symbol("x")] = Integer(3)
 
-        assertEquals(Num(5), lambda(env, listOf(Num(5))))
+        assertEquals(Integer(5), lambda(env, listOf(Integer(5))))
     }
 
     @Test
     fun `createLambda empty args`() {
         val lambda = createLambda("test", listOf(), listOf(Symbol("x")))
 
-        env[Symbol("x")] = Num(3)
+        env[Symbol("x")] = Integer(3)
 
-        assertEquals(Num(3), lambda(env, listOf(Num(3))))
+        assertEquals(Integer(3), lambda(env, listOf(Integer(3))))
     }
 
     @Nested
@@ -50,15 +50,15 @@ class DefinitionTest {
                     listOf(Cons(Symbol("x"), Nil), Symbol("x"))
                 ) as Func
 
-            assertEquals(Num(3), lambdaFunc(env, listOf(Num(3))))
+            assertEquals(Integer(3), lambdaFunc(env, listOf(Integer(3))))
         }
 
         @Test
         fun `Lambda Empty args`() {
             val lambdaFunc =
-                Lambda(env, listOf(Nil, Num(3))) as Func
+                Lambda(env, listOf(Nil, Integer(3))) as Func
 
-            assertEquals(Num(3), lambdaFunc(env, listOf()))
+            assertEquals(Integer(3), lambdaFunc(env, listOf()))
         }
 
         @Test
@@ -66,7 +66,7 @@ class DefinitionTest {
             assertFailsWith<EvalException> {
                 Lambda(
                     env,
-                    listOf(Cons(Symbol("x"), Cons(Num(4), Nil)), Symbol("x"))
+                    listOf(Cons(Symbol("x"), Cons(Integer(4), Nil)), Symbol("x"))
                 )
             }
         }
@@ -78,14 +78,14 @@ class DefinitionTest {
         fun `ValEval normal`() {
             env[Symbol("y")] = Symbol("x")
 
-            assertEquals(Num(3), ValEval(env, listOf(Symbol("y"), Num(3))))
-            assertEquals(Num(3), env[Symbol("x")])
+            assertEquals(Integer(3), ValEval(env, listOf(Symbol("y"), Integer(3))))
+            assertEquals(Integer(3), env[Symbol("x")])
         }
 
         @Test
         fun `ValEval fail`() {
             assertFailsWith<EvalException> {
-                ValEval(env, listOf(Symbol("y"), Num(3)))
+                ValEval(env, listOf(Symbol("y"), Integer(3)))
             }
         }
     }
@@ -94,15 +94,15 @@ class DefinitionTest {
     inner class ValTest {
         @Test
         fun `Val normal`() {
-            assertEquals(Num(3), Val(env, listOf(Symbol("y"), Num(3))))
-            assertEquals(Num(3), env[Symbol("y")])
+            assertEquals(Integer(3), Val(env, listOf(Symbol("y"), Integer(3))))
+            assertEquals(Integer(3), env[Symbol("y")])
         }
 
         @Test
         fun `Val fail`() {
             // TODO: Check message
             assertFailsWith<EvalException> {
-                Val(env, listOf(Num(3), Num(3)))
+                Val(env, listOf(Integer(3), Integer(3)))
             }
         }
     }
@@ -121,18 +121,21 @@ class DefinitionTest {
             )
 
             assertEquals(Symbol("test"), funcSymbol)
-            assertEquals(Num(3), env.eval(Cons(Symbol("test"), Cons(Num(3), Nil))))
+            assertEquals(
+                Integer(3),
+                env.eval(Cons(Symbol("test"), Cons(Integer(3), Nil)))
+            )
         }
 
         @Test
         fun `FuncExpr empty args`() {
             val funcSymbol = FunExpr(
                 env,
-                listOf(Symbol("test"), Nil, Num(3))
+                listOf(Symbol("test"), Nil, Integer(3))
             )
 
             assertEquals(Symbol("test"), funcSymbol)
-            assertEquals(Num(3), env.eval(Cons(Symbol("test"), Cons(Nil, Nil))))
+            assertEquals(Integer(3), env.eval(Cons(Symbol("test"), Cons(Nil, Nil))))
         }
 
         @Test
@@ -140,7 +143,7 @@ class DefinitionTest {
             assertFailsWith<EvalException> {
                 FunExpr(
                     env,
-                    listOf(Num(3), Nil, Num(3))
+                    listOf(Integer(3), Nil, Integer(3))
                 )
             }
         }

@@ -26,7 +26,7 @@ class FuncTest {
 
                 return Nil
             }
-        }(env, listOf(Num(1), Num(2)))
+        }(env, listOf(Integer(1), Integer(2)))
     }
 
     @Test
@@ -39,7 +39,7 @@ class FuncTest {
 
                 return Nil
             }
-        }(env, listOf(Num(1), Num(2)))
+        }(env, listOf(Integer(1), Integer(2)))
     }
 
     @Test
@@ -52,7 +52,7 @@ class FuncTest {
 
                 return Nil
             }
-        }(env, listOf(Num(1)))
+        }(env, listOf(Integer(1)))
     }
 
     @Test
@@ -65,7 +65,7 @@ class FuncTest {
 
                 return Nil
             }
-        }(env, listOf(Num(1), Num(2), Symbol("x")))
+        }(env, listOf(Integer(1), Integer(2), Symbol("x")))
     }
 
     @Test
@@ -78,7 +78,7 @@ class FuncTest {
 
                 return Nil
             }
-        }(env, listOf(Num(1), Num(2), Symbol("x")))
+        }(env, listOf(Integer(1), Integer(2), Symbol("x")))
     }
 
     @Test
@@ -91,6 +91,6 @@ class FuncTest {
 
                 return Nil
             }
-        }(env, listOf(Num(1)))
+        }(env, listOf(Integer(1)))
     }
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.EvalException
 import spready.lisp.parse
-import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.Integer
 import spready.lisp.tokenize
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,7 +18,7 @@ class BindingsTest : BaseEval() {
         fun `let normal`() {
             val input = "(let ((x 2)) x)"
 
-            assertEquals(Num(2), env.eval(parse(tokenize(input)).first()))
+            assertEquals(Integer(2), env.eval(parse(tokenize(input)).first()))
         }
 
         @Test
@@ -68,7 +68,7 @@ class BindingsTest : BaseEval() {
         fun `letStar normal`() {
             val input = "(let* ((x 3)(y (+ x 2))) y)"
 
-            assertEquals(Num(5), env.eval(parse(tokenize(input)).first()))
+            assertEquals(Integer(5), env.eval(parse(tokenize(input)).first()))
         }
     }
 

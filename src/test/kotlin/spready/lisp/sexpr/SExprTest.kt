@@ -23,14 +23,14 @@ class SExprTest {
     inner class Cast {
         @Test
         fun `cast success`() {
-            val input: SExpr = Num(3)
+            val input: SExpr = Integer(3)
 
-            assertEquals(Num::class, input.cast<Num>()::class)
+            assertEquals(Integer::class, input.cast<Integer>()::class)
         }
 
         @Test
         fun `cast fail`() {
-            val input: SExpr = Num(3)
+            val input: SExpr = Integer(3)
 
             assertFailsWith<EvalException> {
                 input.cast<Cons>()
@@ -42,7 +42,7 @@ class SExprTest {
     inner class Eval {
         @Test
         fun `eval Symbol success`() {
-            val expected = Num(3)
+            val expected = Integer(3)
             val input = Symbol("3")
 
             env[input] = expected

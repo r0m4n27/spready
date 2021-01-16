@@ -3,8 +3,8 @@ package spready.lisp.functions.forms
 import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.Nil
-import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -25,7 +25,7 @@ class QuotingTest : BaseEval() {
             val input = "'(1 2 3)"
 
             assertEquals(
-                Cons(Num(1), Cons(Num(2), Cons(Num(3), Nil))),
+                Cons(Integer(1), Cons(Integer(2), Cons(Integer(3), Nil))),
                 evalString(input)
             )
         }
@@ -55,7 +55,7 @@ class QuotingTest : BaseEval() {
             val input = "`(1 2 ,(+ 1 2))"
 
             assertEquals(
-                Cons(Num(1), Cons(Num(2), Cons(Num(3), Nil))),
+                Cons(Integer(1), Cons(Integer(2), Cons(Integer(3), Nil))),
                 evalString(input)
             )
         }
@@ -65,7 +65,7 @@ class QuotingTest : BaseEval() {
             val input = "`(1 (2 ,(+ 1 2)))"
 
             assertEquals(
-                Cons(Num(1), Cons(Cons(Num(2), Cons(Num(3), Nil)), Nil)),
+                Cons(Integer(1), Cons(Cons(Integer(2), Cons(Integer(3), Nil)), Nil)),
                 evalString(input)
             )
         }

@@ -6,8 +6,8 @@ import spready.lisp.EvalException
 import spready.lisp.functions.Plus
 import spready.lisp.parse
 import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.Nil
-import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.tokenize
@@ -36,7 +36,7 @@ class ControlFlowTest {
             env[Symbol("if")] = IfExpr
             env[Symbol("+")] = Plus
 
-            assertEquals(Num(4), env.eval(parse(tokenize(input)).first()))
+            assertEquals(Integer(4), env.eval(parse(tokenize(input)).first()))
         }
 
         @Test
@@ -44,7 +44,7 @@ class ControlFlowTest {
             val input = "(if #t 4 5)"
             env[Symbol("if")] = IfExpr
 
-            assertEquals(Num(4), env.eval(parse(tokenize(input)).first()))
+            assertEquals(Integer(4), env.eval(parse(tokenize(input)).first()))
         }
 
         @Test
@@ -52,15 +52,15 @@ class ControlFlowTest {
             val input = "(if #f 4 5)"
             env[Symbol("if")] = IfExpr
 
-            assertEquals(Num(5), env.eval(parse(tokenize(input)).first()))
+            assertEquals(Integer(5), env.eval(parse(tokenize(input)).first()))
         }
 
         @Test
         fun `If nil`() {
-            val input = Cons(IfExpr, Cons(Nil, Cons(Num(4), Cons(Num(5), Nil))))
+            val input = Cons(IfExpr, Cons(Nil, Cons(Integer(4), Cons(Integer(5), Nil))))
             env[Symbol("if")] = IfExpr
 
-            assertEquals(Num(5), env.eval(input))
+            assertEquals(Integer(5), env.eval(input))
         }
     }
 
@@ -76,28 +76,28 @@ class ControlFlowTest {
         fun `Cond only else`() {
             val input = "(cond (else 2))"
             env[Symbol("cond")] = Cond
-            assertEquals(Num(2), evalString(input))
+            assertEquals(Integer(2), evalString(input))
         }
 
         @Test
         fun `Cond after else`() {
             val input = "(cond (#f 1) (else 2) (#f 3))"
             env[Symbol("cond")] = Cond
-            assertEquals(Num(2), evalString(input))
+            assertEquals(Integer(2), evalString(input))
         }
 
         @Test
         fun `Cond multiple`() {
             val input = "(cond (#f 1) (#t 2) (#f 3))"
             env[Symbol("cond")] = Cond
-            assertEquals(Num(2), evalString(input))
+            assertEquals(Integer(2), evalString(input))
         }
 
         @Test
         fun `cond only test`() {
             val input = "(cond (2))"
             env[Symbol("cond")] = Cond
-            assertEquals(Num(2), evalString(input))
+            assertEquals(Integer(2), evalString(input))
         }
 
         @Test
@@ -106,7 +106,7 @@ class ControlFlowTest {
             env[Symbol("cond")] = Cond
             env[Symbol("lambda")] = Lambda
             env[Symbol("+")] = Plus
-            assertEquals(Num(3), evalString(input))
+            assertEquals(Integer(3), evalString(input))
         }
 
         @Test
@@ -150,21 +150,21 @@ class ControlFlowTest {
         fun `case else`() {
             val input = "(case 3 (else 4))"
             env[Symbol("case")] = Case
-            assertEquals(Num(4), evalString(input))
+            assertEquals(Integer(4), evalString(input))
         }
 
         @Test
         fun `case after else`() {
             val input = "(case 3 ((4 5 6) 7) (else 4) ((7 8 9) 10))"
             env[Symbol("case")] = Case
-            assertEquals(Num(4), evalString(input))
+            assertEquals(Integer(4), evalString(input))
         }
 
         @Test
         fun `case normal`() {
             val input = "(case 3 ((1 2) 3) ((3 4 5) 4))"
             env[Symbol("case")] = Case
-            assertEquals(Num(4), evalString(input))
+            assertEquals(Integer(4), evalString(input))
         }
     }
 
@@ -176,7 +176,7 @@ class ControlFlowTest {
 
             val input = "(run 1 2 3)"
 
-            assertEquals(Num(3), env.eval(parse(tokenize(input)).first()))
+            assertEquals(Integer(3), env.eval(parse(tokenize(input)).first()))
         }
 
         @Test

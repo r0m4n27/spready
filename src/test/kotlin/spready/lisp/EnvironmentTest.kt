@@ -2,7 +2,7 @@ package spready.lisp
 
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import kotlin.test.Test
@@ -13,11 +13,12 @@ class EnvironmentTest {
 
     @Test
     fun `env get success`() {
-        val input: MutableMap<Symbol, SExpr> = mutableMapOf(Symbol("123") to Num(123))
+        val input: MutableMap<Symbol, SExpr> =
+            mutableMapOf(Symbol("123") to Integer(123))
 
         val env = Environment(input)
 
-        assertEquals(env[Symbol("123")], Num(123))
+        assertEquals(env[Symbol("123")], Integer(123))
     }
 
     @Test
@@ -30,7 +31,7 @@ class EnvironmentTest {
     @Test
     fun `minus assign success`() {
         val env = Environment()
-        env[Symbol("123")] = Num(123)
+        env[Symbol("123")] = Integer(123)
 
         assertDoesNotThrow {
             env -= Symbol("123")
@@ -52,7 +53,7 @@ class EnvironmentTest {
     fun `registerSExpr normal`() {
         val env = Environment()
 
-        val expected = Num(123)
+        val expected = Integer(123)
         val sym = Symbol("123")
         val expr = Symbol("456")
         env[expr] = expected

@@ -3,8 +3,8 @@ package spready.lisp.functions
 import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.Nil
-import spready.lisp.sexpr.Num
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -21,7 +21,7 @@ class ListTest : BaseEval() {
 
     @Test
     fun `cons normal`() {
-        assertEquals(Cons(Num(1), Num(2)), evalString("(cons 1 2)"))
+        assertEquals(Cons(Integer(1), Integer(2)), evalString("(cons 1 2)"))
     }
 
     @Test
@@ -36,7 +36,7 @@ class ListTest : BaseEval() {
 
     @Test
     fun `head normal`() {
-        assertEquals(Num(1), evalString("(head '(1 2 3))"))
+        assertEquals(Integer(1), evalString("(head '(1 2 3))"))
     }
 
     @Test

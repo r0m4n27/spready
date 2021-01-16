@@ -4,10 +4,10 @@ import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.ListElem
 import spready.lisp.sexpr.ListElem.Companion.toListElem
 import spready.lisp.sexpr.Nil
-import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
@@ -69,7 +69,7 @@ object ConsLength : Func("len") {
         args.checkSize(1)
 
         val evaluated = env.eval(args[0]).cast<ListElem>()
-        return Num(evaluated.toList().size)
+        return Integer(evaluated.toList().size)
     }
 }
 
@@ -108,7 +108,7 @@ object GetCons : Func("get") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
         val consList = env.eval(args[1]).cast<ListElem>().toList()
-        val pos = env.eval(args[0]).cast<Num>()
+        val pos = env.eval(args[0]).cast<Integer>()
 
         if (pos.value < 0) {
             throw EvalException("Position cant be negative!")
@@ -126,7 +126,7 @@ object Sublist : Func("sublist") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
         val evaluated = env.eval(args[1])
-        val pos = env.eval(args[0]).cast<Num>()
+        val pos = env.eval(args[0]).cast<Integer>()
 
         if (pos.value < 0) {
             throw EvalException("Position cant be negative!")

@@ -19,24 +19,24 @@ class ListElemTest : BaseEval() {
     inner class Iterable {
         @Test
         fun `cons iterable normal`() {
-            val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Nil))
-            val expected = listOf(Cons(Num(3), Nil), Symbol("123"))
+            val input = Cons(Cons(Integer(3), Nil), Cons(Symbol("123"), Nil))
+            val expected = listOf(Cons(Integer(3), Nil), Symbol("123"))
 
             assertEquals(expected, input.toList())
         }
 
         @Test
         fun `cons iterable non nil end`() {
-            val input = Cons(Cons(Num(3), Nil), Cons(Symbol("123"), Num(3)))
-            val expected = listOf(Cons(Num(3), Nil), Symbol("123"), Num(3))
+            val input = Cons(Cons(Integer(3), Nil), Cons(Symbol("123"), Integer(3)))
+            val expected = listOf(Cons(Integer(3), Nil), Symbol("123"), Integer(3))
 
             assertEquals(expected, input.toList())
         }
 
         @Test
         fun `cons iterable nil`() {
-            val input = Cons(Nil, Cons(Nil, Cons(Num(3), Nil)))
-            val expected = listOf(Nil, Nil, Num(3))
+            val input = Cons(Nil, Cons(Nil, Cons(Integer(3), Nil)))
+            val expected = listOf(Nil, Nil, Integer(3))
 
             assertEquals(expected, input.toList())
         }
@@ -60,7 +60,7 @@ class ListElemTest : BaseEval() {
 
         @Test
         fun `toListElem normal`() {
-            val values = listOf(Num(123), Nil, Str("123"))
+            val values = listOf(Integer(123), Nil, Str("123"))
 
             var cons: SExpr = values.toListElem()
             values.forEach {
@@ -76,8 +76,8 @@ class ListElemTest : BaseEval() {
     inner class ToConsWithTailTest {
         @Test
         fun `toConsWithTail normal`() {
-            val input = listOf(Num(1), Num(2), Num(3))
-            val expected = Cons(Num(1), Cons(Num(2), Num(3)))
+            val input = listOf(Integer(1), Integer(2), Integer(3))
+            val expected = Cons(Integer(1), Cons(Integer(2), Integer(3)))
 
             assertEquals(expected, input.toConsWithTail())
         }
@@ -91,7 +91,7 @@ class ListElemTest : BaseEval() {
 
         @Test
         fun `toConsWithTail fail one`() {
-            val input = listOf<SExpr>(Num(1))
+            val input = listOf<SExpr>(Integer(1))
 
             assertFailsWith<IllegalArgumentException> { input.toConsWithTail() }
         }
@@ -101,21 +101,22 @@ class ListElemTest : BaseEval() {
     inner class ToString {
         @Test
         fun `Cons ToString nested`() {
-            val input = Cons(Num(1), Cons(Num(2), Cons(Num(3), Nil)))
+            val input = Cons(Integer(1), Cons(Integer(2), Cons(Integer(3), Nil)))
             val expected = "(1 2 3)"
             assertEquals(expected, input.toString())
         }
 
         @Test
         fun `Cons toString nested`() {
-            val input = Cons(Cons(Num(1), Cons(Num(2), Nil)), Cons(Num(3), Nil))
+            val input =
+                Cons(Cons(Integer(1), Cons(Integer(2), Nil)), Cons(Integer(3), Nil))
             val expected = "((1 2) 3)"
             assertEquals(expected, input.toString())
         }
 
         @Test
         fun `Cons toString end is not Nil`() {
-            val input = Cons(Num(1), Cons(Num(2), Num(3)))
+            val input = Cons(Integer(1), Cons(Integer(2), Integer(3)))
             val expected = "(1 2 . 3)"
             assertEquals(expected, input.toString())
         }
@@ -125,7 +126,7 @@ class ListElemTest : BaseEval() {
     inner class Eval {
         @Test
         fun `eval Cons fail`() {
-            val input = Cons(Num(3), Cons(Num(2), Nil))
+            val input = Cons(Integer(3), Cons(Integer(2), Nil))
 
             assertFailsWith<EvalException> {
                 input.eval(env)
@@ -134,15 +135,15 @@ class ListElemTest : BaseEval() {
 
         @Test
         fun `eval Cons were second arg is Cons`() {
-            val input = Cons(Plus, Cons(Num(2), Cons(Num(3), Nil)))
-            val expected = Num(5)
+            val input = Cons(Plus, Cons(Integer(2), Cons(Integer(3), Nil)))
+            val expected = Integer(5)
 
             assertEquals(expected, input.eval(env))
         }
 
         @Test
         fun `eval Cons were second arg is not Cons`() {
-            val expected = Num(3)
+            val expected = Integer(3)
 
             val func = object : Func("Test") {
                 override fun invoke(env: Environment, args: List<SExpr>): SExpr {
@@ -191,12 +192,12 @@ class ListElemTest : BaseEval() {
 
         @Test
         fun `cons head`() {
-            assertEquals(Num(3), Cons(Num(3), Num(4)).head)
+            assertEquals(Integer(3), Cons(Integer(3), Integer(4)).head)
         }
 
         @Test
         fun `cons tail`() {
-            assertEquals(Num(4), Cons(Num(3), Num(4)).tail)
+            assertEquals(Integer(4), Cons(Integer(3), Integer(4)).tail)
         }
     }
 }

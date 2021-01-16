@@ -4,10 +4,12 @@ import spready.lisp.functions.forms.Quasiquote
 import spready.lisp.functions.forms.Quote
 import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Flt
+import spready.lisp.sexpr.Fraction
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.ListElem.Companion.toConsWithTail
 import spready.lisp.sexpr.ListElem.Companion.toListElem
 import spready.lisp.sexpr.Nil
-import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
@@ -41,28 +43,42 @@ fun parse(tokens: List<Token>): List<SExpr> {
 fun parseAtom(token: Token): SExpr {
     return when (token.type) {
         TokenType.String -> Str(token.value)
-        TokenType.Special -> parseSpecial(token)
-        TokenType.Symbol -> {
-            if (token.value == "nil") {
-                Nil
-            } else {
-
-                try {
-                    Num(token.value.toInt())
-                } catch (_: NumberFormatException) {
-                    Symbol(token.value)
-                }
-            }
-        }
+        TokenType.Special -> parseSpecial(token.value)
+        TokenType.Symbol -> parseSymbol(token.value)
         else -> throw IllegalArgumentException("$token isn't an atom!")
     }
 }
 
-fun parseSpecial(token: Token): SExpr {
-    return when (token.value) {
+fun parseSymbol(value: String): SExpr {
+    if (value == "nil") {
+        return Nil
+    }
+
+    val floatRegex = Regex("""-?\d+\.\d+""")
+    val fractionRegex = Regex("""(-?\d+)/(\d+)""")
+
+    if (value.matches(floatRegex)) {
+        return Flt(value.toDouble())
+    }
+
+    val match = fractionRegex.matchEntire(value)
+    if (match != null) {
+        val (num, den) = match.destructured
+        return Fraction.create(num.toInt(), den.toInt())
+    }
+
+    return try {
+        Integer(value.toInt())
+    } catch (_: NumberFormatException) {
+        Symbol(value)
+    }
+}
+
+fun parseSpecial(value: String): SExpr {
+    return when (value) {
         "#t" -> Bool(true)
         "#f" -> Bool(false)
-        else -> throw IllegalArgumentException("Can't parse Special Token $token")
+        else -> throw IllegalArgumentException("Can't parse Special $value!")
     }
 }
 

@@ -29,14 +29,6 @@ data class Str(val value: String) : SExpr, Comparable<Str> {
     }
 }
 
-data class Num(val value: Int) : SExpr, Comparable<Num> {
-    override fun toString() = value.toString()
-
-    override fun compareTo(other: Num): Int {
-        return value.compareTo(other.value)
-    }
-}
-
 data class Bool(val value: Boolean) : SExpr {
     override fun toString() = value.toString()
     override fun toBool(): Bool = this

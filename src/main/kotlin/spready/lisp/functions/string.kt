@@ -3,7 +3,7 @@ package spready.lisp.functions
 import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.sexpr.Func
-import spready.lisp.sexpr.Num
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
@@ -13,14 +13,14 @@ object StrLength : Func("string-length") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
 
-        return Num(env.eval(args[0]).cast<Str>().value.length)
+        return Integer(env.eval(args[0]).cast<Str>().value.length)
     }
 }
 
 object StrGet : Func("string-get") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
-        val index = env.eval(args[0]).cast<Num>().value
+        val index = env.eval(args[0]).cast<Integer>().value
         val str = env.eval(args[1]).cast<Str>().value
 
         if (index < 0) {
@@ -38,7 +38,7 @@ object StrGet : Func("string-get") {
 object ReplaceChar : Func("replace-char") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(3)
-        val index = env.eval(args[0]).cast<Num>().value
+        val index = env.eval(args[0]).cast<Integer>().value
         val newChar = env.eval(args[1]).cast<Str>().value
         val str = env.eval(args[2]).cast<Str>().value
 
@@ -64,7 +64,7 @@ object ReplaceChar : Func("replace-char") {
 object SubstringFunc : Func("substring") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
-        val index = env.eval(args[0]).cast<Num>().value
+        val index = env.eval(args[0]).cast<Integer>().value
         val str = env.eval(args[1]).cast<Str>()
 
         if (index < 0) {

@@ -4,8 +4,8 @@ import org.junit.jupiter.api.TestInstance
 import spready.lisp.Environment
 import spready.lisp.EvalException
 import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.Nil
-import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.Symbol
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -22,49 +22,63 @@ class MathTest {
     }
 
     @Test
-    fun `reduceToNum success`() {
-        val input = listOf(Num(1), Num(2), Num(3))
-        val expected = Num(6)
+    fun `reduceToInteger success`() {
+        val input = listOf(Integer(1), Integer(2), Integer(3))
+        val expected = Integer(6)
 
-        assertEquals(expected, reduceToNum(input, Int::plus))
+        assertEquals(expected, reduceToInteger(input, Int::plus))
     }
 
     @Test
-    fun `reduceToNum fail`() {
-        val input = listOf(Num(1), Symbol("123"), Num(3))
+    fun `reduceToInteger fail`() {
+        val input = listOf(Integer(1), Symbol("123"), Integer(3))
 
         assertFailsWith<EvalException> {
-            reduceToNum(input, Int::plus)
+            reduceToInteger(input, Int::plus)
         }
     }
 
     @Test
     fun `Plus normal`() {
-        val input = Cons(Plus, Cons(Num(1), Cons(Num(2), Cons(Num(3), Nil))))
-        val expected = Num(6)
+        val input =
+            Cons(Plus, Cons(Integer(1), Cons(Integer(2), Cons(Integer(3), Nil))))
+        val expected = Integer(6)
         assertEquals(expected, input.eval(env))
     }
 
     @Test
     fun `Minus normal`() {
-        val input = Cons(Minus, Cons(Num(10), Cons(Num(2), Cons(Num(3), Nil))))
-        val expected = Num(5)
+        val input =
+            Cons(Minus, Cons(Integer(10), Cons(Integer(2), Cons(Integer(3), Nil))))
+        val expected = Integer(5)
         assertEquals(expected, input.eval(env))
     }
 
     @Test
     fun `Times normal`() {
         val input =
-            Cons(Times, Cons(Num(1), Cons(Num(2), Cons(Num(3), Cons(Num(4), Nil)))))
-        val expected = Num(24)
+            Cons(
+                Times,
+                Cons(
+                    Integer(1),
+                    Cons(Integer(2), Cons(Integer(3), Cons(Integer(4), Nil)))
+                )
+            )
+        val expected = Integer(24)
         assertEquals(expected, input.eval(env))
     }
 
     @Test
     fun `Times zero`() {
         val input =
-            Cons(Times, Cons(Num(1), Cons(Num(2), Cons(Num(0), Cons(Num(4), Nil)))))
-        val expected = Num(0)
+            Cons(
+                Times,
+                Cons(
+                    Integer(1),
+                    Cons(Integer(2), Cons(Integer(0), Cons(Integer(4), Nil)))
+                )
+            )
+        val expected = Integer(0)
         assertEquals(expected, input.eval(env))
     }
 }

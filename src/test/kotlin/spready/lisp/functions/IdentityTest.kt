@@ -39,7 +39,10 @@ class IdentityTest : BaseEval() {
             "(num? 1)",
             "(bool? #t)",
             "(symbol? 'x)",
-            "(func? +)"
+            "(func? +)",
+            "(int? 1)",
+            "(fraction? 9/4)",
+            "(float? 3.123)"
         )
 
     @ParameterizedTest

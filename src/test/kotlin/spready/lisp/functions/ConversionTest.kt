@@ -74,23 +74,43 @@ class ConversionTest : BaseEval() {
     @Nested
     inner class ToNumTest {
         @Test
-        fun `toNum num`() {
-            equalsEval("123", "(to-num 123)")
+        fun `toInt num`() {
+            equalsEval("123", "(to-int 123)")
         }
 
         @Test
-        fun `toNum str`() {
-            equalsEval("123", "(to-num \"123\")")
+        fun `toInt str`() {
+            equalsEval("123", "(to-int \"123\")")
         }
 
         @Test
-        fun `toNum str fail`() {
+        fun `toInt str fail`() {
             failsEval("(to-num \"abc\")")
         }
 
         @Test
-        fun `toNum fail`() {
+        fun `toInt fail`() {
             failsEval("(to-num '(1 2 3))")
+        }
+
+        @Test
+        fun `toFrac fail zero`() {
+            failsEval("""(to-fraction "9/0")""")
+        }
+
+        @Test
+        fun `toFrac fail negative`() {
+            failsEval("""(to-fraction "9/-1")""")
+        }
+
+        @Test
+        fun `toFrac normal`() {
+            equalsEval("2/4", """(to-fraction "16/32")""")
+        }
+
+        @Test
+        fun `toFloat normal`() {
+            equalsEval("-123.1", """(to-float "-123.1")""")
         }
     }
 

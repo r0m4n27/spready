@@ -3,7 +3,10 @@ package spready.lisp.functions
 import spready.lisp.Environment
 import spready.lisp.sexpr.Bool
 import spready.lisp.sexpr.Cons
+import spready.lisp.sexpr.Flt
+import spready.lisp.sexpr.Fraction
 import spready.lisp.sexpr.Func
+import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.ListElem
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Num
@@ -54,11 +57,18 @@ object IsList : Func("list?") {
 
 fun identityFunctions(): List<Pair<Symbol, Func>> {
     return listOf(
-        Pair(Symbol("str?"), createIdentity<Str>("str?")),
-        Pair(Symbol("symbol?"), createIdentity<Symbol>("symbol?")),
-        Pair(Symbol("num?"), createIdentity<Num>("num?")),
-        Pair(Symbol("bool?"), createIdentity<Bool>("bool?")),
-        Pair(Symbol("nil?"), createIdentity<Nil>("nil?")),
-        Pair(Symbol("func?"), createIdentity<Func>("func?"))
-    ) + listOf(Pair(Symbol("pair?"), IsPair), Pair(Symbol("list?"), IsList))
+        createIdentity<Str>("str?"),
+        createIdentity<Symbol>("symbol?"),
+        createIdentity<Num>("num?"),
+        createIdentity<Bool>("bool?"),
+        createIdentity<Nil>("nil?"),
+        createIdentity<Func>("func?"),
+        createIdentity<Integer>("int?"),
+        createIdentity<Flt>("float?"),
+        createIdentity<Fraction>("fraction?"),
+        IsPair,
+        IsList
+    ).map {
+        Pair(Symbol(it.name), it)
+    }
 }

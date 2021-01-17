@@ -1,6 +1,5 @@
 package spready.lisp.functions
 
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -41,6 +40,16 @@ class EqualityTest : BaseEval() {
         @Test
         fun `Eq lambda`() {
             equalsEval("#f", "(= (lambda (x) x) (lambda (x) x))")
+        }
+
+        @Test
+        fun `Eq int and frac`() {
+            equalsEval("#t", "(= 3 9/3)")
+        }
+
+        @Test
+        fun `Eq float and frac`() {
+            equalsEval("#t", "(= 3.0 9/3)")
         }
     }
 
@@ -97,7 +106,6 @@ class EqualityTest : BaseEval() {
 
         @ParameterizedTest
         @MethodSource("compareMultipleProvider")
-        @Disabled
         fun `compare multiple`(data: Pair<String, String>) {
             equalsEval(data.first, data.second)
         }

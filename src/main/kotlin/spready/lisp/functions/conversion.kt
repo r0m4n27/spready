@@ -2,6 +2,8 @@ package spready.lisp.functions
 
 import spready.lisp.Environment
 import spready.lisp.EvalException
+import spready.lisp.sexpr.Flt
+import spready.lisp.sexpr.Fraction
 import spready.lisp.sexpr.Func
 import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.ListElem
@@ -35,6 +37,7 @@ val toListConv = createConv("to-list") { sExpr ->
 object ToStringFunc : Func("to-str") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
+
         return convertSingleValue(env.eval(args[0]))
     }
 
@@ -57,17 +60,51 @@ object ToStringFunc : Func("to-str") {
     }
 }
 
-val toNumConv = createConv("to-num") {
+val toIntConv = createConv("to-int") {
     when (it) {
-        is Num -> it
+        is Num -> it.toInteger()
         is Str -> {
             try {
                 Integer(it.value.toInt())
             } catch (_: NumberFormatException) {
-                throw EvalException("Can't convert $it to num!")
+                throw EvalException("Can't convert $it to int!")
             }
         }
-        else -> throw EvalException("Can't convert $it to num!")
+        else -> throw EvalException("Can't convert $it to int!")
+    }
+}
+
+val toFltConv = createConv("to-float") {
+    when (it) {
+        is Num -> it.toFlt()
+        is Str -> {
+            try {
+                Flt(it.value.toDouble())
+            } catch (_: NumberFormatException) {
+                throw EvalException("Can't convert $it to float!")
+            }
+        }
+        else -> throw EvalException("Can't convert $it to float!")
+    }
+}
+
+val toFractionConv = createConv("to-fraction") {
+    when (it) {
+        is Num -> it.toFraction()
+        is Str -> {
+            try {
+                val fractionRegex = Regex("""(-?\d+)/(\d+)""")
+                val match = fractionRegex.matchEntire(it.value)
+                    ?: throw EvalException("Can't convert $it to fraction!")
+
+                val (num, den) = match.destructured
+
+                Fraction.create(num.toInt(), den.toInt())
+            } catch (_: NumberFormatException) {
+                throw EvalException("Can't convert $it to fraction!")
+            }
+        }
+        else -> throw EvalException("Can't convert $it to fraction!")
     }
 }
 
@@ -85,7 +122,15 @@ val toSymbolConv = createConv("to-symbol") {
 
 fun conversionFunctions(): List<Pair<Symbol, Func>> {
 
-    return listOf(toListConv, toNumConv, toBoolConv, toSymbolConv, ToStringFunc).map {
+    return listOf(
+        toListConv,
+        toIntConv,
+        toFltConv,
+        toFractionConv,
+        toBoolConv,
+        toSymbolConv,
+        ToStringFunc
+    ).map {
         Pair(Symbol(it.name), it)
     }
 }

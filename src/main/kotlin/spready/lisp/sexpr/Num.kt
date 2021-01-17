@@ -9,6 +9,20 @@ sealed class Num : SExpr, Comparable<Num> {
     abstract fun toInteger(): Integer
     abstract fun toFraction(): Fraction
 
+    abstract operator fun plus(other: Num): Num
+    abstract operator fun times(other: Num): Num
+
+    abstract operator fun unaryMinus(): Num
+    abstract fun invert(): Num
+
+    operator fun minus(other: Num): Num {
+        return this + (-other)
+    }
+
+    operator fun div(other: Num): Num {
+        return this * other.invert()
+    }
+
     companion object {
         fun gcd(x: Int, y: Int): Int {
             var a = if (x >= 0) x else -x
@@ -44,17 +58,37 @@ class Integer(val value: Int) : Num() {
 
     override fun toFraction() = Fraction.create(value, 1)
 
-    override fun equals(other: Any?): Boolean {
-        if (other !is Num) {
-            return false
+    override fun plus(other: Num): Num {
+        return when (other) {
+            is Integer -> Integer(value + other.value)
+            is Flt -> Flt(value.toDouble() + other.value)
+            is Fraction -> Fraction.create(
+                (value * other.denominator) + other.numerator,
+                other.denominator
+            )
         }
-
-        return compareTo(other) == 0
     }
 
-    override fun hashCode(): Int {
-        return value.hashCode()
+    override fun times(other: Num): Num {
+        return when (other) {
+            is Integer -> Integer(value * other.value)
+            is Flt -> Flt(value.toDouble() * other.value)
+            is Fraction -> Fraction.create(value * other.numerator, other.denominator)
+        }
     }
+
+    override fun unaryMinus() = Integer(-value)
+    override fun invert(): Num = Fraction.create(1, value)
+
+    override fun equals(other: Any?): Boolean {
+        return if (other !is Num) {
+            return false
+        } else {
+            compareTo(other) == 0
+        }
+    }
+
+    override fun hashCode() = value.hashCode()
 }
 
 class Flt(val value: Double) : Num() {
@@ -79,6 +113,25 @@ class Flt(val value: Double) : Num() {
             throw EvalException("Cant convert float to a fraction!")
         }
     }
+
+    override fun plus(other: Num): Num {
+        return when (other) {
+            is Integer -> other + this
+            is Flt -> Flt(value + other.value)
+            is Fraction -> Flt(value + other.toFlt().value)
+        }
+    }
+
+    override fun times(other: Num): Num {
+        return when (other) {
+            is Integer -> other * this
+            is Flt -> Flt(value * other.value)
+            is Fraction -> Flt(value * other.toFlt().value)
+        }
+    }
+
+    override fun unaryMinus() = Flt(-value)
+    override fun invert(): Num = Flt(1.0 / value)
 
     override fun equals(other: Any?): Boolean {
         if (other !is Num) {
@@ -107,8 +160,10 @@ class Fraction private constructor(
             is Flt -> -other.compareTo(this)
             is Fraction -> {
                 val lcm = lcm(denominator, other.denominator)
+                val extendedNum = (numerator * (lcm / denominator))
+                val otherExtendedNum = other.numerator * (lcm / other.denominator)
 
-                (numerator * lcm).compareTo(other.numerator * lcm)
+                extendedNum.compareTo(otherExtendedNum)
             }
         }
     }
@@ -120,6 +175,34 @@ class Fraction private constructor(
     }
 
     override fun toFraction() = this
+
+    override fun plus(other: Num): Num {
+        return when (other) {
+            is Integer -> other + this
+            is Flt -> other + this
+            is Fraction -> {
+                val lcm = lcm(denominator, other.denominator)
+                val extendedNum = numerator * (lcm / denominator)
+                val extendedNumOther = other.numerator * (lcm / other.denominator)
+
+                create(extendedNum + extendedNumOther, lcm)
+            }
+        }
+    }
+
+    override fun times(other: Num): Num {
+        return when (other) {
+            is Integer -> other * this
+            is Flt -> other * this
+            is Fraction -> create(
+                numerator * other.numerator,
+                denominator * other.denominator
+            )
+        }
+    }
+
+    override fun unaryMinus() = create(-numerator, denominator)
+    override fun invert(): Num = create(denominator, numerator)
 
     override fun equals(other: Any?): Boolean {
         if (other !is Num) {

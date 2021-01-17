@@ -1,26 +1,16 @@
-package spready.lisp.functions
+package spready.lisp.functions.math
 
-import org.junit.jupiter.api.TestInstance
-import spready.lisp.Environment
+import spready.lisp.BaseEval
 import spready.lisp.EvalException
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.Nil
 import spready.lisp.sexpr.Symbol
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MathTest {
-    private var env = Environment()
-
-    @BeforeTest
-    fun resetEnv() {
-        env = Environment()
-    }
-
+class ArithmeticTest : BaseEval() {
     @Test
     fun `reduceToInteger success`() {
         val input = listOf(Integer(1), Integer(2), Integer(3))

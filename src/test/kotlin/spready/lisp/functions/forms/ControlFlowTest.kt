@@ -3,7 +3,7 @@ package spready.lisp.functions.forms
 import org.junit.jupiter.api.Nested
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.functions.Plus
+import spready.lisp.functions.math.Plus
 import spready.lisp.parse
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Integer

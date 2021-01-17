@@ -1,4 +1,4 @@
-package spready.lisp.functions
+package spready.lisp.functions.math
 
 import spready.lisp.Environment
 import spready.lisp.sexpr.Func
@@ -38,7 +38,7 @@ object Times : Func("*") {
     }
 }
 
-fun mathFunctions(): List<Pair<Symbol, Func>> {
+fun arithmeticFunctions(): List<Pair<Symbol, Func>> {
     return listOf(Plus, Minus, Times).map {
         Pair(Symbol(it.name), it)
     }

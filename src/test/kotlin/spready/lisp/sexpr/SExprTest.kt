@@ -29,6 +29,15 @@ class SExprTest {
         }
 
         @Test
+        fun `cast multiple`() {
+            val input: List<SExpr> = listOf(Integer(3), Integer(3))
+
+            input.cast<Integer>().forEach {
+                assertEquals(Integer::class, it::class)
+            }
+        }
+
+        @Test
         fun `cast fail`() {
             val input: SExpr = Integer(3)
 

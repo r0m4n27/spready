@@ -13,6 +13,12 @@ inline fun <reified T : SExpr> SExpr.cast(): T {
         ?: throw EvalException("Expected ${T::class.simpleName} got $this!")
 }
 
+inline fun <reified T : SExpr> Iterable<SExpr>.cast(): List<T> {
+    return this.map {
+        it.cast()
+    }
+}
+
 data class Symbol(val value: String) : SExpr {
     override fun eval(env: Environment): SExpr {
         return env[this]

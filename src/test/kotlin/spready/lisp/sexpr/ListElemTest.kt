@@ -3,12 +3,8 @@ package spready.lisp.sexpr
 import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.Environment
-import spready.lisp.EvalException
-import spready.lisp.functions.math.plus
-import spready.lisp.parse
 import spready.lisp.sexpr.ListElem.Companion.toConsWithTail
 import spready.lisp.sexpr.ListElem.Companion.toListElem
-import spready.lisp.tokenize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -126,19 +122,12 @@ class ListElemTest : BaseEval() {
     inner class Eval {
         @Test
         fun `eval Cons fail`() {
-            val input = Cons(Integer(3), Cons(Integer(2), Nil))
-
-            assertFailsWith<EvalException> {
-                input.eval(env)
-            }
+            failsEval("(3 2)")
         }
 
         @Test
         fun `eval Cons were second arg is Cons`() {
-            val input = Cons(plus, Cons(Integer(2), Cons(Integer(3), Nil)))
-            val expected = Integer(5)
-
-            assertEquals(expected, input.eval(env))
+            equalsEval("5", "(+ 2 3)")
         }
 
         @Test
@@ -155,26 +144,6 @@ class ListElemTest : BaseEval() {
 
             val input = Cons(func, expected)
             input.eval(env)
-        }
-
-        @Test
-        fun `eval Unquote fail`() {
-            val input = ",(+ 1 2)"
-            env[Symbol("+")] = plus
-
-            assertFailsWith<EvalException> {
-                env.eval(parse(tokenize(input)))
-            }
-        }
-
-        @Test
-        fun `eval UnquoteSplice fail`() {
-            val input = ",@(+ 1 2)"
-            env[Symbol("+")] = plus
-
-            assertFailsWith<EvalException> {
-                env.eval(parse(tokenize(input)))
-            }
         }
     }
 

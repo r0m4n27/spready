@@ -38,7 +38,7 @@ fun parse(tokens: List<Token>): List<SExpr> {
 
         return expressions
     } else {
-        throw IllegalArgumentException("No Tokens were Provided")
+        return listOf()
     }
 }
 

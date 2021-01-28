@@ -84,15 +84,12 @@ class TokenizerTest {
 
     @Test
     fun `tokenize Quote`() {
-        val input = "1 2 '(3 4)"
+        val input = "2 '()"
 
         val expected = listOf(
-            Token(TokenType.Symbol, "1"),
             Token(TokenType.Symbol, "2"),
             Token(TokenType.Quote, "'"),
             Token(TokenType.OpenParen, "("),
-            Token(TokenType.Symbol, "3"),
-            Token(TokenType.Symbol, "4"),
             Token(TokenType.CloseParen, ")")
         )
 
@@ -101,15 +98,11 @@ class TokenizerTest {
 
     @Test
     fun `tokenize Quasiquote`() {
-        val input = "1 2 `(3 4)"
+        val input = "`()"
 
         val expected = listOf(
-            Token(TokenType.Symbol, "1"),
-            Token(TokenType.Symbol, "2"),
             Token(TokenType.Quasiquote, "`"),
             Token(TokenType.OpenParen, "("),
-            Token(TokenType.Symbol, "3"),
-            Token(TokenType.Symbol, "4"),
             Token(TokenType.CloseParen, ")")
         )
 
@@ -118,14 +111,11 @@ class TokenizerTest {
 
     @Test
     fun `tokenize Unquote`() {
-        val input = "1 2 `(3 ,4)"
+        val input = "`(,4)"
 
         val expected = listOf(
-            Token(TokenType.Symbol, "1"),
-            Token(TokenType.Symbol, "2"),
             Token(TokenType.Quasiquote, "`"),
             Token(TokenType.OpenParen, "("),
-            Token(TokenType.Symbol, "3"),
             Token(TokenType.Unquote, ","),
             Token(TokenType.Symbol, "4"),
 
@@ -137,14 +127,11 @@ class TokenizerTest {
 
     @Test
     fun `tokenize UnquoteSplice`() {
-        val input = "1 2 `(3 ,@4)"
+        val input = "`(,@4)"
 
         val expected = listOf(
-            Token(TokenType.Symbol, "1"),
-            Token(TokenType.Symbol, "2"),
             Token(TokenType.Quasiquote, "`"),
             Token(TokenType.OpenParen, "("),
-            Token(TokenType.Symbol, "3"),
             Token(TokenType.UnquoteSplice, ",@"),
             Token(TokenType.Symbol, "4"),
             Token(TokenType.CloseParen, ")")

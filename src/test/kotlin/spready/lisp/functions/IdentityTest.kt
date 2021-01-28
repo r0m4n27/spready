@@ -1,35 +1,23 @@
 package spready.lisp.functions
 
 import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import spready.lisp.BaseEval
-import spready.lisp.EvalException
-import spready.lisp.sexpr.Bool
 import java.util.stream.Stream
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IdentityTest : BaseEval() {
 
     @Test
     fun `identity to many args`() {
-        val input = "(nil? 1 2 3)"
-
-        assertThrows<EvalException> {
-            evalString(input)
-        }
+        failsEval("(nil? 1 2 3)")
     }
 
     @Test
     fun `identity zero args`() {
-        val input = "(nil?)"
-
-        assertThrows<EvalException> {
-            evalString(input)
-        }
+        failsEval("(nil?)")
     }
 
     private fun identityNormalProvider() =
@@ -48,15 +36,12 @@ class IdentityTest : BaseEval() {
     @ParameterizedTest
     @MethodSource("identityNormalProvider")
     fun `identity normal`(data: String) {
-
-        assertEquals(Bool(true), evalString(data))
+        equalsEval("#t", data)
     }
 
     @Test
     fun `identity list`() {
-        val input = "(list? '(1 2 3))"
-
-        assertEquals(Bool(true), evalString(input))
+        equalsEval("#t", "(list? '(1 2 3))")
     }
 
     @Test
@@ -66,22 +51,16 @@ class IdentityTest : BaseEval() {
 
     @Test
     fun `identity empty list`() {
-        val input = "(list? '())"
-
-        assertEquals(Bool(true), evalString(input))
+        equalsEval("#t", "(list? '())")
     }
 
     @Test
     fun `identity pair`() {
-        val input = "(pair? (cons 1 2))"
-
-        assertEquals(Bool(true), evalString(input))
+        equalsEval("#t", "(pair? (cons 1 2))")
     }
 
     @Test
     fun `identity not pair`() {
-        val input = "(pair? (cons 1 nil))"
-
-        assertEquals(Bool(false), evalString(input))
+        equalsEval("#f", "(pair? (cons 1 nil))")
     }
 }

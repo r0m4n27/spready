@@ -1,19 +1,13 @@
 package spready.lisp.sexpr
 
 import org.junit.jupiter.api.assertDoesNotThrow
+import spready.lisp.BaseEval
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class FuncTest {
-    private var env = Environment()
-
-    @BeforeTest
-    fun resetEnv() {
-        env = Environment()
-    }
+class FuncTest : BaseEval() {
 
     @Test
     fun `checkSize normal`() {

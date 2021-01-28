@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Integer
-import spready.lisp.sexpr.Nil
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -26,37 +25,37 @@ class ListTest : BaseEval() {
 
     @Test
     fun `head nil`() {
-        assertEquals(Nil, evalString("(head nil)"))
+        equalsEval("nil", "(head nil)")
     }
 
     @Test
     fun `tail nil`() {
-        assertEquals(Nil, evalString("(tail nil)"))
+        equalsEval("nil", "(tail nil)")
     }
 
     @Test
     fun `head normal`() {
-        assertEquals(Integer(1), evalString("(head '(1 2 3))"))
+        equalsEval("1", "(head '(1 2 3))")
     }
 
     @Test
     fun `tail normal`() {
-        assertEquals(evalString("'(2 3)"), evalString("(tail '(1 2 3))"))
+        equalsEval("'(2 3)", "(tail '(1 2 3))")
     }
 
     @Test
     fun `set-head normal`() {
-        assertEquals(evalString("'(12 2 3)"), evalString("(set-head '(1 2 3) 12 )"))
+        equalsEval("'(12 2 3)", "(set-head '(1 2 3) 12)")
     }
 
     @Test
     fun `set-tail normal`() {
-        assertEquals(evalString("'(1 4 5)"), evalString("(set-tail '(1 2 3) '(4 5))"))
+        equalsEval("'(1 4 5)", "(set-tail '(1 2 3) '(4 5))")
     }
 
     @Test
     fun `cons length`() {
-        assertEquals(evalString("3"), evalString("(len '(1 2 3))"))
+        equalsEval("3", "(len '(1 2 3))")
     }
 
     @Test
@@ -66,7 +65,7 @@ class ListTest : BaseEval() {
 
     @Test
     fun `append single`() {
-        assertEquals(evalString("'(1 2 3)"), evalString("(append '(1) 2 3)"))
+        equalsEval("'(1 2 3)", "(append '(1) 2 3)")
     }
 
     @Test
@@ -84,12 +83,12 @@ class ListTest : BaseEval() {
 
     @Test
     fun `reverse normal`() {
-        assertEquals(evalString("'(3 2 1)"), evalString("(reverse '(1 2 3))"))
+        equalsEval("'(3 2 1)", "(reverse '(1 2 3))")
     }
 
     @Test
     fun `reverse empty`() {
-        assertEquals(evalString("'()"), evalString("(reverse '())"))
+        equalsEval("'()", "'()")
     }
 
     @Test

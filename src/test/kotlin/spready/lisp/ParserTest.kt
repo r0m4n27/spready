@@ -289,9 +289,7 @@ class ParserTest {
 
         @Test
         fun `parse empty list`() {
-            assertThrows<IllegalArgumentException> {
-                parse(listOf())
-            }
+            assertEquals(listOf(), parse(listOf()))
         }
 
         @Test

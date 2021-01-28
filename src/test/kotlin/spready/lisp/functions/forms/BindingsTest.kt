@@ -2,13 +2,7 @@ package spready.lisp.functions.forms
 
 import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
-import spready.lisp.EvalException
-import spready.lisp.parse
-import spready.lisp.sexpr.Integer
-import spready.lisp.tokenize
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 class BindingsTest : BaseEval() {
 
@@ -16,36 +10,22 @@ class BindingsTest : BaseEval() {
     inner class LetTest {
         @Test
         fun `let normal`() {
-            val input = "(let ((x 2)) x)"
-
-            assertEquals(Integer(2), env.eval(parse(tokenize(input)).first()))
+            equalsEval("2", "(let ((x 2)) x)")
         }
 
         @Test
         fun `let not cons`() {
-            val input = "(let 3 x)"
-
-            assertFailsWith<EvalException> {
-                env.eval(parse(tokenize(input)).first())
-            }
+            failsEval("(let 3 x)")
         }
 
         @Test
         fun `let not Symbol`() {
-            val input = "(let ((3 3)) x)"
-
-            assertFailsWith<EvalException> {
-                env.eval(parse(tokenize(input)).first())
-            }
+            failsEval("(let ((3 3)) x)")
         }
 
         @Test
         fun `let bindings not Cons`() {
-            val input = "(let (3) x)"
-
-            assertFailsWith<EvalException> {
-                env.eval(parse(tokenize(input)).first())
-            }
+            failsEval("(let (3) x)")
         }
 
         @Test
@@ -66,9 +46,7 @@ class BindingsTest : BaseEval() {
     inner class LetStarTest {
         @Test
         fun `letStar normal`() {
-            val input = "(let* ((x 3)(y (+ x 2))) y)"
-
-            assertEquals(Integer(5), env.eval(parse(tokenize(input)).first()))
+            equalsEval("5", "(let* ((x 3)(y (+ x 2))) y)")
         }
     }
 

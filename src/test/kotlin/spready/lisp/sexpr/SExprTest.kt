@@ -2,22 +2,14 @@ package spready.lisp.sexpr
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestInstance
-import spready.lisp.Environment
+import spready.lisp.BaseEval
 import spready.lisp.EvalException
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SExprTest {
-
-    private var env = Environment()
-
-    @BeforeTest
-    fun resetEnv() {
-        env = Environment()
-    }
+class SExprTest : BaseEval() {
 
     @Nested
     inner class Cast {
@@ -66,6 +58,16 @@ class SExprTest {
             assertFailsWith<EvalException> {
                 input.eval(env)
             }
+        }
+
+        @Test
+        fun `eval Unquote fail`() {
+            failsEval(",(+ 1 2)")
+        }
+
+        @Test
+        fun `eval UnquoteSplice fail`() {
+            failsEval(",@(+ 1 2)")
         }
     }
 }

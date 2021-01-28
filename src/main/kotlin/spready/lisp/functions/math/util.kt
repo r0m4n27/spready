@@ -21,7 +21,7 @@ inline fun createReduceFunc(
 
 inline fun createFuncWithOneArg(
     name: String,
-    crossinline fn: (num: Num) -> Num
+    crossinline fn: (num: Num) -> SExpr
 ): Func {
     return object : Func(name) {
         override fun invoke(env: Environment, args: List<SExpr>): SExpr {
@@ -34,7 +34,7 @@ inline fun createFuncWithOneArg(
 
 inline fun createFuncWithTwoArgs(
     name: String,
-    crossinline fn: (num: Num, other: Num) -> Num
+    crossinline fn: (num: Num, other: Num) -> SExpr
 ): Func {
     return object : Func(name) {
         override fun invoke(env: Environment, args: List<SExpr>): SExpr {

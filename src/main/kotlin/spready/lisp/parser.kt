@@ -15,6 +15,8 @@ import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.Unquote
 import spready.lisp.sexpr.UnquoteSplice
+import kotlin.math.E
+import kotlin.math.PI
 
 fun parse(tokens: List<Token>): List<SExpr> {
 
@@ -78,6 +80,8 @@ fun parseSpecial(value: String): SExpr {
     return when (value) {
         "#t" -> Bool(true)
         "#f" -> Bool(false)
+        "#pi" -> Flt(PI)
+        "#e" -> Flt(E)
         else -> throw IllegalArgumentException("Can't parse Special $value!")
     }
 }

@@ -19,6 +19,8 @@ import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.Unquote
 import spready.lisp.sexpr.UnquoteSplice
 import java.util.stream.Stream
+import kotlin.math.E
+import kotlin.math.PI
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -124,6 +126,16 @@ class ParserTest {
             assertEquals(
                 listOf(Bool(false)),
                 parse(listOf(Token(TokenType.Special, "#f")))
+            )
+
+            assertEquals(
+                listOf(Flt(E)),
+                parse(listOf(Token(TokenType.Special, "#e")))
+            )
+
+            assertEquals(
+                listOf(Flt(PI)),
+                parse(listOf(Token(TokenType.Special, "#pi")))
             )
         }
 
@@ -300,7 +312,7 @@ class ParserTest {
                 Token(TokenType.CloseParen, ")")
             )
 
-            assertThrows<IllegalArgumentException>() {
+            assertThrows<IllegalArgumentException> {
                 parse(input)
             }
         }
@@ -314,7 +326,7 @@ class ParserTest {
                 Token(TokenType.CloseParen, ")")
             )
 
-            assertThrows<IllegalArgumentException>() {
+            assertThrows<IllegalArgumentException> {
                 parse(input)
             }
         }

@@ -12,6 +12,7 @@ import spready.lisp.functions.listFunctions
 import spready.lisp.functions.logicFunctions
 import spready.lisp.functions.math.approxFunctions
 import spready.lisp.functions.math.arithmeticFunctions
+import spready.lisp.functions.math.floatFunctions
 import spready.lisp.functions.math.fractionFunctions
 import spready.lisp.functions.math.predicateFunctions
 import spready.lisp.functions.stringFunctions
@@ -91,6 +92,7 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
             env += approxFunctions()
             env += fractionFunctions()
             env += predicateFunctions()
+            env += floatFunctions()
 
             return env
         }

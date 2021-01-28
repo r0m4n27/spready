@@ -22,7 +22,9 @@ class ArithmeticTest : BaseEval() {
         Pair("(gcd 12 4)", "4"),
         Pair("(lcm 12 4)", "12"),
         Pair("(quotient -10 3)", "-3"),
-        Pair("(modulo -10 3)", "-1")
+        Pair("(modulo -10 3)", "-1"),
+        Pair("(max 2 3 1 2)", "3"),
+        Pair("(min 2 3 1 2)", "1")
     )
 
     @ParameterizedTest

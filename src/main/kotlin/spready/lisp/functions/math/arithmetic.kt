@@ -13,6 +13,8 @@ val plus = createReduceFunc("+", Num::plus)
 val minus = createReduceFunc("-", Num::minus)
 val times = createReduceFunc("*", Num::times)
 val div = createReduceFunc("/", Num::div)
+val max = createReduceFunc("max") { acc, num -> if (acc > num) acc else num }
+val min = createReduceFunc("min") { acc, num -> if (acc < num) acc else num }
 
 val negate = createFuncWithOneArg("negate", Num::unaryMinus)
 val invert = createFuncWithOneArg("invert", Num::invert)
@@ -49,7 +51,9 @@ fun arithmeticFunctions(): List<Pair<Symbol, Func>> {
         lcm,
         quotient,
         pow,
-        modulo
+        modulo,
+        min,
+        max
     ).map {
         Pair(Symbol(it.name), it)
     }

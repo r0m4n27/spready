@@ -3,6 +3,7 @@ package spready.lisp.sexpr
 import spready.lisp.EvalException
 import kotlin.math.abs
 import kotlin.math.ceil
+import kotlin.math.pow
 
 sealed class Num : SExpr, Comparable<Num> {
     abstract fun toFlt(): Flt
@@ -14,6 +15,10 @@ sealed class Num : SExpr, Comparable<Num> {
 
     abstract operator fun unaryMinus(): Num
     abstract fun invert(): Num
+    abstract fun abs(): Num
+
+    abstract fun pow(other: Num): Num
+    abstract operator fun rem(other: Num): Num
 
     operator fun minus(other: Num): Num {
         return this + (-other)
@@ -21,6 +26,17 @@ sealed class Num : SExpr, Comparable<Num> {
 
     operator fun div(other: Num): Num {
         return this * other.invert()
+    }
+
+    protected fun powOfVal(x: Int, other: Num): Double {
+        return when (other) {
+            is Integer -> x.toDouble().pow(other.value)
+            is Flt -> x.toDouble().pow(other.value)
+            is Fraction -> {
+                val pow = x.toDouble().pow(other.numerator)
+                pow.pow(1.0 / other.denominator)
+            }
+        }
     }
 
     companion object {
@@ -73,12 +89,39 @@ class Integer(val value: Int) : Num() {
         return when (other) {
             is Integer -> Integer(value * other.value)
             is Flt -> Flt(value.toDouble() * other.value)
-            is Fraction -> Fraction.create(value * other.numerator, other.denominator)
+            is Fraction -> Fraction.create(
+                value * other.numerator,
+                other.denominator
+            )
         }
     }
 
     override fun unaryMinus() = Integer(-value)
-    override fun invert(): Num = Fraction.create(1, value)
+    override fun invert(): Num {
+        if (value == 0) {
+            throw EvalException("Cant divide by zero!")
+        }
+
+        return Fraction.create(1, value)
+    }
+
+    override fun abs() = Integer(abs(value))
+    override fun pow(other: Num): Num {
+        val power = powOfVal(value, other)
+
+        return if (power == ceil(power)) {
+            Integer(power.toInt())
+        } else {
+            Flt(power)
+        }
+    }
+
+    override fun rem(other: Num): Num {
+        return when (other) {
+            is Integer -> Integer(value % other.value)
+            is Flt, is Fraction -> Flt(value.toDouble() % other.toFlt().value)
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         return if (other !is Num) {
@@ -131,7 +174,11 @@ class Flt(val value: Double) : Num() {
     }
 
     override fun unaryMinus() = Flt(-value)
-    override fun invert(): Num = Flt(1.0 / value)
+    override fun invert() = Flt(1.0 / value)
+
+    override fun abs() = Flt(abs(value))
+    override fun pow(other: Num) = Flt(value.pow(other.toFlt().value))
+    override fun rem(other: Num) = Flt(value % other.toFlt().value)
 
     override fun equals(other: Any?): Boolean {
         if (other !is Num) {
@@ -203,6 +250,19 @@ class Fraction private constructor(
 
     override fun unaryMinus() = create(-numerator, denominator)
     override fun invert(): Num = create(denominator, numerator)
+    override fun abs() = create(abs(numerator), denominator)
+    override fun pow(other: Num): Num {
+        val powNum = powOfVal(numerator, other)
+        val powDenominator = powOfVal(denominator, other)
+
+        return if (powNum == ceil(powNum) && powDenominator == ceil(powDenominator)) {
+            create(powNum.toInt(), powDenominator.toInt())
+        } else {
+            Flt(powNum / powDenominator)
+        }
+    }
+
+    override fun rem(other: Num) = Flt(toFlt().value % other.toFlt().value)
 
     override fun equals(other: Any?): Boolean {
         if (other !is Num) {

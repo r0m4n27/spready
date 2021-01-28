@@ -1,17 +1,15 @@
 package spready.lisp.sexpr.num
 
 import org.junit.jupiter.api.Nested
+import spready.lisp.EvalException
 import spready.lisp.sexpr.Flt
 import spready.lisp.sexpr.Fraction
 import spready.lisp.sexpr.Integer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class IntegerTest {
-    @Test
-    fun invert() {
-        assertEquals(Fraction.create(1, 10), Integer(10).invert())
-    }
 
     @Test
     fun `unary minus`() {
@@ -124,6 +122,72 @@ class IntegerTest {
                 Fraction.create(9, 4),
                 Integer(3) * Fraction.create(3, 4)
             )
+        }
+    }
+
+    @Nested
+    inner class InvertTest {
+        @Test
+        fun invert() {
+            assertEquals(Fraction.create(1, 10), Integer(10).invert())
+        }
+
+        @Test
+        fun invertFail() {
+            assertFailsWith<EvalException> {
+                Integer(0).invert()
+            }
+        }
+    }
+
+    @Test
+    fun abs() {
+        assertEquals(Integer(10), Integer(-10).abs())
+    }
+
+    @Nested
+    inner class PowTest {
+        @Test
+        fun `pow Integer normal`() {
+            assertEquals(Integer(9), Integer(3).pow(Integer(2)))
+        }
+
+        @Test
+        fun `pow Integer negative`() {
+            assertEquals(Flt(0.25), Integer(2).pow(Integer(-2)))
+        }
+
+        @Test
+        fun `pow Float normal`() {
+            assertEquals(Integer(9), Integer(3).pow(Flt(2.0)))
+        }
+
+        @Test
+        fun `pow Float less one`() {
+            assertEquals(Integer(3), Integer(9).pow(Flt(0.5)))
+        }
+
+        @Test
+        fun `pow Fraction`() {
+            assertEquals(Integer(8), Integer(4).pow(Fraction.create(3, 2)))
+        }
+    }
+
+    @Nested
+    inner class RemTest {
+        @Test
+        fun `rem int`() {
+            assertEquals(Integer(1), Integer(10) % Integer(3))
+        }
+
+        @Test
+        fun `rem flt`() {
+            assertEquals(Flt(0.0), Integer(10) % Flt(2.5))
+        }
+
+        @Test
+        fun `rem fraction`() {
+            assertEquals(Flt(0.0), Integer(10) % Fraction.create(5, 2))
         }
     }
 }

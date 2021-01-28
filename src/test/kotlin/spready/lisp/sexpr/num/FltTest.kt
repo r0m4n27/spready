@@ -4,19 +4,20 @@ import org.junit.jupiter.api.Nested
 import spready.lisp.EvalException
 import spready.lisp.sexpr.Flt
 import spready.lisp.sexpr.Fraction
+import spready.lisp.sexpr.Integer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class FltTest {
     @Test
-    fun invert() {
-        assertEquals(Flt(0.5), Flt(2.0).invert())
+    fun `unary minus`() {
+        assertEquals(Flt(-10.0), -Flt(10.0))
     }
 
     @Test
-    fun `unary minus`() {
-        assertEquals(Flt(-10.0), -Flt(10.0))
+    fun abs() {
+        assertEquals(Flt(3.0), Flt(3.0))
     }
 
     @Nested
@@ -112,6 +113,50 @@ class FltTest {
                 Flt(4.5),
                 Flt(3.0) * Fraction.create(3, 2)
             )
+        }
+    }
+
+    @Nested
+    inner class InvertTest {
+        @Test
+        fun invert() {
+            assertEquals(Flt(0.5), Flt(2.0).invert())
+        }
+
+        @Test
+        fun `invert NaN`() {
+            assertEquals(Flt(Double.POSITIVE_INFINITY), Flt(0.0).invert())
+        }
+    }
+
+    @Nested
+    inner class PowTest {
+        @Test
+        fun `pow normal`() {
+            assertEquals(Flt(9.0), Flt(3.0).pow(Integer(2)))
+        }
+
+        @Test
+        fun `pow fraction`() {
+            assertEquals(Flt(8.0), Flt(4.0).pow(Fraction.create(3, 2)))
+        }
+    }
+
+    @Nested
+    inner class RemTest {
+        @Test
+        fun `rem int`() {
+            assertEquals(Flt(1.0), Flt(10.0) % Integer(3))
+        }
+
+        @Test
+        fun `rem flt`() {
+            assertEquals(Flt(0.0), Flt(10.0) % Flt(2.5))
+        }
+
+        @Test
+        fun `rem fraction`() {
+            assertEquals(Flt(0.0), Flt(10.0) % Fraction.create(5, 2))
         }
     }
 }

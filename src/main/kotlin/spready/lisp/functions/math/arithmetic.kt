@@ -1,45 +1,56 @@
 package spready.lisp.functions.math
 
-import spready.lisp.Environment
+import spready.lisp.sexpr.Flt
+import spready.lisp.sexpr.Fraction
 import spready.lisp.sexpr.Func
 import spready.lisp.sexpr.Integer
-import spready.lisp.sexpr.SExpr
+import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
+import kotlin.math.truncate
 
-fun reduceToInteger(args: List<SExpr>, acc: (Int, Int) -> Int): Integer {
-    val argsMapped = args.map {
-        it.cast<Integer>().value
-    }
+val plus = createReduceFunc("+", Num::plus)
+val minus = createReduceFunc("-", Num::minus)
+val times = createReduceFunc("*", Num::times)
+val div = createReduceFunc("/", Num::div)
 
-    return Integer(argsMapped.reduce(acc))
+val negate = createFuncWithOneArg("negate", Num::unaryMinus)
+val invert = createFuncWithOneArg("invert", Num::invert)
+val abs = createFuncWithOneArg("abs", Num::abs)
+
+val pow = createFuncWithTwoArgs("pow", Num::pow)
+val modulo = createFuncWithTwoArgs("modulo", Num::rem)
+
+val gcd = createFuncWithTwoArgs("gcd") { num, other ->
+    Integer(Num.gcd(num.cast<Integer>().value, other.cast<Integer>().value))
 }
 
-object Plus : Func("+") {
-
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        return reduceToInteger(env.eval(args), Int::plus)
-    }
+val lcm = createFuncWithTwoArgs("lcm") { num, other ->
+    Integer(Num.lcm(num.cast<Integer>().value, other.cast<Integer>().value))
 }
 
-object Minus : Func("-") {
-
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        args.checkMinSize(1)
-
-        return reduceToInteger(env.eval(args), Int::minus)
-    }
-}
-
-object Times : Func("*") {
-
-    override fun invoke(env: Environment, args: List<SExpr>): SExpr {
-        return reduceToInteger(env.eval(args), Int::times)
+val quotient = createFuncWithTwoArgs("quotient") { num, other ->
+    when (val divided = num / other) {
+        is Integer -> divided
+        is Fraction, is Flt -> Integer(truncate(divided.toFlt().value).toInt())
     }
 }
 
 fun arithmeticFunctions(): List<Pair<Symbol, Func>> {
-    return listOf(Plus, Minus, Times).map {
+    return listOf(
+        plus,
+        minus,
+        times,
+        div,
+        negate,
+        invert,
+        abs,
+        gcd,
+        lcm,
+        quotient,
+        pow,
+        modulo
+    ).map {
         Pair(Symbol(it.name), it)
     }
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Nested
 import spready.lisp.BaseEval
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.functions.math.Plus
+import spready.lisp.functions.math.plus
 import spready.lisp.parse
 import spready.lisp.sexpr.ListElem.Companion.toConsWithTail
 import spready.lisp.sexpr.ListElem.Companion.toListElem
@@ -135,7 +135,7 @@ class ListElemTest : BaseEval() {
 
         @Test
         fun `eval Cons were second arg is Cons`() {
-            val input = Cons(Plus, Cons(Integer(2), Cons(Integer(3), Nil)))
+            val input = Cons(plus, Cons(Integer(2), Cons(Integer(3), Nil)))
             val expected = Integer(5)
 
             assertEquals(expected, input.eval(env))
@@ -160,7 +160,7 @@ class ListElemTest : BaseEval() {
         @Test
         fun `eval Unquote fail`() {
             val input = ",(+ 1 2)"
-            env[Symbol("+")] = Plus
+            env[Symbol("+")] = plus
 
             assertFailsWith<EvalException> {
                 env.eval(parse(tokenize(input)))
@@ -170,7 +170,7 @@ class ListElemTest : BaseEval() {
         @Test
         fun `eval UnquoteSplice fail`() {
             val input = ",@(+ 1 2)"
-            env[Symbol("+")] = Plus
+            env[Symbol("+")] = plus
 
             assertFailsWith<EvalException> {
                 env.eval(parse(tokenize(input)))

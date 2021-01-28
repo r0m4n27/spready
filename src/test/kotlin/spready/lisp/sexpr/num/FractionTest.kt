@@ -2,6 +2,7 @@ package spready.lisp.sexpr.num
 
 import org.junit.jupiter.api.Nested
 import spready.lisp.EvalException
+import spready.lisp.sexpr.Flt
 import spready.lisp.sexpr.Fraction
 import spready.lisp.sexpr.Integer
 import kotlin.test.Test
@@ -17,6 +18,11 @@ class FractionTest {
     @Test
     fun `unary minus`() {
         assertEquals(Fraction.create(-3, 2), -Fraction.create(3, 2))
+    }
+
+    @Test
+    fun abs() {
+        assertEquals(Fraction.create(3, 2), Fraction.create(-3, 2).abs())
     }
 
     @Nested
@@ -115,6 +121,37 @@ class FractionTest {
                 Fraction.create(13 * 5, 21),
                 Fraction.create(13, 3) * Fraction.create(5, 7)
             )
+        }
+    }
+
+    @Nested
+    inner class PowTest {
+        @Test
+        fun `pow normal`() {
+            assertEquals(Fraction.create(9, 4), Fraction.create(3, 2).pow(Flt(2.0)))
+        }
+
+        @Test
+        fun `pow div`() {
+            assertEquals(Flt(2.25), Fraction.create(2, 3).pow(Integer(-2)))
+        }
+    }
+
+    @Nested
+    inner class RemTest {
+        @Test
+        fun `rem int`() {
+            assertEquals(Flt(1.0), Fraction.create(10, 1) % Integer(3))
+        }
+
+        @Test
+        fun `rem flt`() {
+            assertEquals(Flt(0.0), Fraction.create(10, 1) % Flt(2.5))
+        }
+
+        @Test
+        fun `rem fraction`() {
+            assertEquals(Flt(0.0), Fraction.create(10, 1) % Fraction.create(5, 2))
         }
     }
 }

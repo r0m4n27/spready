@@ -3,7 +3,7 @@ package spready.lisp.functions.forms
 import org.junit.jupiter.api.Nested
 import spready.lisp.Environment
 import spready.lisp.EvalException
-import spready.lisp.functions.math.Plus
+import spready.lisp.functions.math.plus
 import spready.lisp.parse
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Integer
@@ -34,7 +34,7 @@ class ControlFlowTest {
         fun `If normal`() {
             val input = "(if (+ 1 2) 4 5)"
             env[Symbol("if")] = IfExpr
-            env[Symbol("+")] = Plus
+            env[Symbol("+")] = plus
 
             assertEquals(Integer(4), env.eval(parse(tokenize(input)).first()))
         }
@@ -105,7 +105,7 @@ class ControlFlowTest {
             val input = "(cond (2 => (lambda (x) (+ x 1))))"
             env[Symbol("cond")] = Cond
             env[Symbol("lambda")] = Lambda
-            env[Symbol("+")] = Plus
+            env[Symbol("+")] = plus
             assertEquals(Integer(3), evalString(input))
         }
 
@@ -114,7 +114,7 @@ class ControlFlowTest {
             val input = "(cond (2 => x))"
             env[Symbol("cond")] = Cond
             env[Symbol("lambda")] = Lambda
-            env[Symbol("+")] = Plus
+            env[Symbol("+")] = plus
             assertFailsWith<EvalException> { evalString(input) }
         }
 

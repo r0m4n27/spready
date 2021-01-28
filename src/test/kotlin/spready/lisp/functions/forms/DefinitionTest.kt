@@ -44,7 +44,7 @@ class DefinitionTest : BaseEval() {
 
         @Test
         fun `Lambda fail head with other than Symbol`() {
-            failsEval("(lambda (x 123) x)")
+            failsEval("(lambda (x 123) x)", "Expected Symbol got 123!")
         }
     }
 
@@ -59,7 +59,7 @@ class DefinitionTest : BaseEval() {
 
         @Test
         fun `ValEval fail`() {
-            failsEval("(val-eval y 3)")
+            failsEval("(val-eval y 3)", "Can't find symbol y")
         }
     }
 
@@ -73,8 +73,7 @@ class DefinitionTest : BaseEval() {
 
         @Test
         fun `Val fail`() {
-            // TODO: Check message
-            failsEval("(val 3 3)")
+            failsEval("(val 3 3)", "Expected Symbol got 3!")
         }
     }
 
@@ -94,7 +93,7 @@ class DefinitionTest : BaseEval() {
 
         @Test
         fun `FuncExpr fail not Symbol`() {
-            failsEval("(fun test (3 4) 3)")
+            failsEval("(fun test (3 4) 3)", "Expected Symbol got 3!")
         }
     }
 }

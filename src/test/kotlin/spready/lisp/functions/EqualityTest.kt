@@ -89,7 +89,8 @@ class EqualityTest : BaseEval() {
             failsEval(
                 """
                 (< 'x 'y 'z)
-                """.trimIndent()
+                """.trimIndent(),
+                "x can't be compared!"
             )
         }
 

@@ -30,10 +30,10 @@ data class Cons(override val head: SExpr, override val tail: SExpr) : ListElem()
 
     override fun eval(env: Environment): SExpr {
         if (head is Unquote) {
-            throw EvalException(""", cant be used outside of "`" """)
+            throw EvalException(""", cant be used outside of "`"""")
         }
         if (head is UnquoteSplice) {
-            throw EvalException(""",@ cant be used outside of "`" """)
+            throw EvalException(""",@ cant be used outside of "`"""")
         }
 
         val firstEvaluated = head.eval(env)

@@ -63,7 +63,7 @@ class ControlFlowTest : BaseEval() {
 
         @Test
         fun `cond lambda fail`() {
-            failsEval("(cond (2 => x))")
+            failsEval("(cond (2 => x))", "Can't find symbol x")
         }
 
         @Test
@@ -76,12 +76,12 @@ class ControlFlowTest : BaseEval() {
     inner class CaseTest {
         @Test
         fun `case empty`() {
-            failsEval("(case)")
+            failsEval("(case)", "Must have at least 2 arguments not 0")
         }
 
         @Test
         fun `case without branches`() {
-            failsEval("(case 2)")
+            failsEval("(case 2)", "Must have at least 2 arguments not 1")
         }
 
         @Test

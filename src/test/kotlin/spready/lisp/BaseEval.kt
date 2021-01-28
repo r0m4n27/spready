@@ -21,15 +21,12 @@ open class BaseEval {
         assertEquals(evalString(expected), evalString(actual))
     }
 
-    fun failsEval(expr: String) {
-        assertFailsWith<EvalException> {
-            evalString(expr)
-        }
-    }
-
     fun failsEval(expr: String, message: String) {
-        assertFailsWith<EvalException>(message) {
+
+        val exception = assertFailsWith<EvalException> {
             evalString(expr)
         }
+
+        assertEquals(message, exception.message)
     }
 }

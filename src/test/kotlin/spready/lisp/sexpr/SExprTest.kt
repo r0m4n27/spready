@@ -62,12 +62,12 @@ class SExprTest : BaseEval() {
 
         @Test
         fun `eval Unquote fail`() {
-            failsEval(",(+ 1 2)")
+            failsEval(",(+ 1 2)", """, cant be used outside of "`"""")
         }
 
         @Test
         fun `eval UnquoteSplice fail`() {
-            failsEval(",@(+ 1 2)")
+            failsEval(",@(+ 1 2)", ",@ cant be used outside of \"`\"")
         }
     }
 }

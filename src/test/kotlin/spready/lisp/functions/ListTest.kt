@@ -93,17 +93,17 @@ class ListTest : BaseEval() {
 
     @Test
     fun `get neg position`() {
-        failsEval("(get -1 '(1 2))")
+        failsEval("(get -1 '(1 2))", "Position cant be negative!")
     }
 
     @Test
     fun `get pos too big cons`() {
-        failsEval("(get 2 '(1 2))")
+        failsEval("(get 2 '(1 2))", "List is only 2 big!")
     }
 
     @Test
     fun `get pos too big nil`() {
-        failsEval("(get 0 '())")
+        failsEval("(get 0 '())", "List is only 0 big!")
     }
 
     @Test
@@ -113,7 +113,7 @@ class ListTest : BaseEval() {
 
     @Test
     fun `sublist negative`() {
-        failsEval("(sublist -1 '(1 2))")
+        failsEval("(sublist -1 '(1 2))", "Position cant be negative!")
     }
 
     @Test
@@ -150,7 +150,7 @@ class ListTest : BaseEval() {
 
         @Test
         fun `member custom fun wrong`() {
-            failsEval("(member 3 '(1 2 3) nil)")
+            failsEval("(member 3 '(1 2 3) nil)", "Expected Func got nil!")
         }
 
         @Test
@@ -181,7 +181,7 @@ class ListTest : BaseEval() {
 
         @Test
         fun `assoc custom fun wrong`() {
-            failsEval("(assoc 3 '(1 2 3) nil)")
+            failsEval("(assoc 3 '(1 2 3) nil)", "Expected Func got nil!")
         }
 
         @Test

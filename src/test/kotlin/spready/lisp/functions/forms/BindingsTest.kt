@@ -15,17 +15,17 @@ class BindingsTest : BaseEval() {
 
         @Test
         fun `let not cons`() {
-            failsEval("(let 3 x)")
+            failsEval("(let 3 x)", "First argument must be Cons or Symbol!")
         }
 
         @Test
         fun `let not Symbol`() {
-            failsEval("(let ((3 3)) x)")
+            failsEval("(let ((3 3)) x)", "Expected Symbol got 3!")
         }
 
         @Test
         fun `let bindings not Cons`() {
-            failsEval("(let (3) x)")
+            failsEval("(let (3) x)", "Expected Cons got 3!")
         }
 
         @Test

@@ -18,7 +18,8 @@ class StringTest : BaseEval() {
             failsEval(
                 """
                 (string-get -1 "hallo")
-                """.trimIndent()
+                """.trimIndent(),
+                "Position cant be negative!"
             )
         }
 
@@ -27,7 +28,8 @@ class StringTest : BaseEval() {
             failsEval(
                 """
                 (string-get 5 "hallo")
-                """.trimIndent()
+                """.trimIndent(),
+                "String is only 5 big!"
             )
         }
 
@@ -49,7 +51,8 @@ class StringTest : BaseEval() {
             failsEval(
                 """
                 (replace-char -1 "t" "hallo")
-                """.trimIndent()
+                """.trimIndent(),
+                "Position cant be negative!"
             )
         }
 
@@ -58,7 +61,8 @@ class StringTest : BaseEval() {
             failsEval(
                 """
                 (replace-char 20 "t" "hallo")
-                """.trimIndent()
+                """.trimIndent(),
+                "String is only 5 big!"
             )
         }
 
@@ -67,7 +71,8 @@ class StringTest : BaseEval() {
             failsEval(
                 """
                 (replace-char 2 "test" "hallo")
-                """.trimIndent()
+                """.trimIndent(),
+                "ReplacementString can only be 1 long!"
             )
         }
 
@@ -89,7 +94,8 @@ class StringTest : BaseEval() {
             failsEval(
                 """
                 (substring -1 "hallo")
-                """.trimIndent()
+                """.trimIndent(),
+                "Position cant be negative!"
             )
         }
 
@@ -98,7 +104,8 @@ class StringTest : BaseEval() {
             failsEval(
                 """
                 (substring 20 "hallo")
-                """.trimIndent()
+                """.trimIndent(),
+                "String is only 5 big!"
             )
         }
 
@@ -153,7 +160,8 @@ class StringTest : BaseEval() {
             failsEval(
                 """
                 (string-fill "test" "hallo")
-                """.trimIndent()
+                """.trimIndent(),
+                "New Char can only be 1 long!"
             )
         }
 

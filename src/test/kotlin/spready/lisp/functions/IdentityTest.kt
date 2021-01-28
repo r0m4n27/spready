@@ -12,12 +12,12 @@ class IdentityTest : BaseEval() {
 
     @Test
     fun `identity to many args`() {
-        failsEval("(nil? 1 2 3)")
+        failsEval("(nil? 1 2 3)", "Can only have 1 arguments not 3")
     }
 
     @Test
     fun `identity zero args`() {
-        failsEval("(nil?)")
+        failsEval("(nil?)", "Can only have 1 arguments not 0")
     }
 
     private fun identityNormalProvider() =

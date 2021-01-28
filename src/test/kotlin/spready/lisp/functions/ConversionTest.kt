@@ -24,7 +24,7 @@ class ConversionTest : BaseEval() {
 
         @Test
         fun `toList other`() {
-            failsEval("(to-list 3)")
+            failsEval("(to-list 3)", "Can't convert 3 to list!")
         }
     }
 
@@ -67,7 +67,10 @@ class ConversionTest : BaseEval() {
 
         @Test
         fun `toStr other`() {
-            failsEval("(to-str (lambda (x) x))")
+            failsEval(
+                "(to-str (lambda (x) x))",
+                "Can't convert #<(lambda (x))> to str!"
+            )
         }
     }
 
@@ -85,22 +88,22 @@ class ConversionTest : BaseEval() {
 
         @Test
         fun `toInt str fail`() {
-            failsEval("(to-num \"abc\")")
+            failsEval("(to-int \"abc\")", "Can't convert \"abc\" to int!")
         }
 
         @Test
         fun `toInt fail`() {
-            failsEval("(to-num '(1 2 3))")
+            failsEval("(to-int '(1 2 3))", "Can't convert (1 2 3) to int!")
         }
 
         @Test
         fun `toFrac fail zero`() {
-            failsEval("""(to-fraction "9/0")""")
+            failsEval("""(to-fraction "9/0")""", "Denominator can't be zero!")
         }
 
         @Test
         fun `toFrac fail negative`() {
-            failsEval("""(to-fraction "9/-1")""")
+            failsEval("""(to-fraction "9/-1")""", "Can't convert \"9/-1\" to fraction!")
         }
 
         @Test
@@ -128,7 +131,7 @@ class ConversionTest : BaseEval() {
 
         @Test
         fun `toSym other`() {
-            failsEval("(to-symbol '(1 2 3))")
+            failsEval("(to-symbol '(1 2 3))", "Can't convert (1 2 3) to symbol!")
         }
     }
 }

@@ -122,7 +122,7 @@ class ListElemTest : BaseEval() {
     inner class Eval {
         @Test
         fun `eval Cons fail`() {
-            failsEval("(3 2)")
+            failsEval("(3 2)", "First element must be a Function not 3")
         }
 
         @Test

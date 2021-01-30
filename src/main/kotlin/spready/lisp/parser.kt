@@ -3,6 +3,7 @@ package spready.lisp
 import spready.lisp.functions.forms.Quasiquote
 import spready.lisp.functions.forms.Quote
 import spready.lisp.sexpr.Bool
+import spready.lisp.sexpr.Cell
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Flt
 import spready.lisp.sexpr.Fraction
@@ -56,12 +57,7 @@ fun parseSymbol(value: String): SExpr {
         return Nil
     }
 
-    val floatRegex = Regex("""-?\d+\.\d+""")
     val fractionRegex = Regex("""(-?\d+)/(\d+)""")
-
-    if (value.matches(floatRegex)) {
-        return Flt(value.toDouble())
-    }
 
     val match = fractionRegex.matchEntire(value)
     if (match != null) {
@@ -72,7 +68,11 @@ fun parseSymbol(value: String): SExpr {
     return try {
         Integer(value.toInt())
     } catch (_: NumberFormatException) {
-        Symbol(value)
+        try {
+            Flt(value.toDouble())
+        } catch (_: NumberFormatException) {
+            Symbol(value)
+        }
     }
 }
 
@@ -82,7 +82,18 @@ fun parseSpecial(value: String): SExpr {
         "#f" -> Bool(false)
         "#pi" -> Flt(PI)
         "#e" -> Flt(E)
-        else -> throw IllegalArgumentException("Can't parse Special $value!")
+        else -> {
+            val cellRegex = Regex("""#(\d+)\.(\d+)""")
+            val match = cellRegex.matchEntire(value)
+
+            if (match != null) {
+                val (row, col) = match.destructured
+
+                return Cell(row.toInt(), col.toInt())
+            }
+
+            throw IllegalArgumentException("Can't parse Special $value!")
+        }
     }
 }
 
@@ -123,7 +134,7 @@ fun parseOther(tokens: MutableList<Token>): SExpr {
         }
 
         TokenType.Quote -> Cons(Quote, Cons(parseOther(tokens), Nil))
-        TokenType.Quasiquote -> Cons(Quasiquote, Cons(parseOther(tokens), Nil))
+        TokenType.QuasiQuote -> Cons(Quasiquote, Cons(parseOther(tokens), Nil))
         TokenType.Unquote -> Cons(Unquote, Cons(parseOther(tokens), Nil))
         TokenType.UnquoteSplice -> Cons(UnquoteSplice, Cons(parseOther(tokens), Nil))
 

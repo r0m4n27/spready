@@ -28,7 +28,12 @@ data class Str(val value: String) : SExpr, Comparable<Str> {
 }
 
 data class Bool(val value: Boolean) : SExpr {
-    override fun toString() = value.toString()
+    override fun toString() = if (value) {
+        "#t"
+    } else {
+        "#f"
+    }
+
     override fun toBool(): Bool = this
 }
 

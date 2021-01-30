@@ -13,5 +13,5 @@ data class Symbol(val value: String) : Variable() {
 }
 
 data class Cell(val row: Int, val col: Int) : Variable() {
-    override fun toString() = super.toString()
+    override fun toString() = "#$row.$col"
 }

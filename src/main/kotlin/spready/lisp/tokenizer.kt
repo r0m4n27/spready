@@ -4,7 +4,7 @@ enum class TokenType(val isAtom: Boolean) {
     OpenParen(false),
     CloseParen(false),
     Quote(false),
-    Quasiquote(false),
+    QuasiQuote(false),
     Unquote(false),
     UnquoteSplice(false),
     Dot(false),
@@ -42,7 +42,7 @@ fun tokenize(input: String): List<Token> {
             }
             '.' -> Token(TokenType.Dot, ".")
             '\'' -> Token(TokenType.Quote, "'")
-            '`' -> Token(TokenType.Quasiquote, "`")
+            '`' -> Token(TokenType.QuasiQuote, "`")
             ',' -> {
                 if (s[1] == '@') {
                     Token(TokenType.UnquoteSplice, ",@")

@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import spready.lisp.functions.forms.Quasiquote
 import spready.lisp.functions.forms.Quote
 import spready.lisp.sexpr.Bool
+import spready.lisp.sexpr.Cell
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Flt
 import spready.lisp.sexpr.Fraction
@@ -117,8 +118,16 @@ class ParserTest {
 
     @Nested
     inner class ParseSpecial {
+
         @Test
-        fun `parse special success`() {
+        fun `parse special fail`() {
+            assertFailsWith<IllegalArgumentException> {
+                parse(listOf(Token(TokenType.Special, "#123")))
+            }
+        }
+
+        @Test
+        fun `parse bool`() {
             assertEquals(
                 listOf(Bool(true)),
                 parse(listOf(Token(TokenType.Special, "#t")))
@@ -127,7 +136,10 @@ class ParserTest {
                 listOf(Bool(false)),
                 parse(listOf(Token(TokenType.Special, "#f")))
             )
+        }
 
+        @Test
+        fun `parse math`() {
             assertEquals(
                 listOf(Flt(E)),
                 parse(listOf(Token(TokenType.Special, "#e")))
@@ -140,9 +152,17 @@ class ParserTest {
         }
 
         @Test
-        fun `parse special fail`() {
+        fun `parse Cell`() {
+            assertEquals(
+                listOf(Cell(123, 2)),
+                parse(listOf(Token(TokenType.Special, "#123.2")))
+            )
+        }
+
+        @Test
+        fun `parse Cell fail`() {
             assertFailsWith<IllegalArgumentException> {
-                parse(listOf(Token(TokenType.Special, "#123")))
+                parse(listOf(Token(TokenType.Special, "#-12.32")))
             }
         }
     }
@@ -181,7 +201,7 @@ class ParserTest {
         @Test
         fun `parse QuasiQuotes`() {
             val input = listOf(
-                Token(TokenType.Quasiquote, "`"),
+                Token(TokenType.QuasiQuote, "`"),
                 Token(TokenType.OpenParen, "("),
                 Token(TokenType.Symbol, "123"),
                 Token(TokenType.OpenParen, "("),

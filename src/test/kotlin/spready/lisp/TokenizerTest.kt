@@ -101,7 +101,7 @@ class TokenizerTest {
         val input = "`()"
 
         val expected = listOf(
-            Token(TokenType.Quasiquote, "`"),
+            Token(TokenType.QuasiQuote, "`"),
             Token(TokenType.OpenParen, "("),
             Token(TokenType.CloseParen, ")")
         )
@@ -114,7 +114,7 @@ class TokenizerTest {
         val input = "`(,4)"
 
         val expected = listOf(
-            Token(TokenType.Quasiquote, "`"),
+            Token(TokenType.QuasiQuote, "`"),
             Token(TokenType.OpenParen, "("),
             Token(TokenType.Unquote, ","),
             Token(TokenType.Symbol, "4"),
@@ -130,7 +130,7 @@ class TokenizerTest {
         val input = "`(,@4)"
 
         val expected = listOf(
-            Token(TokenType.Quasiquote, "`"),
+            Token(TokenType.QuasiQuote, "`"),
             Token(TokenType.OpenParen, "("),
             Token(TokenType.UnquoteSplice, ",@"),
             Token(TokenType.Symbol, "4"),

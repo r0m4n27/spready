@@ -1,6 +1,8 @@
 package spready.lisp.sexpr
 
 import spready.lisp.EvalException
+import kotlin.math.E
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.pow
@@ -135,7 +137,13 @@ class Integer(val value: Int) : Num() {
 }
 
 class Flt(val value: Double) : Num() {
-    override fun toString() = value.toString()
+    override fun toString(): String {
+        return when (value) {
+            E -> "#e"
+            PI -> "#pi"
+            else -> value.toString()
+        }
+    }
 
     override fun compareTo(other: Num): Int {
         return when (other) {

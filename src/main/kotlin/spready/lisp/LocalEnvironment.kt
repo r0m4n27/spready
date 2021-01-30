@@ -2,31 +2,32 @@ package spready.lisp
 
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
+import spready.lisp.sexpr.Variable
 
 class LocalEnvironment(private val globEnv: Environment) :
     Environment(mutableMapOf()) {
-    override fun get(symbol: Symbol): SExpr {
-        return symbols[symbol] ?: globEnv[symbol]
+    override fun get(variable: Variable): SExpr {
+        return symbols[variable] ?: globEnv[variable]
     }
 
-    override fun set(symbol: Symbol, expr: SExpr) {
-        if (symbols.containsKey(symbol)) {
-            super.set(symbol, expr)
+    override fun set(variable: Variable, expr: SExpr) {
+        if (symbols.containsKey(variable)) {
+            super.set(variable, expr)
         } else {
-            globEnv[symbol] = expr
+            globEnv[variable] = expr
         }
     }
 
-    override fun minusAssign(symbol: Symbol) {
-        if (symbols.containsKey(symbol)) {
-            super.minusAssign(symbol)
+    override fun minusAssign(variable: Variable) {
+        if (symbols.containsKey(variable)) {
+            super.minusAssign(variable)
         } else {
-            globEnv.minusAssign(symbol)
+            globEnv.minusAssign(variable)
         }
     }
 
-    fun addLocal(symbol: Symbol, expr: SExpr) {
-        symbols[symbol] = expr
+    fun addLocal(variable: Variable, expr: SExpr) {
+        symbols[variable] = expr
     }
 
     fun addLocal(mappings: List<Pair<Symbol, SExpr>>) {

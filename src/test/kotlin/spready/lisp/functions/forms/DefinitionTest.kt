@@ -59,7 +59,7 @@ class DefinitionTest : BaseEval() {
 
         @Test
         fun `ValEval fail`() {
-            failsEval("(val-eval y 3)", "Can't find symbol y")
+            failsEval("(val-eval y 3)", "Can't find variable y")
         }
     }
 

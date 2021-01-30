@@ -63,7 +63,7 @@ class ControlFlowTest : BaseEval() {
 
         @Test
         fun `cond lambda fail`() {
-            failsEval("(cond (2 => x))", "Can't find symbol x")
+            failsEval("(cond (2 => x))", "Can't find variable x")
         }
 
         @Test

@@ -41,24 +41,6 @@ class SExprTest : BaseEval() {
 
     @Nested
     inner class Eval {
-        @Test
-        fun `eval Symbol success`() {
-            val expected = Integer(3)
-            val input = Symbol("3")
-
-            env[input] = expected
-
-            assertEquals(expected, input.eval(env))
-        }
-
-        @Test
-        fun `eval Symbol fail`() {
-            val input = Symbol("3")
-
-            assertFailsWith<EvalException> {
-                input.eval(env)
-            }
-        }
 
         @Test
         fun `eval Unquote fail`() {

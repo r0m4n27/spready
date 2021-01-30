@@ -5,6 +5,7 @@ import org.junit.jupiter.api.assertThrows
 import spready.lisp.sexpr.Integer
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
+import spready.lisp.sexpr.Variable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -13,7 +14,7 @@ class EnvironmentTest {
 
     @Test
     fun `env get success`() {
-        val input: MutableMap<Symbol, SExpr> =
+        val input: MutableMap<Variable, SExpr> =
             mutableMapOf(Symbol("123") to Integer(123))
 
         val env = Environment(input)

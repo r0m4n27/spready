@@ -17,9 +17,9 @@ import spready.lisp.functions.math.fractionFunctions
 import spready.lisp.functions.math.predicateFunctions
 import spready.lisp.functions.stringFunctions
 import spready.lisp.sexpr.SExpr
-import spready.lisp.sexpr.Symbol
+import spready.lisp.sexpr.Variable
 
-open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
+open class Environment(protected val symbols: MutableMap<Variable, SExpr>) {
     constructor() : this(mutableMapOf())
 
     fun eval(expr: SExpr): SExpr {
@@ -30,39 +30,39 @@ open class Environment(protected val symbols: MutableMap<Symbol, SExpr>) {
         return exprs.map { it.eval(this) }
     }
 
-    fun evalAndRegister(symbol: Symbol, expr: SExpr): SExpr {
-        set(symbol, expr.eval(this))
-        return get(symbol)
+    fun evalAndRegister(variable: Variable, expr: SExpr): SExpr {
+        set(variable, expr.eval(this))
+        return get(variable)
     }
 
-    open operator fun get(symbol: Symbol): SExpr {
-        return symbols[symbol]
-            ?: throw EvalException("Can't find symbol $symbol")
+    open operator fun get(variable: Variable): SExpr {
+        return symbols[variable]
+            ?: throw EvalException("Can't find variable $variable")
     }
 
-    open operator fun set(symbol: Symbol, expr: SExpr) {
-        symbols[symbol] = expr
+    open operator fun set(variable: Variable, expr: SExpr) {
+        symbols[variable] = expr
     }
 
-    open operator fun minusAssign(symbol: Symbol) {
-        if (symbols.containsKey(symbol)) {
-            symbols.remove(symbol)
+    open operator fun minusAssign(variable: Variable) {
+        if (symbols.containsKey(variable)) {
+            symbols.remove(variable)
         } else {
-            throw EvalException("Can't find symbol $symbol")
+            throw EvalException("Can't find variable $variable")
         }
     }
 
-    operator fun minusAssign(removeSymbols: Iterable<Symbol>) {
-        for (symbol in removeSymbols) {
-            minusAssign(symbol)
+    operator fun minusAssign(removeVars: Iterable<Variable>) {
+        for (item in removeVars) {
+            minusAssign(item)
         }
     }
 
-    operator fun plusAssign(pair: Pair<Symbol, SExpr>) {
+    operator fun plusAssign(pair: Pair<Variable, SExpr>) {
         set(pair.first, pair.second)
     }
 
-    operator fun plusAssign(pairs: Iterable<Pair<Symbol, SExpr>>) {
+    operator fun plusAssign(pairs: Iterable<Pair<Variable, SExpr>>) {
         for (pair in pairs) {
             plusAssign(pair)
         }

@@ -19,14 +19,6 @@ inline fun <reified T : SExpr> Iterable<SExpr>.cast(): List<T> {
     }
 }
 
-data class Symbol(val value: String) : SExpr {
-    override fun eval(env: Environment): SExpr {
-        return env[this]
-    }
-
-    override fun toString() = value
-}
-
 data class Str(val value: String) : SExpr, Comparable<Str> {
     override fun toString() = "\"$value\""
 

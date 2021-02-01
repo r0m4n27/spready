@@ -8,14 +8,15 @@ import spready.lisp.tokenize
 
 class Spread(private val env: Environment) {
 
-    // String input and parsed
-    private val stringInput: MutableMap<Cell, Pair<String, SExpr>> = mutableMapOf()
+    private val cellsParsed: MutableMap<Cell, SExpr> = mutableMapOf()
+    private val cellsInput: MutableMap<Cell, String> = mutableMapOf()
+    private val tracker = DependencyTracker(env, cellsParsed)
 
     val allExprs: Map<Cell, String>
         get() {
             val out = mutableMapOf<Cell, String>()
 
-            for (key in stringInput.keys) {
+            for (key in cellsInput.keys) {
                 out[key] = env[key].toString()
             }
 
@@ -24,7 +25,7 @@ class Spread(private val env: Environment) {
 
     operator fun get(cell: Cell): String {
 
-        return stringInput[cell]?.first ?: throw SpreadException("Cell not found!")
+        return cellsInput[cell] ?: throw SpreadException("Cell not found!")
     }
 
     operator fun set(cell: Cell, input: String) {
@@ -33,13 +34,19 @@ class Spread(private val env: Environment) {
         if (parsed.size != 1) {
             throw SpreadException("Cell input can only have 1 Expression!")
         }
+        cellsParsed[cell] = parsed[0]
+        cellsInput[cell] = input
 
-        stringInput[cell] = Pair(input, parsed[0])
         env.evalAndRegister(cell, parsed[0])
+        tracker.updateCell(cell)
     }
 
     operator fun minusAssign(cell: Cell) {
+        tracker.removeCell(cell)
+
         env -= cell
-        stringInput.remove(cell)
+
+        cellsInput.remove(cell)
+        cellsParsed.remove(cell)
     }
 }

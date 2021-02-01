@@ -81,17 +81,50 @@ class SpreadTest {
             assertEquals(1, allExprs.size)
             assertEquals("6", allExprs[Cell(12, 12)])
         }
+
+        @Test
+        fun `set dependency`() {
+            spread[Cell(1, 1)] = "3"
+            spread[Cell(2, 1)] = "(+ #1.1 3)"
+            spread[Cell(2, 2)] = "(+ #2.1 3)"
+
+            var allExprs = spread.allExprs
+            assertEquals("3", allExprs[Cell(1, 1)])
+            assertEquals("6", allExprs[Cell(2, 1)])
+            assertEquals("9", allExprs[Cell(2, 2)])
+
+            spread[Cell(1, 1)] = "4"
+            allExprs = spread.allExprs
+            assertEquals("4", allExprs[Cell(1, 1)])
+            assertEquals("7", allExprs[Cell(2, 1)])
+            assertEquals("10", allExprs[Cell(2, 2)])
+        }
     }
 
-    @Test
-    fun `minusAssign normal`() {
-        spread[Cell(12, 12)] = "(+ 1 2 3)"
-        assertEquals("(+ 1 2 3)", spread[Cell(12, 12)])
+    @Nested
+    inner class MinusAssign {
+        @Test
+        fun `minusAssign normal`() {
+            spread[Cell(12, 12)] = "(+ 1 2 3)"
+            assertEquals("(+ 1 2 3)", spread[Cell(12, 12)])
 
-        spread -= Cell(12, 12)
+            spread -= Cell(12, 12)
 
-        assertFailsWith<SpreadException> {
-            spread[Cell(12, 12)]
+            assertFailsWith<SpreadException> {
+                spread[Cell(12, 12)]
+            }
+        }
+
+        @Test
+        fun `minusAssign fail`() {
+            spread[Cell(12, 12)] = "(+ 1 2 3)"
+            spread[Cell(1, 1)] = "#12.12"
+
+            val exception = assertFailsWith<SpreadException> {
+                spread -= Cell(12, 12)
+            }
+
+            assertEquals("#12.12 influences others!", exception.message)
         }
     }
 }

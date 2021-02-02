@@ -30,7 +30,8 @@ class IdentityTest : BaseEval() {
             "(func? +)",
             "(int? 1)",
             "(fraction? 9/4)",
-            "(float? 3.123)"
+            "(float? 3.123)",
+            "(cell? '#12.12)"
         )
 
     @ParameterizedTest

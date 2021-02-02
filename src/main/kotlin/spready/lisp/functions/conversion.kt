@@ -2,6 +2,7 @@ package spready.lisp.functions
 
 import spready.lisp.Environment
 import spready.lisp.EvalException
+import spready.lisp.sexpr.Cell
 import spready.lisp.sexpr.Flt
 import spready.lisp.sexpr.Fraction
 import spready.lisp.sexpr.Func
@@ -120,6 +121,21 @@ val toSymbolConv = createConv("to-symbol") {
     }
 }
 
+val toCellConv = createConv("to-cell") {
+    when (it) {
+        is Str -> {
+            val cellRegex = Regex("""(\d+)\.(\d+)""")
+            val match = cellRegex.matchEntire(it.value)
+                ?: throw EvalException("Can't convert $it to cell")
+
+            val (row, col) = match.destructured
+
+            Cell(row.toInt(), col.toInt())
+        }
+        else -> throw EvalException("Can't convert $it to cell")
+    }
+}
+
 fun conversionFunctions(): List<Pair<Symbol, Func>> {
 
     return listOf(
@@ -129,6 +145,7 @@ fun conversionFunctions(): List<Pair<Symbol, Func>> {
         toFractionConv,
         toBoolConv,
         toSymbolConv,
+        toCellConv,
         ToStringFunc
     ).map {
         Pair(Symbol(it.name), it)

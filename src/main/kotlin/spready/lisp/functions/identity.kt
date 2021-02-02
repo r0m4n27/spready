@@ -2,6 +2,7 @@ package spready.lisp.functions
 
 import spready.lisp.Environment
 import spready.lisp.sexpr.Bool
+import spready.lisp.sexpr.Cell
 import spready.lisp.sexpr.Cons
 import spready.lisp.sexpr.Flt
 import spready.lisp.sexpr.Fraction
@@ -66,6 +67,7 @@ fun identityFunctions(): List<Pair<Symbol, Func>> {
         createIdentity<Integer>("int?"),
         createIdentity<Flt>("float?"),
         createIdentity<Fraction>("fraction?"),
+        createIdentity<Cell>("cell?"),
         IsPair,
         IsList
     ).map {

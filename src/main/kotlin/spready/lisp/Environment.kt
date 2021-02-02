@@ -1,5 +1,6 @@
 package spready.lisp
 
+import spready.lisp.functions.cellFunctions
 import spready.lisp.functions.conversionFunctions
 import spready.lisp.functions.equalityFunctions
 import spready.lisp.functions.forms.bindingsFunctions
@@ -86,6 +87,7 @@ open class Environment(protected val symbols: MutableMap<Variable, SExpr>) {
             env += conversionFunctions()
             env += stringFunctions()
             env += equalityFunctions()
+            env += cellFunctions()
 
             // Math
             env += arithmeticFunctions()

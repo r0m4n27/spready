@@ -32,4 +32,27 @@ class VariableTest : BaseEval() {
             assertEquals("Can't find variable 3", exception.message)
         }
     }
+
+    @Nested
+    inner class Range {
+        @Test
+        fun `empty range`() {
+            assertEquals(listOf(), Cell(12, 12)..Cell(12, 10))
+        }
+
+        @Test
+        fun `normal range`() {
+            assertEquals(
+                setOf(
+                    Cell(1, 1),
+                    Cell(1, 2),
+                    Cell(2, 1),
+                    Cell(2, 2),
+                    Cell(3, 1),
+                    Cell(3, 2),
+                ),
+                (Cell(1, 1)..Cell(3, 2)).toSet()
+            )
+        }
+    }
 }

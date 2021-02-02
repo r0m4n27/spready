@@ -14,4 +14,12 @@ data class Symbol(val value: String) : Variable() {
 
 data class Cell(val row: Int, val col: Int) : Variable() {
     override fun toString() = "#$row.$col"
+
+    operator fun rangeTo(other: Cell): List<Cell> {
+        return (row..other.row).flatMap { r ->
+            (col..other.col).map { c ->
+                Cell(r, c)
+            }
+        }
+    }
 }

@@ -134,4 +134,22 @@ class ConversionTest : BaseEval() {
             failsEval("(to-symbol '(1 2 3))", "Can't convert (1 2 3) to symbol!")
         }
     }
+
+    @Nested
+    inner class ToCellTest {
+        @Test
+        fun `toCell str`() {
+            equalsEval("'#12.12", "(to-cell \"12.12\")")
+        }
+
+        @Test
+        fun `toCell str fail`() {
+            failsEval("(to-cell \"123\")", "Can't convert \"123\" to cell")
+        }
+
+        @Test
+        fun `toCell num fail`() {
+            failsEval("(to-cell 123)", "Can't convert 123 to cell")
+        }
+    }
 }

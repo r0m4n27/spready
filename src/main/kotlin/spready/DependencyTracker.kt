@@ -11,6 +11,7 @@ class DependencyTracker(
 ) {
 
     private val cellInfluences: MutableMap<Cell, MutableSet<Cell>> = mutableMapOf()
+    private val cellDependencies: MutableMap<Cell, MutableSet<Cell>> = mutableMapOf()
 
     fun updateCell(cell: Cell) {
         val cellDepends = findDependencies(
@@ -21,8 +22,14 @@ class DependencyTracker(
             throw SpreadException("Cell cant reference itself")
         }
 
+        cellDependencies[cell] = cellDepends
+
         for (dependency in cellDepends) {
             cellInfluences.getOrPut(dependency, ::mutableSetOf).add(cell)
+        }
+
+        if (hasCycle()) {
+            throw SpreadException("Cycle found!")
         }
 
         notifyDependencies(cell)
@@ -33,6 +40,7 @@ class DependencyTracker(
             throw SpreadException("$cell influences others!")
         }
 
+        cellDependencies.remove(cell)
         cellInfluences.remove(cell)
     }
 
@@ -45,7 +53,7 @@ class DependencyTracker(
         }
     }
 
-    private fun findDependencies(expr: SExpr): Set<Cell> {
+    private fun findDependencies(expr: SExpr): MutableSet<Cell> {
         return when (expr) {
             is ListElem -> {
                 val output: MutableSet<Cell> = mutableSetOf()
@@ -60,8 +68,34 @@ class DependencyTracker(
 
                 output
             }
-            is Cell -> setOf(expr)
-            else -> setOf()
+            is Cell -> mutableSetOf(expr)
+            else -> mutableSetOf()
         }
+    }
+
+    // Kahns algorithm is used but without keeping track of the order
+    // Tarjan's could also be used but extra structures would be required
+
+    private fun hasCycle(): Boolean {
+        val noIncoming: MutableList<Cell> = mutableListOf()
+        val dependency = cellDependencies.toMutableMap()
+        val influence = cellInfluences.toMutableMap()
+
+        dependency.filterValues { it.isEmpty() }.forEach {
+            noIncoming.add(it.key)
+            dependency.remove(it.key)
+        }
+
+        while (noIncoming.isNotEmpty()) {
+            val cell = noIncoming.removeFirst()
+            influence.remove(cell)?.forEach {
+                if (dependency[it]?.size == 1) {
+                    noIncoming.add(it)
+                    dependency.remove(it)
+                }
+            }
+        }
+
+        return dependency.isNotEmpty()
     }
 }

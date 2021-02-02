@@ -1,6 +1,7 @@
 package spready
 
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.assertDoesNotThrow
 import spready.lisp.Environment
 import spready.lisp.functions.math.plus
 import spready.lisp.sexpr.Cell
@@ -29,21 +30,6 @@ class DependencyTrackerTest {
 
     @Nested
     inner class UpdateCell {
-
-        @Test
-        fun `Cell references itself`() {
-            val cell = Cell(12, 13)
-            val expr =
-                listOf(Symbol("x"), listOf(cell, Nil).toListElem(), cell).toListElem()
-
-            parsed[cell] = expr
-
-            val exception = assertFailsWith<SpreadException> {
-                tracker.updateCell(cell)
-            }
-
-            assertEquals("Cell cant reference itself", exception.message)
-        }
 
         @Test
         fun `Can't find parsed`() {
@@ -103,5 +89,63 @@ class DependencyTrackerTest {
         }
 
         assertEquals("#1.1 influences others!", exception.message)
+    }
+
+    @Nested
+    inner class Cycles {
+        @Test
+        fun `simple cycle`() {
+            val input = listOf(
+                Cell(1, 1) to Integer(3),
+                Cell(2, 1) to Cell(1, 1),
+                Cell(3, 1) to Cell(2, 1),
+                Cell(4, 1) to Cell(3, 1)
+            )
+
+            input.forEach {
+                parsed[it.first] = it.second
+                tracker.updateCell(it.first)
+            }
+
+            val exception = assertFailsWith<SpreadException> {
+                parsed[Cell(2, 1)] = listOf(Cell(1, 1), Cell(4, 1)).toListElem()
+                tracker.updateCell(Cell(2, 1))
+            }
+
+            assertEquals("Cycle found!", exception.message)
+        }
+
+        @Test
+        fun `no cycles`() {
+            assertDoesNotThrow {
+                parsed.putAll(
+                    mutableMapOf(
+                        Cell(1, 1) to Integer(3),
+                        Cell(2, 1) to listOf(plus, Cell(1, 1), Integer(3)).toListElem(),
+                        Cell(2, 2) to listOf(plus, Cell(2, 1), Integer(3)).toListElem()
+                    )
+                )
+
+                for (item in parsed) {
+                    env.evalAndRegister(item.key, item.value)
+                    tracker.updateCell(item.key)
+                }
+            }
+        }
+
+        @Test
+        fun `Cell references itself`() {
+            val cell = Cell(12, 13)
+            val expr =
+                listOf(Symbol("x"), listOf(cell, Nil).toListElem(), cell).toListElem()
+
+            parsed[cell] = expr
+
+            val exception = assertFailsWith<SpreadException> {
+                tracker.updateCell(cell)
+            }
+
+            assertEquals("Cell cant reference itself", exception.message)
+        }
     }
 }

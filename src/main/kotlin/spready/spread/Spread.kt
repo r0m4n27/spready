@@ -1,4 +1,4 @@
-package spready
+package spready.spread
 
 import spready.lisp.Environment
 import spready.lisp.parse

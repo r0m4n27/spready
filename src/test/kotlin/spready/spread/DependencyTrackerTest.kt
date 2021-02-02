@@ -1,4 +1,4 @@
-package spready
+package spready.spread
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertDoesNotThrow

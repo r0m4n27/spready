@@ -68,6 +68,21 @@ class DependencyTrackerTest {
             assertEquals(Integer(7), env[Cell(2, 1)])
             assertEquals(Integer(10), env[Cell(2, 2)])
         }
+
+        @Test
+        fun `previous not tracked`() {
+            parsed.putAll(
+                mutableMapOf(
+                    Cell(1, 1) to Cell(3, 1)
+                )
+            )
+
+            val expected = assertFailsWith<SpreadException> {
+                tracker.updateCell(Cell(1, 1))
+            }
+
+            assertEquals("Previous Cells are not tracked!", expected.message)
+        }
     }
 
     @Test

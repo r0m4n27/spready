@@ -18,14 +18,18 @@ class DependencyTracker(
             parsedCells[cell] ?: throw SpreadException("Cant find cell!")
         )
 
-        if (cellDepends.contains(cell)) {
+        if (cell in cellDepends) {
             throw SpreadException("Cell cant reference itself")
         }
 
         cellDependencies[cell] = cellDepends
 
-        for (dependency in cellDepends) {
-            cellInfluences.getOrPut(dependency, ::mutableSetOf).add(cell)
+        if (cellDepends.any { it !in cellDependencies }) {
+            throw SpreadException("Previous Cells are not tracked!")
+        }
+
+        cellDepends.forEach {
+            cellInfluences.getOrPut(it, ::mutableSetOf).add(cell)
         }
 
         if (hasCycle()) {
@@ -36,7 +40,7 @@ class DependencyTracker(
     }
 
     fun removeCell(cell: Cell) {
-        if (cellInfluences.containsKey(cell)) {
+        if (cell in cellInfluences) {
             throw SpreadException("$cell influences others!")
         }
 

@@ -11,16 +11,12 @@ class DependencyTracker(
 ) {
 
     private val cellInfluences: MutableMap<Cell, MutableSet<Cell>> = mutableMapOf()
-    private val cellDependencies: MutableMap<Cell, MutableSet<Cell>> = mutableMapOf()
+    private val cellDependencies: MutableMap<Cell, Set<Cell>> = mutableMapOf()
 
     fun updateCell(cell: Cell) {
         val cellDepends = findDependencies(
             parsedCells[cell] ?: throw SpreadException("Cant find cell!")
         )
-
-        if (cell in cellDepends) {
-            throw SpreadException("Cell cant reference itself")
-        }
 
         cellDependencies[cell] = cellDepends
 
@@ -57,7 +53,7 @@ class DependencyTracker(
         }
     }
 
-    private fun findDependencies(expr: SExpr): MutableSet<Cell> {
+    private fun findDependencies(expr: SExpr): Set<Cell> {
         return when (expr) {
             is ListElem -> {
                 val output: MutableSet<Cell> = mutableSetOf()
@@ -72,8 +68,8 @@ class DependencyTracker(
 
                 output
             }
-            is Cell -> mutableSetOf(expr)
-            else -> mutableSetOf()
+            is Cell -> setOf(expr)
+            else -> emptySet()
         }
     }
 
@@ -81,25 +77,28 @@ class DependencyTracker(
     // Tarjan's could also be used but extra structures would be required
 
     private fun hasCycle(): Boolean {
-        val noIncoming: MutableList<Cell> = mutableListOf()
-        val dependency = cellDependencies.toMutableMap()
-        val influence = cellInfluences.toMutableMap()
+        val noIncoming = mutableListOf<Cell>()
+        val graph =
+            cellDependencies.mapValues { it.value.toMutableSet() }.toMutableMap()
 
-        dependency.filterValues { it.isEmpty() }.forEach {
+        graph.filterValues { it.isEmpty() }.forEach {
             noIncoming.add(it.key)
-            dependency.remove(it.key)
+            graph.remove(it.key)
         }
 
         while (noIncoming.isNotEmpty()) {
             val cell = noIncoming.removeFirst()
-            influence.remove(cell)?.forEach {
-                if (dependency[it]?.size == 1) {
+
+            cellInfluences[cell]?.forEach {
+                val cellDepends = graph[it]
+                cellDepends?.remove(cell)
+                if (cellDepends?.size == 0) {
                     noIncoming.add(it)
-                    dependency.remove(it)
+                    graph.remove(it)
                 }
             }
         }
 
-        return dependency.isNotEmpty()
+        return graph.isNotEmpty()
     }
 }

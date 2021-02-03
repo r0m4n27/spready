@@ -160,7 +160,7 @@ class DependencyTrackerTest {
                 tracker.updateCell(cell)
             }
 
-            assertEquals("Cell cant reference itself", exception.message)
+            assertEquals("Cycle found!", exception.message)
         }
     }
 }

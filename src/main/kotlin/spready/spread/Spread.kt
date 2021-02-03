@@ -1,52 +1,50 @@
 package spready.spread
 
-import spready.lisp.Environment
 import spready.lisp.parse
 import spready.lisp.sexpr.Cell
-import spready.lisp.sexpr.SExpr
 import spready.lisp.tokenize
 
-class Spread(private val env: Environment) {
+class Spread {
+    private val cellInput: MutableMap<Cell, String> = mutableMapOf()
+    private val cellResults: MutableMap<Cell, String> = mutableMapOf()
 
-    private val cellsParsed: MutableMap<Cell, SExpr> = mutableMapOf()
-    private val cellsInput: MutableMap<Cell, String> = mutableMapOf()
-    private val tracker = DependencyTracker(env, cellsParsed)
+    private val env =
+        SpreadEnvironment(
+            { cell, result -> cellResults[cell] = result.toString() },
+            { cellResults[it] = "#Err" }
+        )
 
-    val allExprs: Map<Cell, String>
-        get() {
-            val out = mutableMapOf<Cell, String>()
+    val allResults: Map<Cell, String>
+        get() = cellResults
 
-            for (key in cellsInput.keys) {
-                out[key] = env[key].toString()
-            }
+    val allInputs: Map<Cell, String>
+        get() = cellInput
 
-            return out
-        }
+    fun getResult(cell: Cell): String {
+        return cellResults[cell] ?: throw SpreadException("Cell not found!")
+    }
 
-    operator fun get(cell: Cell): String {
-
-        return cellsInput[cell] ?: throw SpreadException("Cell not found!")
+    fun getInput(cell: Cell): String {
+        return cellInput[cell] ?: throw SpreadException("Cell not found!")
     }
 
     operator fun set(cell: Cell, input: String) {
+        cellInput[cell] = input
+
         val parsed = parse(tokenize(input))
 
         if (parsed.size != 1) {
             throw SpreadException("Cell input can only have 1 Expression!")
         }
-        cellsParsed[cell] = parsed[0]
-        cellsInput[cell] = input
 
-        env.evalAndRegister(cell, parsed[0])
-        tracker.updateCell(cell)
+        env.updateDependency(cell, parsed[0])
+        env.evalCell(cell)
     }
 
     operator fun minusAssign(cell: Cell) {
-        tracker.removeCell(cell)
+        env.removeCell(cell)
 
-        env -= cell
-
-        cellsInput.remove(cell)
-        cellsParsed.remove(cell)
+        cellInput.remove(cell)
+        cellResults.remove(cell)
     }
 }

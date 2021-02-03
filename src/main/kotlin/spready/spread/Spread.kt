@@ -1,9 +1,11 @@
 package spready.spread
 
+import kotlinx.serialization.Serializable
 import spready.lisp.parse
 import spready.lisp.sexpr.Cell
 import spready.lisp.tokenize
 
+@Serializable(with = SpreadSerializer::class)
 class Spread {
     private val cellInput: MutableMap<Cell, String> = mutableMapOf()
     private val cellResults: MutableMap<Cell, String> = mutableMapOf()
@@ -37,8 +39,7 @@ class Spread {
             throw SpreadException("Cell input can only have 1 Expression!")
         }
 
-        env.updateDependency(cell, parsed[0])
-        env.evalCell(cell)
+        env[cell] = parsed[0]
     }
 
     operator fun minusAssign(cell: Cell) {

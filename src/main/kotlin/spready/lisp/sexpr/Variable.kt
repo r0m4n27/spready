@@ -1,6 +1,8 @@
 package spready.lisp.sexpr
 
+import kotlinx.serialization.Serializable
 import spready.lisp.Environment
+import spready.spread.CellSerializer
 
 sealed class Variable : SExpr {
     override fun eval(env: Environment): SExpr {
@@ -12,6 +14,7 @@ data class Symbol(val value: String) : Variable() {
     override fun toString() = value
 }
 
+@Serializable(with = CellSerializer::class)
 data class Cell(val row: Int, val col: Int) : Variable() {
     override fun toString() = "#$row.$col"
 

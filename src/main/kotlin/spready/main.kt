@@ -1,19 +1,21 @@
 package spready
 
-import spready.lisp.Environment
-import spready.lisp.parse
-import spready.lisp.tokenize
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import spready.lisp.sexpr.Cell
+import spready.spread.Spread
 
 fun main() {
-    val test =
-        """
-            (let ((x 2)) x)
-        """.trimIndent()
-    val tokens = tokenize(test)
-    val parsed = parse(tokens)
-    val env = Environment.defaultEnv()
-    val evaluated = parsed.map { env.eval(it) }
-    evaluated.forEach {
-        println(it)
-    }
+    val spread = Spread()
+    spread[Cell(2, 1)] = "#1.1"
+    spread[Cell(1, 1)] = "1"
+    println(spread.allInputs)
+    println(spread.allResults)
+
+    val json = Json.encodeToString(spread)
+
+    val newSpread = Json.decodeFromString<Spread>(json)
+    println(newSpread.allInputs)
+    println(newSpread.allResults)
 }

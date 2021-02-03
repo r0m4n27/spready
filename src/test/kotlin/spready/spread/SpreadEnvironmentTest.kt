@@ -43,14 +43,11 @@ class SpreadEnvironmentTest {
             )
 
             input.forEach {
-                env.updateDependency(it.first, it.second)
+                env[it.first] = it.second
             }
 
             val exception = assertFailsWith<SpreadException> {
-                env.updateDependency(
-                    Cell(2, 1),
-                    listOf(Cell(1, 1), Cell(4, 1)).toListElem()
-                )
+                env[Cell(2, 1)] = listOf(Cell(1, 1), Cell(4, 1)).toListElem()
             }
 
             assertEquals("Cycle found!", exception.message)
@@ -66,7 +63,7 @@ class SpreadEnvironmentTest {
                 )
 
                 input.forEach {
-                    env.updateDependency(it.key, it.value)
+                    env[it.key] = it.value
                 }
             }
         }
@@ -78,7 +75,7 @@ class SpreadEnvironmentTest {
                 listOf(Symbol("x"), listOf(cell, Nil).toListElem(), cell).toListElem()
 
             val exception = assertFailsWith<SpreadException> {
-                env.updateDependency(cell, expr)
+                env[cell] = expr
             }
 
             assertEquals("Cycle found!", exception.message)
@@ -94,7 +91,7 @@ class SpreadEnvironmentTest {
         )
 
         input.forEach {
-            env.updateDependency(it.key, it.value)
+            env[it.key] = it.value
         }
 
         val exception = assertFailsWith<SpreadException> {
@@ -106,14 +103,6 @@ class SpreadEnvironmentTest {
 
     @Nested
     inner class EvalCell {
-
-        @Test
-        fun `Can't find parsed`() {
-            val cell = Cell(12, 13)
-            env.evalCell(cell)
-            assertEquals("#Err", results[cell])
-        }
-
         @Test
         fun `notify dependencies`() {
             mutableMapOf(
@@ -121,15 +110,13 @@ class SpreadEnvironmentTest {
                 Cell(2, 1) to listOf(plus, Cell(1, 1), Integer(3)).toListElem(),
                 Cell(2, 2) to listOf(plus, Cell(2, 1), Integer(3)).toListElem()
             ).forEach {
-                env.updateDependency(it.key, it.value)
-                env.evalCell(it.key)
+                env[it.key] = it.value
             }
 
             assertEquals("3", results[Cell(1, 1)])
             assertEquals("6", results[Cell(2, 1)])
             assertEquals("9", results[Cell(2, 2)])
-            env.updateDependency(Cell(1, 1), Integer(4))
-            env.evalCell(Cell(1, 1))
+            env[Cell(1, 1)] = Integer(4)
 
             assertEquals("4", results[Cell(1, 1)])
             assertEquals("7", results[Cell(2, 1)])
@@ -144,8 +131,7 @@ class SpreadEnvironmentTest {
                 Cell(3, 1) to Cell(2, 2),
                 Cell(4, 1) to Cell(3, 1)
             ).forEach {
-                env.updateDependency(it.first, it.second)
-                env.evalCell(it.first)
+                env[it.first] = it.second
             }
 
             assertEquals("3", results[Cell(1, 1)])
@@ -153,17 +139,10 @@ class SpreadEnvironmentTest {
             assertEquals("#Err", results[Cell(3, 1)])
             assertEquals("#Err", results[Cell(4, 1)])
 
-            env.updateDependency(Cell(2, 1), Integer(4))
-            env.evalCell(Cell(2, 1))
+            env[Cell(2, 1)] = Integer(4)
 
             assertEquals("7", results[Cell(2, 2)])
             assertEquals("7", results[Cell(4, 1)])
-        }
-
-        @Test
-        fun `eval missing`() {
-            env.evalCell(Cell(1, 1))
-            assertEquals("#Err", results[Cell(1, 1)])
         }
     }
 }

@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.4.10"
+    kotlin("plugin.serialization") version "1.4.10"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     application
     idea
@@ -22,13 +23,19 @@ tasks.withType<Test> {
 }
 
 application {
-    mainClassName = "spready.MainKt"
+    mainClass.set("spready.MainKt")
 }
 
 val jUnitVersion = "5.7.0"
 
 kotlin {
     sourceSets {
+        val main by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+            }
+        }
+
         val test by getting {
             dependencies {
                 implementation(kotlin("test-common"))

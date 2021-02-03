@@ -16,16 +16,17 @@ class SpreadEnvironment(
 
     private val parsed: MutableMap<Cell, SExpr> = mutableMapOf()
 
-    fun updateDependency(cell: Cell, expr: SExpr) {
-
+    operator fun set(cell: Cell, expr: SExpr) {
         resetDependencies(cell)
-        registerDependencies(cell, findDependencies(expr))
+        updateDependencies(cell, findDependencies(expr))
 
         parsed[cell] = expr
 
         if (hasCycle()) {
             throw SpreadException("Cycle found!")
         }
+
+        evalCell(cell)
     }
 
     private fun resetDependencies(cell: Cell) {
@@ -36,12 +37,11 @@ class SpreadEnvironment(
         canRun.remove(cell)
     }
 
-    private fun registerDependencies(cell: Cell, cellDependencies: Set<Cell>) {
+    private fun updateDependencies(cell: Cell, cellDependencies: Set<Cell>) {
         dependencies[cell] = cellDependencies
 
         cellDependencies.forEach {
             dependencies.getOrPut(it, ::emptySet)
-
             influences.getOrPut(it, ::mutableSetOf).add(cell)
         }
 
@@ -49,11 +49,8 @@ class SpreadEnvironment(
     }
 
     private fun updateCanRun(cell: Cell) {
-        if (cell !in canRun && dependencies[cell]!!.all { it in canRun }) {
+        if (cell !in canRun && dependencies[cell]!!.all(canRun::contains)) {
             canRun.add(cell)
-            influences[cell]?.forEach {
-                updateCanRun(it)
-            }
         }
     }
 
@@ -70,13 +67,14 @@ class SpreadEnvironment(
         parsed.remove(cell)
     }
 
-    fun evalCell(cell: Cell) {
+    private fun evalCell(cell: Cell) {
         if (cell in canRun) {
             val parsedCell = parsed[cell]!!
 
             canRunAction(cell, env.evalAndRegister(cell, parsedCell))
 
             influences[cell]?.forEach {
+                updateCanRun(it)
                 evalCell(it)
             }
         } else {

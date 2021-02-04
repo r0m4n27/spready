@@ -1,6 +1,7 @@
 package spready.spread
 
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Nested
 import spready.lisp.sexpr.Cell
@@ -17,15 +18,9 @@ class SpreadSerializerTest {
         spread[Cell(2, 1)] = "(+ 4 5)"
 
         val expected =
-            """
-            {
-                "cells": {
-                    "1.1": "#2.1",
-                    "2.1": "(+ #1.1 3)",
-                    "3.2": "(+ 4 5)"
-                }
-            }
-            """.trimIndent()
+            """{"cells":{"1.1":"#2.1","3.2":"(+ #1.1 3)","2.1":"(+ 4 5)"}}"""
+
+        assertEquals(expected, Json.encodeToString(spread))
     }
 
     @Nested

@@ -44,14 +44,6 @@ class SpreadEnvironment(
             dependencies.getOrPut(it, ::emptySet)
             influences.getOrPut(it, ::mutableSetOf).add(cell)
         }
-
-        updateCanRun(cell)
-    }
-
-    private fun updateCanRun(cell: Cell) {
-        if (cell !in canRun && dependencies[cell]!!.all(canRun::contains)) {
-            canRun.add(cell)
-        }
     }
 
     fun removeCell(cell: Cell) {
@@ -68,13 +60,13 @@ class SpreadEnvironment(
     }
 
     private fun evalCell(cell: Cell) {
-        if (cell in canRun) {
+        if (cell in canRun || dependencies[cell]!!.all(canRun::contains)) {
+            canRun.add(cell)
             val parsedCell = parsed[cell]!!
 
             canRunAction(cell, env.evalAndRegister(cell, parsedCell))
 
             influences[cell]?.forEach {
-                updateCanRun(it)
                 evalCell(it)
             }
         } else {

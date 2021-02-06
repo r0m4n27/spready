@@ -43,7 +43,7 @@ val jUnitVersion = "5.7.0"
 
 javafx {
     version = "14"
-    modules("javafx.controls", "javafx.graphics", "javafx.base")
+    modules("javafx.controls", "javafx.graphics", "javafx.base", "javafx.swing")
 }
 
 kotlin {

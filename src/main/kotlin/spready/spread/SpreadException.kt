@@ -1,3 +1,3 @@
 package spready.spread
 
-class SpreadException(message: String) : Throwable(message)
+class SpreadException(override val message: String) : Throwable(message)

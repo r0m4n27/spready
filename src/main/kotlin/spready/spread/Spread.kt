@@ -9,25 +9,31 @@ import spready.lisp.tokenize
 class Spread {
     private val cellInput: MutableMap<Cell, String> = mutableMapOf()
     private val cellResults: MutableMap<Cell, String> = mutableMapOf()
+    private val changed: MutableSet<Cell> = mutableSetOf()
 
     private val env =
         SpreadEnvironment(
-            { cell, result -> cellResults[cell] = result.toString() },
-            { cellResults[it] = "#Err" }
+            { cell, result ->
+                changed.add(cell)
+                cellResults[cell] = result.toString()
+            },
+            {
+                changed.add(it)
+                cellResults[it] = "#Err"
+            }
         )
-
-    val allResults: Map<Cell, String>
-        get() = cellResults
 
     val allInputs: Map<Cell, String>
         get() = cellInput
 
-    fun getResult(cell: Cell): String {
-        return cellResults[cell] ?: throw SpreadException("Cell not found!")
-    }
+    val allResults: Map<Cell, String>
+        get() = cellResults
 
-    fun getInput(cell: Cell): String {
-        return cellInput[cell] ?: throw SpreadException("Cell not found!")
+    val changedCells: Set<Cell>
+        get() = changed
+
+    fun getInput(cell: Cell): String? {
+        return cellInput[cell]
     }
 
     operator fun set(cell: Cell, input: String) {
@@ -39,6 +45,7 @@ class Spread {
             throw SpreadException("Cell input can only have 1 Expression!")
         }
 
+        changed.clear()
         env[cell] = parsed[0]
     }
 

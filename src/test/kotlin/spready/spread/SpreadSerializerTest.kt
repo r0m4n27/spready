@@ -39,12 +39,12 @@ class SpreadSerializerTest {
 
             val spread = Json.decodeFromString<Spread>(input)
 
-            mapOf(
+            val expected = mapOf(
                 Cell(1, 1) to "3",
                 Cell(2, 1) to "6"
-            ).forEach {
-                assertEquals(it.value, spread.getResult(it.key))
-            }
+            )
+
+            assertEquals(expected, spread.allResults)
         }
 
         @Test
@@ -64,15 +64,15 @@ class SpreadSerializerTest {
 
             val spread = Json.decodeFromString<Spread>(input)
 
-            mapOf(
+            val expected = mapOf(
                 Cell(1, 1) to "3",
                 Cell(2, 1) to "11",
                 Cell(4, 1) to "1",
                 Cell(3, 1) to "3",
                 Cell(2, 2) to "2",
-            ).forEach {
-                assertEquals(it.value, spread.getResult(it.key))
-            }
+            )
+
+            assertEquals(expected, spread.allResults)
         }
     }
 }

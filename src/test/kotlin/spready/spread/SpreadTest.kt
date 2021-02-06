@@ -38,12 +38,8 @@ class SpreadTest {
         }
 
         @Test
-        fun `get fail`() {
-            val ex = assertFailsWith<SpreadException> {
-                spread.getInput(Cell(1, 1))
-            }
-
-            assertEquals("Cell not found!", ex.message)
+        fun `get Input null`() {
+            assertEquals(null, spread.getInput(Cell(1, 1)))
         }
     }
 
@@ -84,7 +80,7 @@ class SpreadTest {
         fun `set normal`() {
             spread[Cell(12, 12)] = "(+ 1 2 3)"
 
-            assertEquals("6", spread.getResult(Cell(12, 12)))
+            assertEquals(mapOf(Cell(12, 12) to "6"), spread.allResults)
             assertEquals("(+ 1 2 3)", spread.getInput(Cell(12, 12)))
         }
     }
@@ -101,9 +97,7 @@ class SpreadTest {
 
             spread -= Cell(12, 12)
 
-            assertFailsWith<SpreadException> {
-                spread.getInput(Cell(12, 12))
-            }
+            assertEquals(null, spread.getInput(Cell(12, 12)))
         }
 
         @Test
@@ -116,6 +110,21 @@ class SpreadTest {
             }
 
             assertEquals("#12.12 influences others!", exception.message)
+        }
+    }
+
+    @Nested
+    inner class Changed {
+        @Test
+        fun `change cells`() {
+            spread[Cell(1, 1)] = "#2.1"
+            spread[Cell(2, 1)] = "1"
+
+            assertEquals(setOf(Cell(1, 1), Cell(2, 1)), spread.changedCells)
+
+            spread[Cell(3, 1)] = "123"
+
+            assertEquals(setOf(Cell(3, 1)), spread.changedCells)
         }
     }
 }

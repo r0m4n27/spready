@@ -80,6 +80,10 @@ class SheetView : View() {
                 sheet.grid.setCellValue(it.row - 1, it.col - 1, result)
             }
         }
+
+        subscribe<NewSpreadEvent> {
+            changeSheetSize(it.maxRow, it.maxCol)
+        }
     }
 
     private fun createGrid(rowSize: Int, colSize: Int): Grid {
@@ -87,7 +91,7 @@ class SheetView : View() {
 
         val rows = (0 until rowSize).map { row ->
             (0 until colSize).map { col ->
-                val text = model.allResults[Cell(row, col)] ?: ""
+                val text = model.allResults[Cell(row + 1, col + 1)] ?: ""
 
                 SpreadsheetCellType.STRING.createCell(row, col, 1, 1, text)
             }.asObservable()

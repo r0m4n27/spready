@@ -13,16 +13,16 @@ object SpreadSerializer : KSerializer<Spread> {
         get() = SpreadSurrogate.serializer().descriptor
 
     override fun serialize(encoder: Encoder, value: Spread) {
-        val surrogate = SpreadSurrogate(value.allInputs)
+        val surrogate = SpreadSurrogate(value.allInputs, value.allScripts)
         encoder.encodeSerializableValue(SpreadSurrogate.serializer(), surrogate)
     }
 
     override fun deserialize(decoder: Decoder): Spread {
         val surrogate = decoder.decodeSerializableValue(SpreadSurrogate.serializer())
         val spread = Spread()
-        surrogate.cells.forEach {
-            spread[it.key] = it.value
-        }
+
+        surrogate.scripts.forEach(spread::setScript)
+        surrogate.cells.forEach(spread::setCell)
 
         return spread
     }
@@ -30,4 +30,7 @@ object SpreadSerializer : KSerializer<Spread> {
 
 @Serializable
 @SerialName("Spread")
-private class SpreadSurrogate(val cells: Map<Cell, String>)
+private class SpreadSurrogate(
+    val cells: Map<Cell, String>,
+    val scripts: Map<String, String>
+)

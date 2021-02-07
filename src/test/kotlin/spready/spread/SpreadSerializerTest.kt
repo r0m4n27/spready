@@ -13,12 +13,13 @@ class SpreadSerializerTest {
     fun `serialize normal`() {
         val spread = Spread()
 
-        spread[Cell(1, 1)] = "#2.1"
-        spread[Cell(3, 2)] = "(+ #1.1 3)"
-        spread[Cell(2, 1)] = "(+ 4 5)"
+        spread.setCell(Cell(1, 1), "#2.1")
+        spread.setCell(Cell(3, 2), "(+ #1.1 3)")
+        spread.setCell(Cell(2, 1), "(+ 4 5)")
 
         val expected =
-            """{"cells":{"1.1":"#2.1","3.2":"(+ #1.1 3)","2.1":"(+ 4 5)"}}"""
+            """{"cells":{"1.1":"#2.1","3.2":"(+ #1.1 3)","2.1":"(+ 4 5)"}""" +
+                ""","scripts":{}}"""
 
         assertEquals(expected, Json.encodeToString(spread))
     }
@@ -33,6 +34,10 @@ class SpreadSerializerTest {
                     "cells": {
                         "1.1": "3",
                         "2.1": "(+ #1.1 3)"
+                    }
+
+                    "scripts":{
+
                     }
                 }
                 """.trimIndent()
@@ -57,7 +62,11 @@ class SpreadSerializerTest {
                         "2.1": "(+ #1.1 #3.1 #2.2 3)",
                         "4.1": "1",
                         "3.1": "(+ #2.2 1)",
-                        "2.2": "2"
+                        "2.2": "x"
+                    }
+
+                    "scripts": {
+                        "test": "(val x 2)"
                     }
                 }
                 """.trimIndent()

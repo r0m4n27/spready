@@ -22,7 +22,7 @@ class SpreadTest {
         fun `get successfully`() {
             val cell = Cell(12, 12)
 
-            spread[cell] = "(+ 1 2 3)"
+            spread.setCell(cell, "(+ 1 2 3)")
 
             assertEquals("(+ 1 2 3)", spread.getInput(cell))
         }
@@ -31,7 +31,7 @@ class SpreadTest {
         fun `get all`() {
             val input = mapOf(Cell(1, 1) to "1", Cell(1, 2) to "2")
             input.forEach {
-                spread[it.key] = it.value
+                spread.setCell(it.key, it.value)
             }
 
             assertEquals(input, spread.allInputs)
@@ -56,7 +56,7 @@ class SpreadTest {
             val input = mapOf(Cell(1, 2) to "(+ 1 2 3)", Cell(2, 3) to "\"hallo\"")
 
             for (item in input) {
-                spread[item.key] = item.value
+                spread.setCell(item.key, item.value)
             }
 
             for (item in spread.allResults) {
@@ -70,7 +70,7 @@ class SpreadTest {
         @Test
         fun `set fail`() {
             val exception = assertFailsWith<SpreadException> {
-                spread[Cell(12, 12)] = "1 2 3"
+                spread.setCell(Cell(12, 12), " 1 2 3")
             }
 
             assertEquals("Cell input can only have 1 Expression!", exception.message)
@@ -78,10 +78,18 @@ class SpreadTest {
 
         @Test
         fun `set normal`() {
-            spread[Cell(12, 12)] = "(+ 1 2 3)"
+            spread.setCell(Cell(12, 12), "(+ 1 2 3)")
 
             assertEquals(mapOf(Cell(12, 12) to "6"), spread.allResults)
             assertEquals("(+ 1 2 3)", spread.getInput(Cell(12, 12)))
+        }
+
+        @Test
+        fun `set script`() {
+            spread.setScript("test", "(val x 2) (val y (+ x 3))")
+
+            spread.setCell(Cell(1, 1), "y")
+            assertEquals(mapOf(Cell(1, 1) to "5"), spread.allResults)
         }
     }
 
@@ -89,7 +97,7 @@ class SpreadTest {
     inner class MinusAssign {
         @Test
         fun `minusAssign normal`() {
-            spread[Cell(12, 12)] = "(+ 1 2 3)"
+            spread.setCell(Cell(12, 12), "(+ 1 2 3)")
             assertEquals(
                 "(+ 1 2 3)",
                 spread.getInput(Cell(12, 12))
@@ -102,8 +110,8 @@ class SpreadTest {
 
         @Test
         fun `minusAssign fail`() {
-            spread[Cell(12, 12)] = "(+ 1 2 3)"
-            spread[Cell(1, 1)] = "#12.12"
+            spread.setCell(Cell(12, 12), "(+ 1 2 3)")
+            spread.setCell(Cell(1, 1), "#12.12")
 
             val exception = assertFailsWith<SpreadException> {
                 spread -= Cell(12, 12)
@@ -117,12 +125,12 @@ class SpreadTest {
     inner class Changed {
         @Test
         fun `change cells`() {
-            spread[Cell(1, 1)] = "#2.1"
-            spread[Cell(2, 1)] = "1"
+            spread.setCell(Cell(1, 1), "#2.1")
+            spread.setCell(Cell(2, 1), "1")
 
             assertEquals(setOf(Cell(1, 1), Cell(2, 1)), spread.changedCells)
 
-            spread[Cell(3, 1)] = "123"
+            spread.setCell(Cell(3, 1), "123")
 
             assertEquals(setOf(Cell(3, 1)), spread.changedCells)
         }

@@ -8,7 +8,7 @@ import spready.lisp.sexpr.SExpr
 class SpreadEnvironment(
     private val canRunAction: (cell: Cell, result: SExpr) -> Unit,
     private val cantRunAction: (Cell) -> Unit,
-    private val env: Environment = Environment.defaultEnv()
+    private val env: Environment
 ) {
     private val influences: MutableMap<Cell, MutableSet<Cell>> = mutableMapOf()
     private val dependencies: MutableMap<Cell, Set<Cell>> = mutableMapOf()

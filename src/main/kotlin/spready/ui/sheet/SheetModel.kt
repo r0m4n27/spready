@@ -54,7 +54,7 @@ class SheetModel(private var spread: Spread = Spread()) : ViewModel() {
                 }
             } else {
                 try {
-                    spread[cell] = currentInput
+                    spread.setCell(cell, currentInput)
                     fire(EvalStatusEvent(Ok))
                 } catch (ex: EvalException) {
                     fire(EvalStatusEvent(Err(ex.message)))

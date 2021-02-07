@@ -2,6 +2,7 @@ package spready.spread
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertDoesNotThrow
+import spready.lisp.Environment
 import spready.lisp.functions.math.plus
 import spready.lisp.sexpr.Cell
 import spready.lisp.sexpr.Integer
@@ -19,7 +20,8 @@ class SpreadEnvironmentTest {
     private var env =
         SpreadEnvironment(
             { cell, result -> results[cell] = result.toString() },
-            { results[it] = "#Err" }
+            { results[it] = "#Err" },
+            Environment.defaultEnv()
         )
 
     @BeforeTest
@@ -27,7 +29,8 @@ class SpreadEnvironmentTest {
         results = mutableMapOf()
         env = SpreadEnvironment(
             { cell, result -> results[cell] = result.toString() },
-            { results[it] = "#Err" }
+            { results[it] = "#Err" },
+            Environment.defaultEnv()
         )
     }
 

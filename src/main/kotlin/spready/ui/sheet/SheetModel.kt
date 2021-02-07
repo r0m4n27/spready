@@ -45,13 +45,22 @@ class SheetModel(private var spread: Spread = Spread()) : ViewModel() {
         val cell = currentCell
 
         if (cell != null) {
-            try {
-                spread[cell] = currentInput
-                fire(EvalStatusEvent(Ok))
-            } catch (ex: EvalException) {
-                fire(EvalStatusEvent(Err(ex.message)))
-            } catch (ex: SpreadException) {
-                fire(EvalStatusEvent(Err(ex.message)))
+            if (currentInput == "") {
+                try {
+                    spread -= cell
+                } catch (_: EvalException) {
+                } catch (ex: SpreadException) {
+                    fire(EvalStatusEvent(Err(ex.message)))
+                }
+            } else {
+                try {
+                    spread[cell] = currentInput
+                    fire(EvalStatusEvent(Ok))
+                } catch (ex: EvalException) {
+                    fire(EvalStatusEvent(Err(ex.message)))
+                } catch (ex: SpreadException) {
+                    fire(EvalStatusEvent(Err(ex.message)))
+                }
             }
         }
 

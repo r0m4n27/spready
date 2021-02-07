@@ -101,5 +101,45 @@ class SheetModelTest {
             assertNotNull(event)
             assertEquals(Err("Can't find variable test"), event?.result)
         }
+
+        @Test
+        fun `remove cell`() {
+            model.chooseCell(Cell(1, 1))
+            model.currentInputProperty.value = "6"
+
+            model.evalInput()
+            assertEquals(mapOf(Cell(1, 1) to "6"), model.allResults)
+            model.currentInputProperty.value = ""
+            model.evalInput()
+
+            assertEquals(false, model.allResults.containsKey(Cell(1, 1)))
+        }
+
+        @Test
+        fun `remove fail`() {
+            var event: EvalStatusEvent? = null
+
+            model.subscribe<EvalStatusEvent> {
+                event = it
+            }
+
+            model.chooseCell(Cell(1, 1))
+            model.currentInputProperty.value = "6"
+            model.evalInput()
+
+            model.chooseCell(Cell(2, 1))
+            model.currentInputProperty.value = "#1.1"
+            model.evalInput()
+
+            assertEquals(mapOf(Cell(1, 1) to "6", Cell(2, 1) to "6"), model.allResults)
+
+            model.chooseCell(Cell(1, 1))
+            model.currentInputProperty.value = ""
+            model.evalInput()
+
+            Thread.sleep(500)
+            assertNotNull(event)
+            assertEquals(Err("#1.1 influences others!"), event?.result)
+        }
     }
 }

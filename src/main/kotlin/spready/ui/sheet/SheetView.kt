@@ -22,7 +22,7 @@ import tornadofx.textfield
 import tornadofx.vbox
 import tornadofx.vgrow
 
-class SheetView : View() {
+class SheetView : View("Sheet") {
     private var sheet: SpreadsheetView by singleAssign()
     private val model: SheetModel by inject()
 

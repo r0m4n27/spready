@@ -1,8 +1,8 @@
-package spready.ui.sheet
+package spready.ui.status
 
 import tornadofx.FXEvent
 
-class EvalStatusEvent(val result: Result) : FXEvent()
+class StatusEvent(val result: Result) : FXEvent()
 
 sealed class Result
 

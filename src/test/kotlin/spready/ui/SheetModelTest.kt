@@ -3,10 +3,10 @@ package spready.ui
 import javafx.embed.swing.JFXPanel
 import org.junit.jupiter.api.Nested
 import spready.lisp.sexpr.Cell
-import spready.ui.sheet.Err
-import spready.ui.sheet.EvalStatusEvent
-import spready.ui.sheet.Ok
 import spready.ui.sheet.SheetModel
+import spready.ui.status.Err
+import spready.ui.status.Ok
+import spready.ui.status.StatusEvent
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -69,9 +69,9 @@ class SheetModelTest {
 
         @Test
         fun `eval fire Ok`() {
-            var event: EvalStatusEvent? = null
+            var event: StatusEvent? = null
 
-            model.subscribe<EvalStatusEvent> {
+            model.subscribe<StatusEvent> {
                 event = it
             }
 
@@ -80,16 +80,16 @@ class SheetModelTest {
             model.evalInput()
 
             // Wait to receive the event
-            Thread.sleep(500)
+            Thread.sleep(50)
             assertNotNull(event)
             assertEquals(Ok, event?.result)
         }
 
         @Test
         fun `eval fire Err`() {
-            var event: EvalStatusEvent? = null
+            var event: StatusEvent? = null
 
-            model.subscribe<EvalStatusEvent> {
+            model.subscribe<StatusEvent> {
                 event = it
             }
 
@@ -97,7 +97,7 @@ class SheetModelTest {
             model.currentInputProperty.value = "test"
             model.evalInput()
 
-            Thread.sleep(500)
+            Thread.sleep(50)
             assertNotNull(event)
             assertEquals(Err("Can't find variable test"), event?.result)
         }
@@ -117,9 +117,9 @@ class SheetModelTest {
 
         @Test
         fun `remove fail`() {
-            var event: EvalStatusEvent? = null
+            var event: StatusEvent? = null
 
-            model.subscribe<EvalStatusEvent> {
+            model.subscribe<StatusEvent> {
                 event = it
             }
 
@@ -137,7 +137,7 @@ class SheetModelTest {
             model.currentInputProperty.value = ""
             model.evalInput()
 
-            Thread.sleep(500)
+            Thread.sleep(50)
             assertNotNull(event)
             assertEquals(Err("#1.1 influences others!"), event?.result)
         }

@@ -6,6 +6,9 @@ import spready.lisp.EvalException
 import spready.lisp.sexpr.Cell
 import spready.spread.SpreadException
 import spready.ui.SpreadModel
+import spready.ui.status.Err
+import spready.ui.status.Ok
+import spready.ui.status.StatusEvent
 import tornadofx.ViewModel
 import tornadofx.asObservable
 import tornadofx.getValue
@@ -52,7 +55,7 @@ class SheetModel : ViewModel() {
                 }
             }
 
-            fire(EvalStatusEvent(result))
+            fire(StatusEvent(result))
         }
     }
 

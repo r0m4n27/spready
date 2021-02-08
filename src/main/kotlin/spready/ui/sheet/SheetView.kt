@@ -10,6 +10,7 @@ import org.controlsfx.control.spreadsheet.GridBase
 import org.controlsfx.control.spreadsheet.SpreadsheetCellType
 import org.controlsfx.control.spreadsheet.SpreadsheetView
 import spready.lisp.sexpr.Cell
+import spready.ui.NewSpreadEvent
 import tornadofx.View
 import tornadofx.action
 import tornadofx.asObservable

@@ -1,4 +1,4 @@
-package spready.ui.sheet
+package spready.ui
 
 import tornadofx.FXEvent
 

@@ -9,10 +9,9 @@ import spready.spread.Spread
 import spready.ui.menu.Open
 import spready.ui.menu.Save
 import spready.ui.menu.SpreadFileEvent
-import spready.ui.sheet.Err
-import spready.ui.sheet.EvalStatusEvent
-import spready.ui.sheet.NewSpreadEvent
-import spready.ui.sheet.Ok
+import spready.ui.status.Err
+import spready.ui.status.Ok
+import spready.ui.status.StatusEvent
 import tornadofx.ViewModel
 import tornadofx.getValue
 import tornadofx.setValue
@@ -55,11 +54,13 @@ class SpreadModel : ViewModel() {
             Err(ex.message ?: "Can't open file!")
         }
 
-        fire(EvalStatusEvent(result))
+        fire(StatusEvent(result))
     }
 
     private fun saveToFile(file: File) {
         val text = Json.encodeToString(spread)
         file.writeText(text)
+
+        fire(StatusEvent(Ok))
     }
 }

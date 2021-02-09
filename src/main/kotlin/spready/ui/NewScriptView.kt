@@ -8,6 +8,8 @@ import tornadofx.button
 import tornadofx.fieldset
 import tornadofx.form
 import tornadofx.getValue
+import tornadofx.px
+import tornadofx.style
 import tornadofx.textfield
 
 class NewScriptView : Fragment() {
@@ -26,6 +28,10 @@ class NewScriptView : Fragment() {
 
                     close()
                 }
+            }
+
+            style {
+                spacing = 10.px
             }
         }
     }

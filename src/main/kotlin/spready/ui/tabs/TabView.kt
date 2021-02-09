@@ -1,6 +1,7 @@
 package spready.ui.tabs
 
 import javafx.scene.control.TabPane
+import spready.spread.Spread
 import spready.ui.script.ScriptScope
 import spready.ui.script.ScriptView
 import spready.ui.sheet.SheetView
@@ -14,11 +15,7 @@ import tornadofx.tabpane
 class TabView : View() {
     private val model: TabModel by inject()
 
-    override val root = tabpane {
-        tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
-
-        tab<SheetView>()
-    }
+    override val root = initTabs(model.spreadProperty.value)
 
     init {
         subscribe<AddScriptEvent> {
@@ -26,18 +23,20 @@ class TabView : View() {
         }
 
         model.spreadProperty.addListener { _, _, spread ->
-            root.replaceWith(
-                tabpane {
-                    tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
+            root.replaceWith(initTabs(spread))
+        }
+    }
 
-                    tab<SheetView>()
+    private fun initTabs(spread: Spread): TabPane {
+        return tabpane {
+            tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
 
-                    spread.allScripts.forEach {
-                        val scope = ScriptScope(it.key)
-                        tab(it.key, find(ScriptView::class, scope).root)
-                    }
-                }
-            )
+            tab<SheetView>()
+
+            spread.allScripts.forEach {
+                val scope = ScriptScope(it.key)
+                tab(it.key, find(ScriptView::class, scope).root)
+            }
         }
     }
 

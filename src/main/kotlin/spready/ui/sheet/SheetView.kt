@@ -14,10 +14,13 @@ import spready.ui.NewSpreadEvent
 import tornadofx.View
 import tornadofx.action
 import tornadofx.asObservable
+import tornadofx.box
 import tornadofx.button
 import tornadofx.hbox
 import tornadofx.hboxConstraints
+import tornadofx.px
 import tornadofx.singleAssign
+import tornadofx.style
 import tornadofx.textfield
 import tornadofx.vbox
 import tornadofx.vgrow
@@ -68,9 +71,18 @@ class SheetView : View("Sheet") {
                     changeSheetSize(rowSize, colSize)
                 }
             }
+
+            style {
+                spacing = 10.px
+            }
         }
 
         add(sheet)
+
+        style {
+            padding = box(5.px)
+            spacing = 10.px
+        }
     }
 
     init {

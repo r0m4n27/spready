@@ -8,9 +8,12 @@ import tornadofx.View
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.borderpane
+import tornadofx.box
 import tornadofx.button
 import tornadofx.hbox
 import tornadofx.hgrow
+import tornadofx.px
+import tornadofx.style
 
 class MainView : View() {
     private val status: StatusView by inject()
@@ -29,6 +32,10 @@ class MainView : View() {
                 action {
                     find<NewScriptView>().openModal()
                 }
+            }
+
+            style {
+                padding = box(10.px)
             }
         }
     }

@@ -4,7 +4,10 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import tornadofx.View
 import tornadofx.action
+import tornadofx.box
 import tornadofx.button
+import tornadofx.px
+import tornadofx.style
 import tornadofx.textarea
 import tornadofx.vbox
 import tornadofx.vgrow
@@ -21,5 +24,10 @@ class ScriptView : View() {
         }
 
         button("Run Script").action(model::runScript)
+
+        style {
+            spacing = 10.px
+            padding = box(5.px)
+        }
     }
 }

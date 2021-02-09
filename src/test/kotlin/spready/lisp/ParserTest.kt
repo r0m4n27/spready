@@ -48,7 +48,7 @@ class ParserTest {
                 Token(TokenType.CloseParen, ")")
             )
 
-            assertThrows<IllegalArgumentException> {
+            assertThrows<EvalException> {
                 parseOther(input.toMutableList())
             }
         }
@@ -59,7 +59,7 @@ class ParserTest {
                 Token(TokenType.CloseParen, ")")
             )
 
-            assertThrows<IllegalArgumentException> {
+            assertThrows<EvalException> {
                 parseOther(input.toMutableList())
             }
         }
@@ -121,7 +121,7 @@ class ParserTest {
 
         @Test
         fun `parse special fail`() {
-            assertFailsWith<IllegalArgumentException> {
+            assertFailsWith<EvalException> {
                 parse(listOf(Token(TokenType.Special, "#123")))
             }
         }
@@ -161,7 +161,7 @@ class ParserTest {
 
         @Test
         fun `parse Cell fail`() {
-            assertFailsWith<IllegalArgumentException> {
+            assertFailsWith<EvalException> {
                 parse(listOf(Token(TokenType.Special, "#-12.32")))
             }
         }
@@ -314,7 +314,7 @@ class ParserTest {
 
         @Test
         fun `parse unexpected token`() {
-            assertThrows<IllegalArgumentException> {
+            assertThrows<EvalException> {
                 parse(listOf(Token(TokenType.CloseParen, ")")))
             }
         }
@@ -344,7 +344,7 @@ class ParserTest {
                 Token(TokenType.CloseParen, ")")
             )
 
-            assertThrows<IllegalArgumentException> {
+            assertThrows<EvalException> {
                 parse(input)
             }
         }

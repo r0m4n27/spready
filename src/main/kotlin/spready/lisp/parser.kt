@@ -92,7 +92,7 @@ fun parseSpecial(value: String): SExpr {
                 return Cell(row.toInt(), col.toInt())
             }
 
-            throw IllegalArgumentException("Can't parse Special $value!")
+            throw EvalException("Can't parse Special $value!")
         }
     }
 }
@@ -121,7 +121,7 @@ fun parseOther(tokens: MutableList<Token>): SExpr {
             }
 
             if (tokens.isEmpty()) {
-                throw IllegalArgumentException("Parenthesis weren't balanced!")
+                throw EvalException("Parenthesis weren't balanced!")
             }
 
             tokens.removeFirst()
@@ -142,7 +142,7 @@ fun parseOther(tokens: MutableList<Token>): SExpr {
             if (first.type.isAtom) {
                 parseAtom(first)
             } else {
-                throw IllegalArgumentException("Unexpected token $first")
+                throw EvalException("Unexpected token $first")
             }
         }
     }

@@ -9,6 +9,9 @@ import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
 
+/**
+ * If the arg is truthy eval the first branch otherwise the second
+ */
 object IfExpr : Func("if") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsList = args.checkSize(3)
@@ -22,6 +25,17 @@ object IfExpr : Func("if") {
     }
 }
 
+/**
+ * Iterates over all branches if the first elem of a branch is truthy handle that branch
+ *
+ * If a else is found it will handle this branch
+ *
+ * Handling:
+ *
+ * Only test: Return the evaluated test
+ * "=>": The third arg must be a [Func], the evaluated test will be used as a arg for the lambda
+ * else: Eval the branch and return the last evaluated item
+ */
 object Cond : Func("cond") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         if (args.isEmpty()) {
@@ -72,6 +86,13 @@ object Cond : Func("cond") {
     }
 }
 
+/**
+ * Checks if the evaluated first item can be found in one of
+ * the first elements (lists) of the branches, it will evaluate the args of the branch
+ * and return the last one
+ *
+ * If a else is found it will handle this branch
+ */
 object Case : Func("case") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.checkMinSize(2).toMutableList()
@@ -96,6 +117,9 @@ object Case : Func("case") {
     }
 }
 
+/**
+ * Eval all args and return the last one
+ */
 object RunExpr : Func("run") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         return env.eval(args).lastOrNull() ?: Nil

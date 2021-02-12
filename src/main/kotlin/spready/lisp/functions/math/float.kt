@@ -15,23 +15,24 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.tan
 
-inline fun createTrigFunc(name: String, crossinline fn: (Double) -> Double): Func {
+/**
+ * Creates a func that transforms a Num to [Flt]
+ */
+inline fun createDoubleFunc(name: String, crossinline fn: (Double) -> Double): Func {
     return createFuncWithOneArg(name) {
         Flt(fn(it.toFlt().value))
     }
 }
 
-val sin = createTrigFunc("sin", ::sin)
-val cos = createTrigFunc("cos", ::cos)
-val tan = createTrigFunc("tan", ::tan)
+val sin = createDoubleFunc("sin", ::sin)
+val cos = createDoubleFunc("cos", ::cos)
+val tan = createDoubleFunc("tan", ::tan)
 
-val asin = createTrigFunc("asin", ::asin)
-val acos = createTrigFunc("acos", ::acos)
-val atan = createTrigFunc("atan", ::atan)
+val asin = createDoubleFunc("asin", ::asin)
+val acos = createDoubleFunc("acos", ::acos)
+val atan = createDoubleFunc("atan", ::atan)
 
-private val exp = createFuncWithOneArg("exp") {
-    Flt(E.pow(it.toFlt().value))
-}
+val exp = createDoubleFunc("exp", E::pow)
 
 private val logOne = createFuncWithOneArg("temp") {
 
@@ -41,6 +42,11 @@ private val logTwo = createFuncWithTwoArgs("temp") { num, other ->
     Flt(log(num.toFlt().value, other.toFlt().value))
 }
 
+/**
+ * Computes the logarithm to a base
+ *
+ * If no base is provided E is used
+ */
 object LogFunc : Func("log") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkBetweenSize(1, 2)

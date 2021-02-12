@@ -8,6 +8,9 @@ import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
 
+/**
+ * Creates a rectangular range of cells, evaluates them and returns the list
+ */
 object CellRange : Func("cell-range") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)

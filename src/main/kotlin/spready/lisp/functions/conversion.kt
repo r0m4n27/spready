@@ -14,6 +14,11 @@ import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
 
+/**
+ * Creates a [Func] that eval it's arg puts in [evalBlock]
+ *
+ * @param evalBlock Converts the [SExpr] to another type
+ */
 private inline fun createConv(
     name: String,
     crossinline evalBlock: (SExpr) -> SExpr
@@ -27,6 +32,9 @@ private inline fun createConv(
     }
 }
 
+/**
+ * Converts a string to a list of characters
+ */
 val toListConv = createConv("to-list") { sExpr ->
     when (sExpr) {
         is ListElem -> sExpr
@@ -35,6 +43,9 @@ val toListConv = createConv("to-list") { sExpr ->
     }
 }
 
+/**
+ * Converts [Symbol], [Num] and [ListElem] to a string
+ */
 object ToStringFunc : Func("to-str") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -61,6 +72,9 @@ object ToStringFunc : Func("to-str") {
     }
 }
 
+/**
+ * Converts a string to Integer
+ */
 val toIntConv = createConv("to-int") {
     when (it) {
         is Num -> it.toInteger()
@@ -75,6 +89,9 @@ val toIntConv = createConv("to-int") {
     }
 }
 
+/**
+ * Converts a string to float
+ */
 val toFltConv = createConv("to-float") {
     when (it) {
         is Num -> it.toFlt()
@@ -89,6 +106,9 @@ val toFltConv = createConv("to-float") {
     }
 }
 
+/**
+ * Converts a string to fraction
+ */
 val toFractionConv = createConv("to-fraction") {
     when (it) {
         is Num -> it.toFraction()
@@ -109,10 +129,16 @@ val toFractionConv = createConv("to-fraction") {
     }
 }
 
+/**
+ * Converts [SExpr] to Boll
+ */
 val toBoolConv = createConv("to-bool") {
     it.toBool()
 }
 
+/**
+ * Converts [Str] to [Symbol]
+ */
 val toSymbolConv = createConv("to-symbol") {
     when (it) {
         is Symbol -> it
@@ -121,6 +147,9 @@ val toSymbolConv = createConv("to-symbol") {
     }
 }
 
+/**
+ * Converts [Str] to [Cell]
+ */
 val toCellConv = createConv("to-cell") {
     when (it) {
         is Str -> {

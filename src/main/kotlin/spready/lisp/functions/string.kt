@@ -9,6 +9,9 @@ import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
 
+/**
+ * Gets the length of the string
+ */
 object StrLength : Func("string-length") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -17,6 +20,9 @@ object StrLength : Func("string-length") {
     }
 }
 
+/**
+ * Get a Character a the index
+ */
 object StrGet : Func("string-get") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -35,6 +41,9 @@ object StrGet : Func("string-get") {
     }
 }
 
+/**
+ * Replaces a chat at the specified index
+ */
 object ReplaceChar : Func("replace-char") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(3)
@@ -61,6 +70,9 @@ object ReplaceChar : Func("replace-char") {
     }
 }
 
+/**
+ * Creates a substring to the specified index
+ */
 object SubstringFunc : Func("substring") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -85,6 +97,9 @@ object SubstringFunc : Func("substring") {
     }
 }
 
+/**
+ * Appends another string to the string
+ */
 object AppendStr : Func("string-append") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkMinSize(1)
@@ -99,6 +114,9 @@ object AppendStr : Func("string-append") {
     }
 }
 
+/**
+ * Fills the string with a character
+ */
 object StrFill : Func("string-fill") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)

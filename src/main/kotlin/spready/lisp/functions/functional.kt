@@ -9,6 +9,11 @@ import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
 
+/**
+ * Evaluates args and zips the lists together
+ *
+ * Is needed because Iterable.zip can only zip with another one
+ */
 fun zipArgs(args: List<SExpr>, env: Environment): List<List<SExpr>> {
     val lists = args.map {
         env.eval(it).cast<ListElem>().toList()
@@ -29,6 +34,9 @@ fun zipArgs(args: List<SExpr>, env: Environment): List<List<SExpr>> {
     return zipped
 }
 
+/**
+ * Maps a [Func] over the rest of args
+ */
 object MapFunc : Func("map") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.toMutableList().checkMinSize(2)
@@ -42,6 +50,9 @@ object MapFunc : Func("map") {
     }
 }
 
+/**
+ * Evaluates a [Func] over the rest of the args
+ */
 object ForEachFunc : Func("for-each") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.toMutableList().checkMinSize(2)
@@ -57,6 +68,9 @@ object ForEachFunc : Func("for-each") {
     }
 }
 
+/**
+ * Evaluates the [Func] with the rest of the args
+ */
 object ApplyFunc : Func("apply") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.toMutableList().checkMinSize(2)

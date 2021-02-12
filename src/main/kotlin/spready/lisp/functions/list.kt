@@ -12,12 +12,18 @@ import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
 
+/**
+ * Evaluates the args and turns them into a list
+ */
 object ListFunc : Func("list") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         return env.eval(args).toListElem()
     }
 }
 
+/**
+ * Creates a cons
+ */
 object ConsFunc : Func("cons") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -26,6 +32,9 @@ object ConsFunc : Func("cons") {
     }
 }
 
+/**
+ * Returns the head of a list
+ */
 object Head : Func("head") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -35,6 +44,9 @@ object Head : Func("head") {
     }
 }
 
+/**
+ * Returns a new list with a new head
+ */
 object SetHead : Func("set-head") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -45,6 +57,9 @@ object SetHead : Func("set-head") {
     }
 }
 
+/**
+ * Returns the tail of a list
+ */
 object Tail : Func("tail") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -54,6 +69,9 @@ object Tail : Func("tail") {
     }
 }
 
+/**
+ * Creates a new list with a new tail
+ */
 object SetTail : Func("set-tail") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -64,6 +82,9 @@ object SetTail : Func("set-tail") {
     }
 }
 
+/**
+ * Returns the length of the list
+ */
 object ConsLength : Func("len") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -73,6 +94,11 @@ object ConsLength : Func("len") {
     }
 }
 
+/**
+ * Appends the rest of the args to a list
+ *
+ * If the rest arg ist also a list it will append each element
+ */
 object AppendCons : Func("append") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val rest = args.toMutableList().checkMinSize(1)
@@ -95,6 +121,9 @@ object AppendCons : Func("append") {
     }
 }
 
+/**
+ * Returns a reversed list
+ */
 object ReverseCons : Func("reverse") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -104,6 +133,9 @@ object ReverseCons : Func("reverse") {
     }
 }
 
+/**
+ * Gets a Element at a specific index of the list
+ */
 object GetCons : Func("get") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -122,6 +154,9 @@ object GetCons : Func("get") {
     }
 }
 
+/**
+ * Returns a sublist of the list to the index
+ */
 object Sublist : Func("sublist") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -147,6 +182,14 @@ object Sublist : Func("sublist") {
     }
 }
 
+/**
+ * Searches the list for an item that returns true
+ * for it and the search element
+ *
+ * Returns a sublist with with the found item as the head
+ *
+ * Can provide custom check function
+ */
 object Member : Func("member") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val mutArgs = args.toMutableList().checkBetweenSize(2, 3)
@@ -179,6 +222,14 @@ object Member : Func("member") {
     }
 }
 
+/**
+ * Searches a list of lists for a head that returns true
+ * for it and the search element
+ *
+ * Returns the found list
+ *
+ * Can provide custom check function
+ */
 object Assoc : Func("assoc") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val mutArgs = args.toMutableList().checkBetweenSize(2, 3)

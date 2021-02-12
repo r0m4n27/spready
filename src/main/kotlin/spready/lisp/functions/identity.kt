@@ -15,6 +15,11 @@ import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
 
+/**
+ * Creates a [Func] that checks for the identity of a Type
+ *
+ * @param T The type to check
+ */
 inline fun <reified T : SExpr> createIdentity(name: String): Func {
 
     return object : Func(name) {
@@ -30,6 +35,9 @@ inline fun <reified T : SExpr> createIdentity(name: String): Func {
     }
 }
 
+/**
+ * Checks if the arg is a pair
+ */
 object IsPair : Func("pair?") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -43,6 +51,9 @@ object IsPair : Func("pair?") {
     }
 }
 
+/**
+ * Checks if the arg is a list
+ */
 object IsList : Func("list?") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)

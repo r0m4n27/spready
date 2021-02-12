@@ -9,6 +9,9 @@ import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
 
+/**
+ * Creates a [Func] with it's local Environments
+ */
 fun createLambda(name: String, variables: List<Symbol>, body: List<SExpr>): Func {
     return object : Func(name) {
         override fun invoke(env: Environment, args: List<SExpr>): SExpr {
@@ -23,6 +26,9 @@ fun createLambda(name: String, variables: List<Symbol>, body: List<SExpr>): Func
     }
 }
 
+/**
+ * Returns a lambda
+ */
 object Lambda : Func("lambda") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.toMutableList().checkMinSize(2)
@@ -50,6 +56,11 @@ object Lambda : Func("lambda") {
     }
 }
 
+/**
+ * Binds the evaluated expression to a symbol
+ *
+ * The first argument will be evaluated
+ */
 object ValEval : Func("val-eval") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -59,6 +70,9 @@ object ValEval : Func("val-eval") {
     }
 }
 
+/**
+ * Binds the evaluated expression to a symbol
+ */
 object Val : Func("val") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(2)
@@ -69,6 +83,9 @@ object Val : Func("val") {
     }
 }
 
+/**
+ * Creates a lambda and binds it to the symbol
+ */
 object FunExpr : Func("fun") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.toMutableList().checkMinSize(3)

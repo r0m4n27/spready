@@ -6,6 +6,11 @@ import spready.lisp.sexpr.Num
 import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.cast
 
+/**
+ * Creates a [Func] that reduces is arguments with a func
+ *
+ * @param fn Will be used to reduce the numbers
+ */
 inline fun createReduceFunc(
     name: String,
     crossinline fn: (acc: Num, num: Num) -> Num
@@ -19,6 +24,11 @@ inline fun createReduceFunc(
     }
 }
 
+/**
+ * Creates a [Func] that Transforms a number
+ *
+ * @param fn Used for the transformation
+ */
 inline fun createFuncWithOneArg(
     name: String,
     crossinline fn: (num: Num) -> SExpr
@@ -32,6 +42,11 @@ inline fun createFuncWithOneArg(
     }
 }
 
+/**
+ * Creates a [Func] that Transforms two numbers
+ *
+ * @param fn Used for the transformation
+ */
 inline fun createFuncWithTwoArgs(
     name: String,
     crossinline fn: (num: Num, other: Num) -> SExpr

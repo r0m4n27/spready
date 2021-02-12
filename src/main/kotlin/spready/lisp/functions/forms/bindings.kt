@@ -10,6 +10,14 @@ import spready.lisp.sexpr.SExpr
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
 
+/**
+ * Binds symbols to a values that can be used in the expression
+ *
+ * The let can have a name that it can call itself, with the
+ * values in the binding as a start
+ *
+ * The bound variables don't know about each other at their evaluation
+ */
 object Let : Func("let") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkMinSize(2)
@@ -75,6 +83,12 @@ object Let : Func("let") {
     }
 }
 
+/**
+ * Binds symbols to a values that can be used in the expression
+ *
+ * After the binding is evaluated it's result will be put in the local env
+ * so bindings after it can access it
+ */
 object LetStar : Func("let*") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.toMutableList().checkMinSize(2)
@@ -94,6 +108,11 @@ object LetStar : Func("let*") {
     }
 }
 
+/**
+ * Binds symbols to a values that can be used in the expression
+ *
+ * Letrec ist used for lambdas, that invoke each other
+ */
 object LetRec : Func("letrec") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.toMutableList().checkMinSize(2)
@@ -115,6 +134,13 @@ object LetRec : Func("letrec") {
     }
 }
 
+/**
+ * Add local bindings and eval the body until the stop expression is true
+ *
+ * Each binding can have an expression that will update it
+ *
+ * After the stop expression you can specify what value will be returned
+ */
 object DoFunc : Func("do") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val exprs = args.toMutableList().checkMinSize(3)

@@ -10,6 +10,11 @@ import spready.lisp.sexpr.Str
 import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.cast
 
+/**
+ * Creates a [Func] that can be used for comparisons
+ *
+ * @param compFun Used for checking if compareTo returns the correct value
+ */
 inline fun createCompFun(
     name: String,
     crossinline compFun: (Int) -> Boolean
@@ -44,6 +49,9 @@ inline fun createCompFun(
     }
 }
 
+/**
+ * Checks if all values are equal
+ */
 object EqExpr : Func("=") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         val argsMut = args.toMutableList().checkMinSize(2)
@@ -54,6 +62,9 @@ object EqExpr : Func("=") {
     }
 }
 
+/**
+ * Checks if all values are not equal
+ */
 object NeqExpr : Func("!=") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkMinSize(2)

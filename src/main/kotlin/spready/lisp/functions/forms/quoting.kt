@@ -10,6 +10,9 @@ import spready.lisp.sexpr.Symbol
 import spready.lisp.sexpr.Unquote
 import spready.lisp.sexpr.UnquoteSplice
 
+/**
+ * Quotes the args
+ */
 object Quote : Func("quote") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -18,7 +21,11 @@ object Quote : Func("quote") {
     }
 }
 
-// Nested Quasiquotes aren't supported
+/**
+ * Returns the [SExpr] if it will find [Unquote] or [UnquoteSplice] if will eval them
+ *
+ * Nested Quasiquotes aren't supported
+ */
 object Quasiquote : Func("quasiquote") {
     override fun invoke(env: Environment, args: List<SExpr>): SExpr {
         args.checkSize(1)
@@ -33,6 +40,9 @@ object Quasiquote : Func("quasiquote") {
         }
     }
 
+    /**
+     * Handles the expressions recursively
+     */
     private fun handleExpr(expr: SExpr, env: Environment): List<SExpr> {
         return if (expr is Cons) {
             val exprList = expr.toList()

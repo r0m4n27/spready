@@ -17,6 +17,11 @@ import tornadofx.getValue
 import tornadofx.setValue
 import java.io.File
 
+/**
+ * Holds a [SimpleObjectProperty] with a [Spread] that can be accessed by every other model
+ *
+ * Subscribes to [SpreadFileEvent] to update the [Spread]
+ */
 class SpreadModel : ViewModel() {
     val spreadProperty = SimpleObjectProperty(Spread())
     var spread: Spread by spreadProperty
@@ -30,6 +35,13 @@ class SpreadModel : ViewModel() {
         }
     }
 
+    /**
+     * Loads a new [Spread] from the [file]
+     *
+     * Fires a [StatusEvent] at the end
+     *
+     * Fires a [NewSpreadEvent] when the new spread could be loaded
+     */
     private fun loadFromFile(file: File) {
         val result = try {
             spread = Json.decodeFromString(file.readText())
@@ -57,6 +69,11 @@ class SpreadModel : ViewModel() {
         fire(StatusEvent(result))
     }
 
+    /**
+     * Saves the spread to the [file]
+     *
+     * Fires a [StatusEvent] wit [Ok] at the end
+     */
     private fun saveToFile(file: File) {
         val text = Json.encodeToString(spread)
         file.writeText(text)

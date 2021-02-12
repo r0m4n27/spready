@@ -12,6 +12,11 @@ import tornadofx.textarea
 import tornadofx.vbox
 import tornadofx.vgrow
 
+/**
+ * The view of one script
+ *
+ * Uses the [ScriptScope] to have multiple scripts open
+ */
 class ScriptView : View() {
     override val scope = super.scope as ScriptScope
     private val model = scope.model

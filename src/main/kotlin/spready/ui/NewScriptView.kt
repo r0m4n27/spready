@@ -12,6 +12,11 @@ import tornadofx.px
 import tornadofx.style
 import tornadofx.textfield
 
+/**
+ * Shows a Modal to add a new script
+ *
+ * Fires [AddScriptEvent] when a new name is submitted
+ */
 class NewScriptView : Fragment() {
     private val newNameProperty = SimpleStringProperty("")
     private val newName by newNameProperty

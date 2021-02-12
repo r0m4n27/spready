@@ -12,6 +12,12 @@ import tornadofx.replaceWith
 import tornadofx.tab
 import tornadofx.tabpane
 
+/**
+ * Hold a tabpane which has the [SheetView] and different [ScriptView]s
+ *
+ * Subscribes to [AddScriptEvent] to add a new script to the tab
+ * Listens to changes in the SpreadModel to rebuild the tabs
+ */
 class TabView : View() {
     private val model: TabModel by inject()
 

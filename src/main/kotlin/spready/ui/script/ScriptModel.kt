@@ -11,6 +11,12 @@ import tornadofx.ViewModel
 import tornadofx.getValue
 import tornadofx.setValue
 
+/**
+ * Holds the current input of the specific script
+ *
+ * The [spreadModel] is injected by FX.defaultScope
+ * to acess the global [SpreadModel] and not to create another one
+ */
 class ScriptModel(private val name: String) : ViewModel() {
 
     // All Models should have the same SpreadModel
@@ -23,6 +29,11 @@ class ScriptModel(private val name: String) : ViewModel() {
     )
     private var currentInput by currentInputProperty
 
+    /**
+     * Evaluated the script
+     *
+     * Fires [StatusEvent] with the result of the evaluation
+     */
     fun runScript() {
         val result = try {
             spread.setScript(name, currentInput)

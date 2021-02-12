@@ -15,6 +15,11 @@ import tornadofx.hgrow
 import tornadofx.px
 import tornadofx.style
 
+/**
+ * Has the main components in a borderpane
+ *
+ * Also has a button to open [NewScriptView]
+ */
 class MainView : View() {
     private val status: StatusView by inject()
 

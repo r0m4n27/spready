@@ -10,6 +10,12 @@ class MenuModel : ViewModel() {
 
     private var lastFile: File? = null
 
+    /**
+     * Chooses a json file to open
+     *
+     * Fires a [SpreadFileEvent]
+     * and saves the lastFile
+     */
     fun openFile() {
         val files = chooseFile(
             "Select file to open",
@@ -24,6 +30,12 @@ class MenuModel : ViewModel() {
         }
     }
 
+    /**
+     * Saves the file
+     *
+     * If [lastFile] is null it will use [saveFileAs]
+     * otherwise it uses the [lastFile]
+     */
     fun saveFile() {
         lastFile.let {
             if (it == null) {
@@ -34,6 +46,11 @@ class MenuModel : ViewModel() {
         }
     }
 
+    /**
+     * Chooses a json file to save the spread
+     *
+     * Saves the file to [lastFile] to use later
+     */
     fun saveFileAs() {
         val files = chooseFile(
             "Select file to save",

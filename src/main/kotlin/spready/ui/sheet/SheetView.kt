@@ -25,6 +25,13 @@ import tornadofx.textfield
 import tornadofx.vbox
 import tornadofx.vgrow
 
+/**
+ * Has a spreadSheet with the results and a textfield to add the input
+ *
+ * Subscribes to [NewSpreadEvent] to update the cells with new values
+ *
+ * Listens to changed cells to update the cells of the SpreadSheet
+ */
 class SheetView : View("Sheet") {
     private var sheet: SpreadsheetView by singleAssign()
     private val model: SheetModel by inject()
@@ -99,6 +106,13 @@ class SheetView : View("Sheet") {
         }
     }
 
+    /**
+     * Creates a new Grid with a specific size
+     *
+     * Puts the result in the cell if it exists
+     *
+     * Sets the columns to use numbers rather than letters
+     */
     private fun createGrid(rowSize: Int, colSize: Int): Grid {
         val grid = GridBase(rowSize, colSize)
 

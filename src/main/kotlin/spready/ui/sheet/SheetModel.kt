@@ -14,6 +14,9 @@ import tornadofx.asObservable
 import tornadofx.getValue
 import tornadofx.setValue
 
+/**
+ * Holds the [currentCell], [allResults] of the spread, [currentInput] and the [changedCells]
+ */
 class SheetModel : ViewModel() {
     private val spreadModel: SpreadModel by inject()
 
@@ -30,6 +33,13 @@ class SheetModel : ViewModel() {
     val allResults: Map<Cell, String>
         get() = spread.allResults
 
+    /**
+     * Evaluated the [currentCell] with the [currentInput]
+     *
+     * If [currentInput] is empty it will remove the cell from the spread
+     * Fires a [StatusEvent] with the success of the evaluation or removal
+     *
+     */
     fun evalInput() {
         val cell = currentCell
 

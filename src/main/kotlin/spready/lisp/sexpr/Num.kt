@@ -7,6 +7,15 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.pow
 
+/**
+ * Defines a generic Number that can be [Flt], [Integer] and [Fraction]
+ *
+ * Can be compared
+ *
+ * Every num can be converted to the other types
+ *
+ * All the basic math operations have to be implemented by each one
+ */
 sealed class Num : SExpr, Comparable<Num> {
     abstract fun toFlt(): Flt
     abstract fun toInteger(): Integer
@@ -20,6 +29,10 @@ sealed class Num : SExpr, Comparable<Num> {
     abstract fun abs(): Num
 
     abstract fun pow(other: Num): Num
+
+    /**
+     * Calculates the remainder with the other Num
+     */
     abstract operator fun rem(other: Num): Num
 
     operator fun minus(other: Num): Num {
@@ -30,6 +43,9 @@ sealed class Num : SExpr, Comparable<Num> {
         return this * other.invert()
     }
 
+    /**
+     * Raises x to the power of the other
+     */
     protected fun powOfVal(x: Int, other: Num): Double {
         return when (other) {
             is Integer -> x.toDouble().pow(other.value)
@@ -42,6 +58,10 @@ sealed class Num : SExpr, Comparable<Num> {
     }
 
     companion object {
+
+        /**
+         * The default algorithm to calculate the gcd iteratively
+         */
         fun gcd(x: Int, y: Int): Int {
             var a = if (x >= 0) x else -x
             var b = if (y >= 0) y else -y
@@ -53,6 +73,9 @@ sealed class Num : SExpr, Comparable<Num> {
             return a
         }
 
+        /**
+         * Calculates the lcm using the [gcd]
+         */
         fun lcm(x: Int, y: Int): Int {
             return abs(x * y) / gcd(x, y)
         }
@@ -290,6 +313,14 @@ class Fraction private constructor(
     }
 
     companion object {
+
+        /**
+         * Creates a fraction
+         *
+         * Reduces the fractions using the gcd
+         *
+         * @throws EvalException when de denominator is zero or negative
+         */
         fun create(numerator: Int, denominator: Int): Fraction {
             if (denominator == 0) {
                 throw EvalException("Denominator can't be zero!")

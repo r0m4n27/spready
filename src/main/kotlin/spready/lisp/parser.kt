@@ -19,6 +19,11 @@ import spready.lisp.sexpr.UnquoteSplice
 import kotlin.math.E
 import kotlin.math.PI
 
+/**
+ * Parses the [tokens] and gives a list of [SExpr]
+ *
+ * @throws EvalException if the parse fails
+ */
 fun parse(tokens: List<Token>): List<SExpr> {
 
     if (tokens.isNotEmpty()) {
@@ -43,6 +48,11 @@ fun parse(tokens: List<Token>): List<SExpr> {
     }
 }
 
+/**
+ * Parses a [TokenType.String], [TokenType.Special] or [TokenType.Symbol]
+ *
+ * @throws IllegalArgumentException if the token is not one of the three
+ */
 fun parseAtom(token: Token): SExpr {
     return when (token.type) {
         TokenType.String -> Str(token.value)
@@ -52,6 +62,11 @@ fun parseAtom(token: Token): SExpr {
     }
 }
 
+/**
+ * Parses a symbol token
+ *
+ * Can be [Nil], [Fraction], [Integer], [Flt] or [Symbol]
+ */
 fun parseSymbol(value: String): SExpr {
     if (value == "nil") {
         return Nil
@@ -76,6 +91,13 @@ fun parseSymbol(value: String): SExpr {
     }
 }
 
+/**
+ * Parses the special Token
+ *
+ * Values can be: true, false, pi, e or a cell
+ *
+ * @throws EvalException when the special value isn't recognised
+ */
 fun parseSpecial(value: String): SExpr {
     return when (value) {
         "#t" -> Bool(true)
@@ -97,6 +119,15 @@ fun parseSpecial(value: String): SExpr {
     }
 }
 
+/**
+ * Parses a structure
+ *
+ * Parses the parenthesis recursively
+ *
+ * @throws IllegalArgumentException if [tokens] is empty
+ * @throws EvalException if the parenthesis weren't balanced
+ * or unexpected token was found
+ */
 fun parseOther(tokens: MutableList<Token>): SExpr {
     if (tokens.isEmpty()) {
         throw IllegalArgumentException("Tokens can't be empty!")

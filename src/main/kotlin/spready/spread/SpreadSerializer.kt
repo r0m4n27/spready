@@ -8,6 +8,14 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import spready.lisp.sexpr.Cell
 
+/**
+ * Serializes [Spread] using [SpreadSurrogate]
+ *
+ * All script and cell inputs will be saved in the json
+ * and run sequentially to build the spread
+ *
+ * The scripts will be run first and the cells after them
+ */
 object SpreadSerializer : KSerializer<Spread> {
     override val descriptor: SerialDescriptor
         get() = SpreadSurrogate.serializer().descriptor

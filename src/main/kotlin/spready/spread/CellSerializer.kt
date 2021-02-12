@@ -9,6 +9,9 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import spready.lisp.sexpr.Cell
 
+/**
+ * Serializes cells as it's string representation
+ */
 object CellSerializer : KSerializer<Cell> {
     private val cellRegex = Regex("""(\d+)\.(\d+)""")
 

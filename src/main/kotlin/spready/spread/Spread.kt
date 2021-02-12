@@ -6,6 +6,11 @@ import spready.lisp.parse
 import spready.lisp.sexpr.Cell
 import spready.lisp.tokenize
 
+/**
+ * Keeps track of cells and scripts and the in and output of them
+ *
+ * Uses [SpreadEnvironment] for keeping track of the cells
+ */
 @Serializable(with = SpreadSerializer::class)
 class Spread {
     private val lispEnv = Environment.defaultEnv()
@@ -17,6 +22,8 @@ class Spread {
 
     private val changed: MutableSet<Cell> = mutableSetOf()
 
+    // If a cell will be evaluated its results will be stored
+    // and it is added to changed
     private val env =
         SpreadEnvironment(
             { cell, result ->

@@ -5,6 +5,16 @@ import spready.lisp.sexpr.Cell
 import spready.lisp.sexpr.ListElem
 import spready.lisp.sexpr.SExpr
 
+/**
+ * Tracks the dependencies of the cells
+ *
+ * If a cell is updated it will find all the dependencies of it,
+ * eval it if possible and notify other cells it influences
+ *
+ * @param [canRunAction] Will be executed if a cell was evaluated
+ * @param [cantRunAction] Will be executed if a cell can't be evaluated
+ * @param [env] The environment the cells will be executed
+ */
 class SpreadEnvironment(
     private val canRunAction: (cell: Cell, result: SExpr) -> Unit,
     private val cantRunAction: (Cell) -> Unit,
@@ -16,6 +26,14 @@ class SpreadEnvironment(
 
     private val parsed: MutableMap<Cell, SExpr> = mutableMapOf()
 
+    /**
+     * Sets the [cell] to be tracked
+     *
+     * Will update it's dependencies
+     * and evaluated if possible
+     *
+     * @throws [SpreadException] if a cycle is found
+     */
     operator fun set(cell: Cell, expr: SExpr) {
         resetDependencies(cell)
         updateDependencies(cell, findDependencies(expr))
@@ -34,6 +52,7 @@ class SpreadEnvironment(
             it.value.remove(cell)
         }
 
+        dependencies.remove(cell)
         canRun.remove(cell)
     }
 
@@ -46,6 +65,11 @@ class SpreadEnvironment(
         }
     }
 
+    /**
+     * Remove the cell from the tracker and [env]
+     *
+     * @throws [SpreadException] if the [cell] influences other cells
+     */
     fun removeCell(cell: Cell) {
         if (cell in influences) {
             throw SpreadException("$cell influences others!")
@@ -59,6 +83,15 @@ class SpreadEnvironment(
         parsed.remove(cell)
     }
 
+    /**
+     * Evaluated the [cell] if possible
+     *
+     * Calls [canRunAction] if the [cell] can be evaluated the with the result
+     * Cells [cantRunAction] if the [cell] can't be evaluated
+     *
+     * If the [cell] can be evaluated [evalCell] will also be called
+     * of the cells that [cell] influences
+     */
     private fun evalCell(cell: Cell) {
         if (cell in canRun || dependencies[cell]!!.all(canRun::contains)) {
             canRun.add(cell)
@@ -74,6 +107,9 @@ class SpreadEnvironment(
         }
     }
 
+    /**
+     * Finds all cells that are in [expr]
+     */
     private fun findDependencies(expr: SExpr): Set<Cell> {
         return when (expr) {
             is ListElem -> {
@@ -94,9 +130,12 @@ class SpreadEnvironment(
         }
     }
 
-    // Kahns algorithm is used but without keeping track of the order
-    // Tarjan's could also be used but extra structures would be required
-
+    /**
+     * Checks if there are cycles in the tracker
+     *
+     * Uses Kahns algorithm
+     * Tarjan's could also be used but extra structures would be required
+     */
     private fun hasCycle(): Boolean {
         val noIncoming = mutableListOf<Cell>()
         val graph =

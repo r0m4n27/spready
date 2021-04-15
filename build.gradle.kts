@@ -15,10 +15,6 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-
-    maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-    }
 }
 
 tasks.withType<KotlinCompile> {
@@ -52,7 +48,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
                 implementation("no.tornado:tornadofx:1.7.20")
-                implementation("org.controlsfx:controlsfx:11.1.0-SNAPSHOT")
+                implementation("org.controlsfx:controlsfx:11.1.0")
 
                 // Some dependency uses version 1.3 so it has to be overwritten
                 implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.30")
